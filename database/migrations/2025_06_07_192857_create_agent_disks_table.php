@@ -10,16 +10,24 @@ return new class extends Migration {
     {
         Schema::create('agent_disks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->float('usage_percent');
-            $table->string('free');
-            $table->string('size');
             $table->foreignIdFor(Agent::class)
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->unique(['agent_id', 'name']);
+            $table->string('name', 100);
+            $table->decimal('usage_percent', 5, 2);
+            $table->unsignedBigInteger('free'); // v bytech
+            $table->unsignedBigInteger('size'); // v bytech
             $table->timestamps();
+
+            // Jedinečný disk pro každého agenta
+            $table->unique(['agent_id', 'name'], 'idx_agent_disk_unique');
+
+            // Index pro rychlé vyhledání všech disků agenta
+            $table->index('agent_id', 'idx_agent_id');
+
+            // Index pro vyhledání kritických disků (vysoké využití)
+            $table->index('usage_percent', 'idx_usage_percent');
         });
     }
 

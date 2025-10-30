@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('company_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Company::class)
-                ->constrained()
+            $table->foreignIdFor(Company::class, 'company_id')
+                ->constrained('company')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignIdFor(User::class)
-                ->constrained()
+            $table->foreignIdFor(User::class, 'user_id')
+                ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->timestamps();
