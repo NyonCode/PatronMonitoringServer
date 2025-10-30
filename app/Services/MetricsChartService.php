@@ -13,10 +13,6 @@ class MetricsChartService
 {
     /**
      * Získá data pro graf podle časového období.
-     *
-     * @param Agent $agent
-     * @param string $period 'hour', 'day', 'week', 'month', 'year'
-     * @return array
      */
     public function getChartData(Agent $agent, string $period = 'day'): array
     {
@@ -109,19 +105,25 @@ class MetricsChartService
                     'label' => 'CPU %',
                     'data' => $metrics->pluck('cpu_usage_percent')->toArray(),
                     'borderColor' => 'rgb(239, 68, 68)',
-                    'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                    'backgroundColor' => 'rgba(239, 68, 68, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
                     'label' => 'RAM %',
                     'data' => $metrics->pluck('ram_usage_percent')->toArray(),
                     'borderColor' => 'rgb(59, 130, 246)',
-                    'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                    'backgroundColor' => 'rgba(59, 130, 246, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
                     'label' => 'GPU %',
                     'data' => $metrics->pluck('gpu_usage_percent')->toArray(),
                     'borderColor' => 'rgb(34, 197, 94)',
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
             ],
         ];
@@ -143,33 +145,25 @@ class MetricsChartService
                     'label' => 'CPU průměr %',
                     'data' => $metrics->pluck('cpu_avg')->toArray(),
                     'borderColor' => 'rgb(239, 68, 68)',
-                    'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                    'backgroundColor' => 'rgba(239, 68, 68, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
                     'label' => 'RAM průměr %',
                     'data' => $metrics->pluck('ram_avg')->toArray(),
                     'borderColor' => 'rgb(59, 130, 246)',
-                    'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
+                    'backgroundColor' => 'rgba(59, 130, 246, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
                 [
                     'label' => 'GPU průměr %',
                     'data' => $metrics->pluck('gpu_avg')->toArray(),
                     'borderColor' => 'rgb(34, 197, 94)',
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
-                ],
-            ],
-            'ranges' => [
-                'cpu' => [
-                    'min' => $metrics->pluck('cpu_min')->toArray(),
-                    'max' => $metrics->pluck('cpu_max')->toArray(),
-                ],
-                'ram' => [
-                    'min' => $metrics->pluck('ram_min')->toArray(),
-                    'max' => $metrics->pluck('ram_max')->toArray(),
-                ],
-                'gpu' => [
-                    'min' => $metrics->pluck('gpu_min')->toArray(),
-                    'max' => $metrics->pluck('gpu_max')->toArray(),
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.2)',
+                    'fill' => true,
+                    'tension' => 0.4,
                 ],
             ],
         ];
@@ -180,9 +174,7 @@ class MetricsChartService
      */
     public function getCurrentMetrics(Agent $agent): array
     {
-        $latest = $agent->metrics()
-            ->latest('recorded_at')
-            ->first();
+        $latest = $agent->metrics()->latest('recorded_at')->first();
 
         if (!$latest) {
             return [
@@ -224,8 +216,12 @@ class MetricsChartService
     /**
      * Formátuje byty na lidsky čitelný formát.
      */
-    public function formatBytes(int $bytes, int $precision = 2): string
+    public function formatBytes(int|string $bytes, int $precision = 2): string
     {
+        if(is_string($bytes))
+        {
+            $bytes = (int) $bytes;
+        }
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {

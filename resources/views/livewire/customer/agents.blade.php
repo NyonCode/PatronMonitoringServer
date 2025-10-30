@@ -1,122 +1,136 @@
-<div class="space-y-6">
+<div class="space-y-6 p-4 md:p-6">
     <!-- Header se statistikami -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <flux:card>
+        <!-- Celkem agentů -->
+        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <flux:subheading>Celkem agentů</flux:subheading>
-                    <flux:heading size="xl">{{ $this->agents->total() }}</flux:heading>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Celkem agentů</p>
+                    <p class="text-3xl font-bold text-zinc-900 dark:text-white">{{ $this->agents->total() }}</p>
                 </div>
-                <flux:icon.computer-desktop class="w-12 h-12 text-zinc-400" />
+                <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20m0 0l-.75 3M9 20a6 6 0 1112 0m0 0l.75 3M21 20l.75 3"></path>
+                </svg>
             </div>
-        </flux:card>
+        </div>
 
-        <flux:card>
+        <!-- Online -->
+        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <flux:subheading>Online</flux:subheading>
-                    <flux:heading size="xl" class="text-green-600">
-                        {{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'online')->count() }}
-                    </flux:heading>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Online</p>
+                    <p class="text-3xl font-bold text-green-600">{{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'online')->count() }}</p>
                 </div>
-                <flux:icon.check-circle class="w-12 h-12 text-green-600" />
+                <svg class="w-12 h-12 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+                </svg>
             </div>
-        </flux:card>
+        </div>
 
-        <flux:card>
+        <!-- Offline -->
+        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <flux:subheading>Offline</flux:subheading>
-                    <flux:heading size="xl" class="text-red-600">
-                        {{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'offline')->count() }}
-                    </flux:heading>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Offline</p>
+                    <p class="text-3xl font-bold text-red-600">{{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'offline')->count() }}</p>
                 </div>
-                <flux:icon.x-circle class="w-12 h-12 text-red-600" />
+                <svg class="w-12 h-12 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
+                </svg>
             </div>
-        </flux:card>
+        </div>
 
-        <flux:card>
+        <!-- Varování -->
+        <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <flux:subheading>Varování</flux:subheading>
-                    <flux:heading size="xl" class="text-yellow-600">
-                        {{ $this->agents->filter(function($agent) {
-                            $metrics = $this->getCurrentMetrics($agent);
-                            return $metrics['cpu'] > 80 || $metrics['ram'] > 80;
-                        })->count() }}
-                    </flux:heading>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Varování</p>
+                    <p class="text-3xl font-bold text-yellow-600">{{ $this->agents->filter(function($agent) {
+                        $metrics = $this->getCurrentMetrics($agent);
+                        return $metrics['cpu'] > 80 || $metrics['ram'] > 80;
+                    })->count() }}</p>
                 </div>
-                <flux:icon.exclamation-triangle class="w-12 h-12 text-yellow-600" />
+                <svg class="w-12 h-12 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                </svg>
             </div>
-        </flux:card>
+        </div>
     </div>
 
     <!-- Vyhledávání a filtry -->
-    <flux:card>
+    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex-1">
-                <flux:input
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="Hledat podle názvu, pretty name nebo IP adresy..."
-                    icon="magnifying-glass"
-                />
+                <div class="relative">
+                    <input
+                        type="text"
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="Hledat podle názvu, pretty name nebo IP adresy..."
+                        class="w-full px-4 py-2 pl-10 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <flux:select wire:model.live="perPage" class="w-32">
-                    <option value="5">5 / stránka</option>
-                    <option value="10">10 / stránka</option>
-                    <option value="25">25 / stránka</option>
-                    <option value="50">50 / stránka</option>
-                </flux:select>
-            </div>
+            <select wire:model.live="perPage" class="px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="5">5 / stránka</option>
+                <option value="10">10 / stránka</option>
+                <option value="25">25 / stránka</option>
+                <option value="50">50 / stránka</option>
+            </select>
         </div>
-    </flux:card>
+    </div>
 
     <!-- Tabulka agentů -->
-    <flux:card class="overflow-hidden">
+    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-zinc-50 dark:bg-zinc-900">
+                <thead class="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                 <tr>
                     <th class="px-6 py-3 text-left">
                         <button
                             wire:click="sortBy('hostname')"
-                            class="flex items-center gap-2 font-medium text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
+                            class="flex items-center gap-2 font-semibold text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
                         >
                             Název
                             @if($sortBy === 'hostname')
-                                <flux:icon.chevron-up-down class="w-4 h-4" />
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 8l2.828-2.828a2 2 0 112.828 0L9 8m2 0l2.828-2.828a2 2 0 112.828 0L17 8m-8 8l2.828-2.828a2 2 0 112.828 0L17 16" stroke="currentColor" stroke-width="2" fill="none"></path>
+                                </svg>
                             @endif
                         </button>
                     </th>
                     <th class="px-6 py-3 text-left">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">Status</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Status</span>
                     </th>
                     <th class="px-6 py-3 text-left">
                         <button
                             wire:click="sortBy('ip_address')"
-                            class="flex items-center gap-2 font-medium text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
+                            class="flex items-center gap-2 font-semibold text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
                         >
                             IP adresa
                             @if($sortBy === 'ip_address')
-                                <flux:icon.chevron-up-down class="w-4 h-4" />
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 8l2.828-2.828a2 2 0 112.828 0L9 8m2 0l2.828-2.828a2 2 0 112.828 0L17 8m-8 8l2.828-2.828a2 2 0 112.828 0L17 16" stroke="currentColor" stroke-width="2" fill="none"></path>
+                                </svg>
                             @endif
                         </button>
                     </th>
                     <th class="px-6 py-3 text-center">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
                     </th>
                     <th class="px-6 py-3 text-center">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">RAM</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">RAM</span>
                     </th>
                     <th class="px-6 py-3 text-center">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">GPU</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">GPU</span>
                     </th>
                     <th class="px-6 py-3 text-left">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">Nejvíce zaplněný disk</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Disk</span>
                     </th>
                     <th class="px-6 py-3 text-right">
-                        <span class="font-medium text-sm text-zinc-700 dark:text-zinc-300">Akce</span>
+                        <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Akce</span>
                     </th>
                 </tr>
                 </thead>
@@ -146,13 +160,19 @@
                         <!-- Status -->
                         <td class="px-6 py-4">
                             @if($status === 'online')
-                                <flux:badge color="green" size="sm" icon="check-circle">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                    </svg>
                                     Online
-                                </flux:badge>
+                                </span>
                             @else
-                                <flux:badge color="red" size="sm" icon="x-circle">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
+                                    </svg>
                                     Offline
-                                </flux:badge>
+                                </span>
                             @endif
                         </td>
 
@@ -165,13 +185,18 @@
 
                         <!-- CPU mini graf -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-1">
-                                <flux:badge
-                                    size="sm"
-                                    :color="$metrics['cpu'] > 80 ? 'red' : ($metrics['cpu'] > 60 ? 'yellow' : 'green')"
-                                >
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                    @if($metrics['cpu'] > 80)
+                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
+                                    @elseif($metrics['cpu'] > 60)
+                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
+                                    @else
+                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
+                                    @endif
+                                ">
                                     {{ $metrics['cpu'] }}%
-                                </flux:badge>
+                                </span>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['cpu']) }}"
                                     data-color="rgb(239, 68, 68)"
@@ -184,13 +209,18 @@
 
                         <!-- RAM mini graf -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-1">
-                                <flux:badge
-                                    size="sm"
-                                    :color="$metrics['ram'] > 80 ? 'red' : ($metrics['ram'] > 60 ? 'yellow' : 'green')"
-                                >
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                    @if($metrics['ram'] > 80)
+                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
+                                    @elseif($metrics['ram'] > 60)
+                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
+                                    @else
+                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
+                                    @endif
+                                ">
                                     {{ $metrics['ram'] }}%
-                                </flux:badge>
+                                </span>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['ram']) }}"
                                     data-color="rgb(59, 130, 246)"
@@ -203,13 +233,18 @@
 
                         <!-- GPU mini graf -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-1">
-                                <flux:badge
-                                    size="sm"
-                                    :color="$metrics['gpu'] > 80 ? 'red' : ($metrics['gpu'] > 60 ? 'yellow' : 'green')"
-                                >
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                    @if($metrics['gpu'] > 80)
+                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
+                                    @elseif($metrics['gpu'] > 60)
+                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
+                                    @else
+                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
+                                    @endif
+                                ">
                                     {{ $metrics['gpu'] }}%
-                                </flux:badge>
+                                </span>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['gpu']) }}"
                                     data-color="rgb(34, 197, 94)"
@@ -228,16 +263,29 @@
                                             <span class="text-sm text-zinc-700 dark:text-zinc-300">
                                                 {{ $disk['name'] }}
                                             </span>
-                                        <flux:badge
-                                            size="sm"
-                                            :color="$disk['usage_percent'] > 90 ? 'red' : ($disk['usage_percent'] > 75 ? 'yellow' : 'green')"
-                                        >
+                                        <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                            @if($disk['usage_percent'] > 90)
+                                                bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
+                                            @elseif($disk['usage_percent'] > 75)
+                                                bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
+                                            @else
+                                                bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
+                                            @endif
+                                        ">
                                             {{ $disk['usage_percent'] }}%
-                                        </flux:badge>
+                                        </span>
                                     </div>
                                     <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                         <div
-                                            class="h-1.5 rounded-full transition-all {{ $disk['usage_percent'] > 90 ? 'bg-red-500' : ($disk['usage_percent'] > 75 ? 'bg-yellow-500' : 'bg-green-500') }}"
+                                            class="h-1.5 rounded-full transition-all
+                                            @if($disk['usage_percent'] > 90)
+                                                bg-red-500
+                                            @elseif($disk['usage_percent'] > 75)
+                                                bg-yellow-500
+                                            @else
+                                                bg-green-500
+                                            @endif
+                                            "
                                             style="width: {{ $disk['usage_percent'] }}%"
                                         ></div>
                                     </div>
@@ -252,23 +300,27 @@
 
                         <!-- Tlačítko Detail -->
                         <td class="px-6 py-4 text-right">
-                            <flux:button
+                            <button
                                 wire:click="showDetail({{ $agent->id }})"
-                                size="sm"
-                                variant="ghost"
-                                icon="eye"
+                                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                             >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
                                 Detail
-                            </flux:button>
+                            </button>
                         </td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="8" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center gap-2">
-                                <flux:icon.inbox class="w-12 h-12 text-zinc-400" />
-                                <flux:subheading>Žádní agenti nenalezeni</flux:subheading>
-                                <flux:text>Zkuste upravit vyhledávací kritéria</flux:text>
+                                <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                </svg>
+                                <p class="font-semibold text-zinc-900 dark:text-white">Žádní agenti nenalezeni</p>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Zkuste upravit vyhledávací kritéria</p>
                             </div>
                         </td>
                     </tr>
@@ -283,29 +335,46 @@
                 {{ $this->agents->links() }}
             </div>
         @endif
-    </flux:card>
+    </div>
 
     <!-- Modal s detaily agenta -->
     @if($showDetailModal && $selectedAgentId)
-        <flux:modal wire:model="showDetailModal" class="max-w-7xl">
-            <div>
-                <flux:heading size="lg">Detail agenta</flux:heading>
-                <flux:subheading class="mt-2">
-                    {{ $this->agents->find($selectedAgentId)?->hostname }}
-                </flux:subheading>
-            </div>
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
+                    <div>
+                        <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Detail agenta</h2>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                            {{ $this->agents->find($selectedAgentId)?->hostname }}
+                        </p>
+                    </div>
+                    <button
+                        wire:click="closeDetail"
+                        class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
 
-            <div class="mt-6">
-                @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
-            </div>
+                <!-- Content -->
+                <div class="p-6">
+                    @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
+                </div>
 
-            <flux:modal.footer>
-                <flux:spacer />
-                <flux:button wire:click="closeDetail" variant="ghost">
-                    Zavřít
-                </flux:button>
-            </flux:modal.footer>
-        </flux:modal>
+                <!-- Footer -->
+                <div class="flex justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700">
+                    <button
+                        wire:click="closeDetail"
+                        class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                    >
+                        Zavřít
+                    </button>
+                </div>
+            </div>
+        </div>
     @endif
 
     @script

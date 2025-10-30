@@ -148,9 +148,16 @@ class Agents extends Component
 
     /**
      * Formátuje byty na lidsky čitelný formát.
+     * Akceptuje string nebo int, vždy konvertuje na int
      */
-    public function formatBytes(int $bytes, int $precision = 1): string
+    public function formatBytes(int|string $bytes, int $precision = 1): string
     {
+        // Konvertuj string na int pokud je potřeba
+        if(is_string($bytes))
+        {
+            $bytes = (int) $bytes;
+        }
+
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {

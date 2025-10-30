@@ -11,23 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class AggregateMetricsCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'metrics:aggregate {--hourly} {--daily}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Agreguje metriky do hodinových a denních tabulek pro rychlejší načítání grafů';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         if ($this->option('hourly')) {
@@ -53,18 +39,14 @@ class AggregateMetricsCommand extends Command
     {
         $this->info('Agregace hodinových metrik...');
 
-        // Najdi nejnovější agregovanou hodinu
-        $lastAggregated = AgentMetricHourly::max('hour_start')
-            ?? now()->subDays(7);
-
+        $lastAggregated = AgentMetricHourly::max('hour_start') ?? now()->subDays(7);
         $agents = Agent::all();
 
         foreach ($agents as $agent) {
-            // Zpracuj hodiny od poslední agregace
             $metrics = AgentSystemMetric::where('agent_id', $agent->id)
                 ->where('recorded_at', '>', $lastAggregated)
                 ->select(
-                    DB::raw('DATE_FORMAT(recorded_at, "%Y-%m-%d %H:00:00") as hour_start'),
+                    $this->getHourFormat() . ' as hour_start',
                     DB::raw('AVG(cpu_usage_percent) as cpu_avg'),
                     DB::raw('MIN(cpu_usage_percent) as cpu_min'),
                     DB::raw('MAX(cpu_usage_percent) as cpu_max'),
@@ -113,16 +95,14 @@ class AggregateMetricsCommand extends Command
     {
         $this->info('Agregace denních metrik...');
 
-        $lastAggregated = AgentMetricDaily::max('date')
-            ?? now()->subDays(30);
-
+        $lastAggregated = AgentMetricDaily::max('date') ?? now()->subDays(30);
         $agents = Agent::all();
 
         foreach ($agents as $agent) {
             $metrics = AgentSystemMetric::where('agent_id', $agent->id)
                 ->where('recorded_at', '>', $lastAggregated)
                 ->select(
-                    DB::raw('DATE(recorded_at) as date'),
+                    $this->getDateFormat() . ' as date',
                     DB::raw('AVG(cpu_usage_percent) as cpu_avg'),
                     DB::raw('MIN(cpu_usage_percent) as cpu_min'),
                     DB::raw('MAX(cpu_usage_percent) as cpu_max'),
@@ -162,5 +142,35 @@ class AggregateMetricsCommand extends Command
         }
 
         $this->info('Denní agregace dokončeny.');
+    }
+
+    /**
+     * Získá SQL formát pro hodiny podle typu databáze.
+     */
+    private function getHourFormat(): DB
+    {
+        $driver = DB::getDriverName();
+
+        return match ($driver) {
+            'sqlite' => DB::raw("strftime('%Y-%m-%d %H:00:00', recorded_at)"),
+            'mysql', 'mariadb' => DB::raw("DATE_FORMAT(recorded_at, '%Y-%m-%d %H:00:00')"),
+            'pgsql' => DB::raw("DATE_TRUNC('hour', recorded_at)"),
+            default => DB::raw("DATE_FORMAT(recorded_at, '%Y-%m-%d %H:00:00')"),
+        };
+    }
+
+    /**
+     * Získá SQL formát pro datum podle typu databáze.
+     */
+    private function getDateFormat(): DB
+    {
+        $driver = DB::getDriverName();
+
+        return match ($driver) {
+            'sqlite' => DB::raw("DATE(recorded_at)"),
+            'mysql', 'mariadb' => DB::raw("DATE(recorded_at)"),
+            'pgsql' => DB::raw("DATE(recorded_at)"),
+            default => DB::raw("DATE(recorded_at)"),
+        };
     }
 }
