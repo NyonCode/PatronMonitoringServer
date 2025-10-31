@@ -183,7 +183,7 @@
                                 </span>
                         </td>
 
-                        <!-- CPU mini graf -->
+                        <!-- CPU mini graf s Chart.js -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
@@ -197,17 +197,19 @@
                                 ">
                                     {{ $metrics['cpu'] }}%
                                 </span>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['cpu']) }}"
-                                    data-color="rgb(239, 68, 68)"
-                                    class="sparkline-chart"
-                                    width="80"
-                                    height="20"
-                                ></canvas>
+                                <div class="h-12 w-24">
+                                    <canvas
+                                        class="mini-chart"
+                                        data-values="{{ json_encode($sparkline['cpu']) }}"
+                                        data-color="239, 68, 68"
+                                        width="96"
+                                        height="48"
+                                    ></canvas>
+                                </div>
                             </div>
                         </td>
 
-                        <!-- RAM mini graf -->
+                        <!-- RAM mini graf s Chart.js -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
@@ -221,17 +223,19 @@
                                 ">
                                     {{ $metrics['ram'] }}%
                                 </span>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['ram']) }}"
-                                    data-color="rgb(59, 130, 246)"
-                                    class="sparkline-chart"
-                                    width="80"
-                                    height="20"
-                                ></canvas>
+                                <div class="h-12 w-24">
+                                    <canvas
+                                        class="mini-chart"
+                                        data-values="{{ json_encode($sparkline['ram']) }}"
+                                        data-color="59, 130, 246"
+                                        width="96"
+                                        height="48"
+                                    ></canvas>
+                                </div>
                             </div>
                         </td>
 
-                        <!-- GPU mini graf -->
+                        <!-- GPU mini graf s Chart.js -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
@@ -245,13 +249,15 @@
                                 ">
                                     {{ $metrics['gpu'] }}%
                                 </span>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['gpu']) }}"
-                                    data-color="rgb(34, 197, 94)"
-                                    class="sparkline-chart"
-                                    width="80"
-                                    height="20"
-                                ></canvas>
+                                <div class="h-12 w-24">
+                                    <canvas
+                                        class="mini-chart"
+                                        data-values="{{ json_encode($sparkline['gpu']) }}"
+                                        data-color="34, 197, 94"
+                                        width="96"
+                                        height="48"
+                                    ></canvas>
+                                </div>
                             </div>
                         </td>
 
@@ -344,59 +350,92 @@
 
     @script
     <script>
-        function initSparklines() {
-            document.querySelectorAll('.sparkline-chart').forEach((canvas) => {
-                const data = JSON.parse(canvas.getAttribute('data-sparkline'));
-                const color = canvas.getAttribute('data-color');
+        let miniCharts = [];
 
-                if (data.length === 0) return;
+        function initMiniCharts() {
+            // Zrušit existující grafy před reinicializací
+            miniCharts.forEach(chart => {
+                if (chart) {
+                    chart.destroy();
+                }
+            });
+            miniCharts = [];
+
+            // Inicializovat mini grafy
+            document.querySelectorAll('.mini-chart').forEach((canvas) => {
+                const data = JSON.parse(canvas.getAttribute('data-values'));
+                const color = canvas.getAttribute('data-color').split(', ').map(Number);
+
+                if (!data || data.length === 0) return;
 
                 const ctx = canvas.getContext('2d');
-                const width = canvas.width;
-                const height = canvas.height;
-                const max = Math.max(...data, 1);
-                const min = Math.min(...data, 0);
-                const range = max - min || 1;
 
-                // Clear canvas
-                ctx.clearRect(0, 0, width, height);
+                // Vytvoř labels pro osu X
+                const labels = data.map((_, index) => '');
 
-                // Draw line
-                ctx.beginPath();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 1.5;
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-
-                data.forEach((value, index) => {
-                    const x = (index / (data.length - 1)) * width;
-                    const y = height - ((value - min) / range) * height;
-
-                    if (index === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            borderColor: `rgb(${color.join(', ')})`,
+                            backgroundColor: `rgba(${color.join(', ')}, 0.1)`,
+                            borderWidth: 1.5,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false
+                            },
+                            y: {
+                                display: false,
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        animation: {
+                            duration: 500
+                        }
                     }
                 });
 
-                ctx.stroke();
-
-                // Draw fill
-                ctx.lineTo(width, height);
-                ctx.lineTo(0, height);
-                ctx.closePath();
-                ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
-                ctx.fill();
+                miniCharts.push(chart);
             });
         }
 
         // Inicializace při načtení
-        document.addEventListener('DOMContentLoaded', initSparklines);
+        document.addEventListener('DOMContentLoaded', initMiniCharts);
 
         // Reinicializace po Livewire aktualizaci
-        Livewire.hook('morph.updated', () => {
-            setTimeout(initSparklines, 50);
+        Livewire.hook('morph.updated', ({el, component}) => {
+            if (component.name === 'customer.agents') {
+                setTimeout(initMiniCharts, 50);
+            }
         });
     </script>
     @endscript
+
+    @assets
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    @endassets
 </div>
