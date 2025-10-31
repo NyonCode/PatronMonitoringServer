@@ -174,7 +174,7 @@ class MetricsChartService
      */
     public function getCurrentMetrics(Agent $agent): array
     {
-        $latest = $agent->metrics()->latest('c')->first();
+        $latest = $agent->metrics()->latest('recorded_at')->first();
 
         if (!$latest) {
             return [
