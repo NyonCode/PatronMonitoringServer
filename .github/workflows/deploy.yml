@@ -14,26 +14,25 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: 🧩 Modify .env for production
+      # Step 1: Prepare .env for migrations (dev/staging)
+      - name: 🧩 Prepare .env for migrations
         run: |
-          # Ensure .env exists
           if [ ! -f .env ]; then
-            echo ".env file not found. Copying .env.example."
             cp .env.example .env
           fi
 
-          # Update environment settings
-          sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
-          sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
-          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
+          # Dev environment for migrations
+          sed -i 's/^APP_ENV=.*/APP_ENV=development/' .env
+          sed -i 's/^APP_DEBUG=.*/APP_DEBUG=true/' .env
+          sed -i 's|^APP_URL=.*|APP_URL="http://staging.patronmonitoring.cz/"|' .env
 
-          # Update DB connection info from secrets
-          sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
-          sed -i "s/^DB_HOST=.*/DB_HOST=${{ secrets.DB_HOST }}/" .env
-          sed -i "s/^DB_PORT=.*/DB_PORT=${{ secrets.DB_PORT }}/" .env
-          sed -i "s/^DB_DATABASE=.*/DB_DATABASE=${{ secrets.DB_DATABASE }}/" .env
-          sed -i "s/^DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
-          sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
+          # DB settings
+          sed -i "s/^#\? *DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
+          sed -i "s/^#\? *DB_HOST=.*/DB_HOST=${{ secrets.DB_HOST }}/" .env
+          sed -i "s/^#\? *DB_PORT=.*/DB_PORT=${{ secrets.DB_PORT }}/" .env
+          sed -i "s/^#\? *DB_DATABASE=.*/DB_DATABASE=${{ secrets.DB_DATABASE }}/" .env
+          sed -i "s/^#\? *DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
+          sed -i "s/^#\? *DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
 
       - name: 🧰 Set up PHP
         uses: shivammathur/setup-php@v2
@@ -54,6 +53,26 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      # Step 2: Run migrations in dev/staging
+      - name: ⚡ Run migrations (staging/dev)
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SSH_SERVER }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            cd storage/d943a45e/7a1f73c9-0571-4b5b-afbf-80d3effbc62f/nyoncode.cz/www
+            php8.2 artisan migrate --force
+
+      # Step 3: Switch .env to production
+      - name: 🧩 Switch .env to production
+        run: |
+          sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
+          sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
+          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
+
       - name: 📂 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -66,7 +85,8 @@ jobs:
             **/node_modules/**
             **/vendor/**
 
-      - name: ⚙️ Run Composer & Artisan Commands
+      # Step 4: Run production commands (without migrations)
+      - name: ⚙️ Run Composer & Artisan Commands (production)
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SSH_SERVER }}
@@ -79,3 +99,4 @@ jobs:
             php8.2 artisan optimize:clear
             php8.2 artisan storage:link
             php8.2 artisan optimize
+            echo "Migrations skipped in production"
