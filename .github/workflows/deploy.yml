@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd storage
+            cd storage/d943a45e
             ls
             cd patronmonitoring.cz/www
             php8.2 artisan migrate
