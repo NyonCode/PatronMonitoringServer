@@ -1,0 +1,72 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - build
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🧩 Modify .env for production
+        run: |
+          # Ensure .env exists
+          if [ ! -f .env ]; then
+            echo ".env file not found. Copying .env.example."
+            cp .env.example .env
+          fi
+
+          # Update environment settings
+          sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
+          sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
+          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
+
+          # Update DB connection info from secrets
+          sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
+          sed -i "s/^DB_HOST=.*/DB_HOST=${{ secrets.DB_HOST }}/" .env
+          sed -i "s/^DB_PORT=.*/DB_PORT=${{ secrets.DB_PORT }}/" .env
+          sed -i "s/^DB_DATABASE=.*/DB_DATABASE=${{ secrets.DB_DATABASE }}/" .env
+          sed -i "s/^DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
+          sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
+
+      - name: 🧰 Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: 📂 Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ vars.FTP_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/vendor/**
+
+      - name: ⚙️ Run Composer & Artisan Commands
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SSH_SERVER }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            cd storage/d943a45e/7a1f73c9-0571-4b5b-afbf-80d3effbc62f/nyoncode.cz/www
+            composer install --no-dev --optimize-autoloader
+            php8.2 artisan optimize:clear
+            php8.2 artisan storage:link
+            php8.2 artisan optimize
