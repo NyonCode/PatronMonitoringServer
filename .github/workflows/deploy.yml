@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd storage/d943a45e
+            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f
             ls
             cd patronmonitoring.cz/www
             php8.2 artisan migrate
@@ -96,6 +96,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
+            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f
             cd patronmonitoring.cz/www
             composer install --no-dev --optimize-autoloader
             php8.2 artisan optimize:clear
