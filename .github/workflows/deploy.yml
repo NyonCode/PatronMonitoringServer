@@ -7,26 +7,28 @@ on:
 
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: 🎉 Build & Deploy
     runs-on: ubuntu-latest
     environment: deploy
+
     steps:
-      - name: 🚚 Get latest code
+      # 1️⃣ Načti kód
+      - name: 🚚 Checkout repository
         uses: actions/checkout@v4
 
-      # Step 1: Prepare .env for migrations (dev/staging)
-      - name: 🧩 Prepare .env for migrations
+      # 2️⃣ Připrav .env (pro build i migraci)
+      - name: 🧩 Prepare .env
         run: |
           if [ ! -f .env ]; then
             cp .env.example .env
           fi
 
-          # Dev environment for migrations
+          # Development/staging režim pro build a migraci
           sed -i 's/^APP_ENV=.*/APP_ENV=development/' .env
           sed -i 's/^APP_DEBUG=.*/APP_DEBUG=true/' .env
           sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
 
-          # DB settings
+          # DB nastavení
           sed -i "s/^#\? *DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
           sed -i "s/^#\? *DB_HOST=.*/DB_HOST=${{ secrets.DB_HOST }}/" .env
           sed -i "s/^#\? *DB_PORT=.*/DB_PORT=${{ secrets.DB_PORT }}/" .env
@@ -34,7 +36,8 @@ jobs:
           sed -i "s/^#\? *DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
           sed -i "s/^#\? *DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
 
-      - name: 🧰 Set up PHP
+      # 3️⃣ Nainstaluj PHP a Composer
+      - name: 🧰 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -44,7 +47,8 @@ jobs:
       - name: 📦 Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      - name: 🧰 Use Node.js 20
+      # 4️⃣ Build frontend
+      - name: 🧰 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -54,27 +58,7 @@ jobs:
           npm ci
           npm run build
 
-      # Step 2: Run migrations in dev/staging
-      - name: ⚡ Run migrations (staging/dev)
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.SSH_SERVER }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f
-            ls
-            cd patronmonitoring.cz/www
-            php8.2 artisan migrate
-
-      # Step 3: Switch .env to production
-      - name: 🧩 Switch .env to production
-        run: |
-          sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
-          sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
-          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
-
+      # 5️⃣ Upload přes FTP
       - name: 📂 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -87,8 +71,8 @@ jobs:
             **/node_modules/**
             **/vendor/**
 
-      # Step 4: Run production commands (without migrations)
-      - name: ⚙️ Run Composer & Artisan Commands (production)
+      # 6️⃣ Na serveru: composer install + migrace
+      - name: ⚙️ Run Composer & Migrate on Server
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SSH_SERVER }}
@@ -96,10 +80,27 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f
-            cd patronmonitoring.cz/www
+            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f/patronmonitoring.cz/www
             composer install --no-dev --optimize-autoloader
+            php8.2 artisan migrate --force
+
+      # 7️⃣ Přepni na produkční režim
+      - name: 🧩 Switch to Production
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SSH_SERVER }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f/patronmonitoring.cz/www
+
+            # Přepni .env na produkci
+            sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
+            sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
+
             php8.2 artisan optimize:clear
             php8.2 artisan storage:link
             php8.2 artisan optimize
-            echo "Migrations skipped in production"
+
+            echo "✅ Environment switched to PRODUCTION mode"
