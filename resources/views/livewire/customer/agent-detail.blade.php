@@ -48,18 +48,18 @@
                                     </svg>
                                 </button>
                             </div>
-                            @if($agent->pretty_name)
-                                <div>
-                                    <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
-                                </div>
-                            @endif
+                                @if($agent->pretty_name)
+                                    <div>
+                                        <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
+                                    </div>
+                                @endif
 
                         </div>
                     @endif
                 </div>
             </div>
             <button
-                wire:click="closeDetail"
+                wire:click="$dispatch('closeDetail')"
                 class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             >
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                     </div>
                 @endif
 
-                <!-- Aktuální hodnoty metrik s animovanými progress bary -->
+                <!-- Aktuální hodnoty metrik -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- CPU Card -->
                     <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
@@ -164,11 +164,9 @@
                             {{ $currentMetrics['cpu'] }}%
                         </span>
                             </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div
-                                    data-progress-bar
-                                    data-target-width="{{ $currentMetrics['cpu'] }}%"
-                                    class="h-2 rounded-full transition-all duration-500 ease-out
+                                    class="h-2 rounded-full transition-all duration-300
                             @if($currentMetrics['cpu'] > 80)
                                 bg-red-500
                             @elseif($currentMetrics['cpu'] > 60)
@@ -176,7 +174,7 @@
                             @else
                                 bg-green-500
                             @endif"
-                                    style="width: 0%"
+                                    style="width: {{ $currentMetrics['cpu'] }}%"
                                 ></div>
                             </div>
                         </div>
@@ -199,11 +197,9 @@
                             {{ $currentMetrics['ram'] }}%
                         </span>
                             </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div
-                                    data-progress-bar
-                                    data-target-width="{{ $currentMetrics['ram'] }}%"
-                                    class="h-2 rounded-full transition-all duration-500 ease-out
+                                    class="h-2 rounded-full transition-all duration-300
                             @if($currentMetrics['ram'] > 80)
                                 bg-red-500
                             @elseif($currentMetrics['ram'] > 60)
@@ -211,7 +207,7 @@
                             @else
                                 bg-green-500
                             @endif"
-                                    style="width: 0%"
+                                    style="width: {{ $currentMetrics['ram'] }}%"
                                 ></div>
                             </div>
                         </div>
@@ -234,11 +230,9 @@
                             {{ $currentMetrics['gpu'] }}%
                         </span>
                             </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div
-                                    data-progress-bar
-                                    data-target-width="{{ $currentMetrics['gpu'] }}%"
-                                    class="h-2 rounded-full transition-all duration-500 ease-out
+                                    class="h-2 rounded-full transition-all duration-300
                             @if($currentMetrics['gpu'] > 80)
                                 bg-red-500
                             @elseif($currentMetrics['gpu'] > 60)
@@ -246,7 +240,7 @@
                             @else
                                 bg-green-500
                             @endif"
-                                    style="width: 0%"
+                                    style="width: {{ $currentMetrics['gpu'] }}%"
                                 ></div>
                             </div>
                         </div>
@@ -301,11 +295,9 @@
                                 {{ $disk['usage_percent'] }}%
                             </span>
                                 </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                                     <div
-                                        data-progress-bar
-                                        data-target-width="{{ $disk['usage_percent'] }}%"
-                                        class="h-3 rounded-full transition-all duration-500 ease-out
+                                        class="h-3 rounded-full transition-all duration-300
                                 @if($disk['usage_percent'] > 90)
                                     bg-red-500
                                 @elseif($disk['usage_percent'] > 75)
@@ -313,7 +305,7 @@
                                 @else
                                     bg-green-500
                                 @endif"
-                                        style="width: 0%"
+                                        style="width: {{ $disk['usage_percent'] }}%"
                                     ></div>
                                 </div>
                             </div>
@@ -327,7 +319,7 @@
             <!-- Footer -->
             <div class="flex justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700">
                 <button
-                    wire:click="closeDetail"
+                    wire:click="$dispatch('closeDetail')"
                     class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                 >
                     Zavřít
@@ -337,9 +329,8 @@
             @script
             <script>
                 let chart = null;
-                let chartInitialized = false;
 
-                function updateChart() {
+                function initChart() {
                     const ctx = document.getElementById('metricsChart');
                     if (!ctx) {
                         console.error('Canvas element not found');
@@ -353,31 +344,12 @@
                         return;
                     }
 
-                    // Pokud graf už existuje, plynule aktualizuj pouze data
-                    if (chart && chartInitialized) {
-                        // Porovnej délku dat - pokud se změnila, musíme aktualizovat celé datasety
-                        const dataChanged = chart.data.labels.length !== data.labels.length;
-
-                        if (dataChanged || $wire.period !== chart.currentPeriod) {
-                            // Při změně období nebo počtu dat, aktualizuj celé datasety
-                            chart.data.labels = data.labels;
-                            chart.data.datasets = data.datasets;
-                            chart.currentPeriod = $wire.period;
-                            chart.update('none');
-                        } else {
-                            // Při běžném pollingu pouze aktualizuj poslední hodnoty
-                            data.datasets.forEach((dataset, index) => {
-                                if (chart.data.datasets[index]) {
-                                    // Aktualizuj pouze poslední hodnotu pro plynulý přechod
-                                    const lastIndex = dataset.data.length - 1;
-                                    if (lastIndex >= 0) {
-                                        chart.data.datasets[index].data[lastIndex] = dataset.data[lastIndex];
-                                    }
-                                }
-                            });
-                            // Použij animaci pro plynulé přechody hodnot
-                            chart.update('default');
-                        }
+                    // Pokud graf už existuje, pouze aktualizuj data
+                    if (chart) {
+                        // Aktualizuj pouze data, ne celý graf
+                        chart.data.labels = data.labels;
+                        chart.data.datasets = data.datasets;
+                        chart.update('none'); // 'none' znamená bez animace pro plynulou aktualizaci
                         return;
                     }
 
@@ -389,8 +361,7 @@
                             responsive: true,
                             maintainAspectRatio: false,
                             animation: {
-                                duration: 250, // Krátká animace pro plynulé přechody
-                                easing: 'easeInOutQuad'
+                                duration: 0 // Vypne animace pro plynulejší aktualizace
                             },
                             interaction: {
                                 mode: 'index',
@@ -429,43 +400,31 @@
                         }
                     });
 
-                    chart.currentPeriod = $wire.period;
-                    chartInitialized = true;
                     console.log('Chart initialized successfully');
-                }
-
-                // Funkce pro animaci progress barů
-                function animateProgressBars() {
-                    document.querySelectorAll('[data-progress-bar]').forEach(bar => {
-                        const targetWidth = bar.getAttribute('data-target-width');
-                        if (targetWidth) {
-                            bar.style.width = targetWidth;
-                        }
-                    });
                 }
 
                 // Inicializace při načtení
                 if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', () => {
-                        updateChart();
-                        setTimeout(animateProgressBars, 50);
-                    });
+                    document.addEventListener('DOMContentLoaded', initChart);
                 } else {
-                    updateChart();
-                    setTimeout(animateProgressBars, 50);
+                    initChart();
                 }
 
-                // Aktualizace při Livewire refresh (polling)
+                // Aktualizace dat při Livewire refresh
                 Livewire.hook('morph.updated', ({el, component}) => {
                     if (component.name === 'customer.agent-detail') {
-                        updateChart();
-                        setTimeout(animateProgressBars, 50);
+                        // Pouze aktualizuj data, ne celý graf
+                        initChart();
                     }
                 });
 
-                // Při změně období
+                // Při změně období (musíme znovu vytvořit graf)
                 Livewire.on('periodChanged', () => {
-                    updateChart();
+                    if (chart) {
+                        chart.destroy();
+                        chart = null;
+                    }
+                    setTimeout(initChart, 100);
                 });
             </script>
             @endscript
@@ -476,3 +435,5 @@
         </div>
     </div>
 </div>
+
+
