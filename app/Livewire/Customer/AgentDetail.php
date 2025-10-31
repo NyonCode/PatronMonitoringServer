@@ -30,13 +30,15 @@ class AgentDetail extends Component
     public function mount(Agent $agent): void
     {
         $this->agent = $agent;
-        $this->editName = $agent->pretty_name ?? $agent->hostname;
+        $this->editName = $this->getEditName();
         $this->loadData();
     }
 
     public function updatedPeriod(): void
     {
         $this->loadData();
+        // Vysílá event při změně období, aby se graf překreslil
+        $this->dispatch('periodChanged');
     }
 
     public function loadData(): void
@@ -52,7 +54,7 @@ class AgentDetail extends Component
     public function startEditingName(): void
     {
         $this->editingName = true;
-        $this->editName = $this->agent->pretty_name ?? $this->agent->hostname;
+        $this->editName = $this->getEditName();
     }
 
     /**
@@ -60,9 +62,9 @@ class AgentDetail extends Component
      */
     public function saveName(): void
     {
-        $this->validate([
+/*        $this->validate([
             'editName' => 'required|string|max:255',
-        ]);
+        ]);*/
 
         $this->agent->update([
             'pretty_name' => $this->editName,
@@ -79,17 +81,21 @@ class AgentDetail extends Component
     public function cancelEditName(): void
     {
         $this->editingName = false;
-        $this->editName = $this->agent->pretty_name ?? $this->agent->hostname;
+        $this->editName = $this->getEditName();
     }
 
     /**
      * Polling pro live aktualizaci (každých 5 sekund).
+     * Aktualizuje pouze metriky, ne graf data (aby neblikal)
      */
     public function refreshMetrics(): void
     {
+        // Aktualizuj aktuální metriky a stav disků
         $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
 
-        // Pokud zobrazujeme poslední hodinu, aktualizuj i graf
+        // Aktualizuj graf data pouze pokud zobrazujeme poslední hodinu
+        // protože tam jsou změny častější
         if ($this->period === 'hour') {
             $this->chartData = $this->metricsService->getChartData($this->agent, 'hour');
         }
@@ -120,5 +126,14 @@ class AgentDetail extends Component
         return view('livewire.customer.agent-detail', [
             'networkInfo' => $this->getNetworkInfo(),
         ]);
+    }
+
+    private function getEditName(): string
+    {
+        if (empty($this->agent->pretty_name)) {
+            return $this->agent->hostname;
+        }
+
+        return $this->agent->pretty_name;
     }
 }

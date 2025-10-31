@@ -118,6 +118,7 @@ class AgentController extends Controller
     {
         $agent = Agent::where('uuid', $UUID)->first();
 
+
         $agent->log()->updateOrCreate(
             [],
             [

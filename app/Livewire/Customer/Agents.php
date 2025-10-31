@@ -153,18 +153,20 @@ class Agents extends Component
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
         // Konvertuj string na int pokud je potřeba
-        if(is_string($bytes))
+        if(is_int($bytes))
         {
             $bytes = (int) $bytes;
+
+            $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+            for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+                $bytes /= 1024;
+            }
+
+            return round($bytes, $precision) . ' ' . $units[$i];
         }
 
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
-        }
-
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return $bytes;
     }
 
     public function render(): View|Factory|\Illuminate\View\View

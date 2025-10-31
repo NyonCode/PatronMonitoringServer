@@ -1,4 +1,4 @@
-<div class="space-y-6 p-4 md:p-6">
+<div class="space-y-6 p-4 md:p-6" wire:poll.5s>
     <!-- Header se statistikami -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Celkem agentů -->
@@ -339,42 +339,7 @@
 
     <!-- Modal s detaily agenta -->
     @if($showDetailModal && $selectedAgentId)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-                <!-- Header -->
-                <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
-                    <div>
-                        <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Detail agenta</h2>
-                        <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                            {{ $this->agents->find($selectedAgentId)?->hostname }}
-                        </p>
-                    </div>
-                    <button
-                        wire:click="closeDetail"
-                        class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Content -->
-                <div class="p-6">
-                    @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
-                </div>
-
-                <!-- Footer -->
-                <div class="flex justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700">
-                    <button
-                        wire:click="closeDetail"
-                        class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
-                    >
-                        Zavřít
-                    </button>
-                </div>
-            </div>
-        </div>
+        @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
     @endif
 
     @script

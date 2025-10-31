@@ -174,7 +174,7 @@ class MetricsChartService
      */
     public function getCurrentMetrics(Agent $agent): array
     {
-        $latest = $agent->metrics()->latest('recorded_at')->first();
+        $latest = $agent->metrics()->latest('c')->first();
 
         if (!$latest) {
             return [
@@ -218,16 +218,17 @@ class MetricsChartService
      */
     public function formatBytes(int|string $bytes, int $precision = 2): string
     {
-        if(is_string($bytes))
+        if(is_numeric($bytes))
         {
-            $bytes = (int) $bytes;
-        }
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
+            for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+                $bytes /= 1024;
+            }
+
+            return round($bytes, $precision) . ' ' . $units[$i];
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return $bytes;
     }
 }
