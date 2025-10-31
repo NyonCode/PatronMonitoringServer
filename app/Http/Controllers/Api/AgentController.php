@@ -5,17 +5,33 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AgentResource;
 use App\Models\Agent;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
+use Psy\Util\Json;
 
 class AgentController extends Controller
 {
-    public function index()
+
+    /**
+     * Return all agents
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function index(): AnonymousResourceCollection
     {
         return AgentResource::collection(Agent::all());
     }
 
-    public function store(Request $request)
+    /**
+     * Create new agent
+     *
+     * @param  Request  $request
+     *
+     * @return AgentResource
+     */
+    public function store(Request $request): AgentResource
     {
         $data = $request->validate([
             'agent_id' => ['required', 'integer'],
@@ -26,12 +42,27 @@ class AgentController extends Controller
         return new AgentResource(Agent::create($data));
     }
 
-    public function show(Agent $agent)
+    /**
+     * Show agent
+     *
+     * @param  Agent  $agent
+     *
+     * @return AgentResource
+     */
+    public function show(Agent $agent): AgentResource
     {
         return new AgentResource($agent);
     }
 
-    public function update(Request $request, Agent $agent)
+    /**
+     * Update agent
+     *
+     * @param  Request  $request
+     * @param  Agent  $agent
+     *
+     * @return AgentResource
+     */
+    public function update(Request $request, Agent $agent): AgentResource
     {
         $data = $request->validate([
             'agent_id' => ['required', 'integer'],
@@ -44,21 +75,42 @@ class AgentController extends Controller
         return new AgentResource($agent);
     }
 
-    public function destroy(Agent $agent)
+    /**
+     * Delete agent
+     *
+     * @param  Agent  $agent
+     *
+     * @return JsonResponse
+     */
+    public function destroy(Agent $agent): JsonResponse
     {
         $agent->delete();
 
         return response()->json();
     }
 
-    public function checkUserExists(string|int $agent_id)
+    /**
+     * Check if agent exists
+     *
+     * @param  string|int  $agent_id
+     *
+     * @return JsonResponse
+     */
+    public function checkUserExists(string|int $agent_id): JsonResponse
     {
         $exists = Agent::where('agent_id', $agent_id)->exists();
 
         return response()->json(['exists' => $exists]);
     }
 
-    public function registerClient(Request $request)
+    /**
+     * Register client
+     *
+     * @param  Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function registerClient(Request $request): JsonResponse
     {
         $agent = Agent::updateOrCreate(
             ['uuid' => $request->uuid],
@@ -75,7 +127,15 @@ class AgentController extends Controller
         return response()->json(['status' => 'ok', 'token' => $agent->token, 'interval' => $agent->update_interval]);
     }
 
-    public function heartbeat(string $UUID, Request $request)
+    /**
+     * Heartbeat from agent
+     *
+     * @param  string  $UUID
+     * @param  Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function heartbeat(string $UUID, Request $request): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->first();
 
@@ -111,10 +171,18 @@ class AgentController extends Controller
                 'mac_address' => $request->network_info['MacAddress']
         ]);
 
-        return response()->json(['RemoteCommands' => '']);
+        return response()->json(['RemoteCommands' => '', 'interval' => $agent->update_interval]);
     }
 
-    public function logs(string $UUID, Request $request)
+    /**
+     * Create or update logs for agent
+     *
+     * @param  string  $UUID
+     * @param  Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function logs(string $UUID, Request $request): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->first();
 
@@ -129,7 +197,12 @@ class AgentController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function health()
+    /**
+     * Return health status
+     *
+     * @return JsonResponse
+     */
+    public function health(): JsonResponse
     {
         return response()->json(['status' => 'ok', "timestamp" => now()]);
     }
