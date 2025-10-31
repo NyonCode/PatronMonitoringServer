@@ -24,7 +24,7 @@ jobs:
           # Dev environment for migrations
           sed -i 's/^APP_ENV=.*/APP_ENV=development/' .env
           sed -i 's/^APP_DEBUG=.*/APP_DEBUG=true/' .env
-          sed -i 's|^APP_URL=.*|APP_URL="http://staging.patronmonitoring.cz/"|' .env
+          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
 
           # DB settings
           sed -i "s/^#\? *DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
@@ -63,8 +63,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd storage/d943a45e/7a1f73c9-0571-4b5b-afbf-80d3effbc62f/nyoncode.cz/www
-            php8.2 artisan migrate --force
+            cd patronmonitoring.cz/www
+            php8.2 artisan migrate
 
       # Step 3: Switch .env to production
       - name: 🧩 Switch .env to production
@@ -94,7 +94,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd storage/d943a45e/7a1f73c9-0571-4b5b-afbf-80d3effbc62f/nyoncode.cz/www
+            cd patronmonitoring.cz/www
             composer install --no-dev --optimize-autoloader
             php8.2 artisan optimize:clear
             php8.2 artisan storage:link
