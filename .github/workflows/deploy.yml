@@ -35,6 +35,16 @@ jobs:
           sed -i "s/^DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
           sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
 
+      - name: 🧰 Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, intl
+          tools: composer
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader
+
       - name: 🧰 Use Node.js 20
         uses: actions/setup-node@v4
         with:
@@ -42,9 +52,8 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
-          npm install
+          npm ci
           npm run build
-
       - name: 📂 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
