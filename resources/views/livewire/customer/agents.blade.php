@@ -147,11 +147,11 @@
                         <td class="px-6 py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ $agent->hostname }}
+                                    @php empty($this->agent->pretty_name) ? $this->agent->hostname : $this->agent->pretty_name @endphp
                                 </div>
-                                @if($agent->pretty_name)
+                                @if(empty($agent->pretty_name))
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
-                                        {{ $agent->pretty_name }}
+                                        {{ $agent->hostname }}
                                     </div>
                                 @endif
                             </div>
@@ -178,15 +178,15 @@
 
                         <!-- IP adresa -->
                         <td class="px-6 py-4">
-                            <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
-                                {{ $agent->ip_address ?? 'N/A' }}
-                            </span>
+                                <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
+                                    {{ $agent->ip_address ?? 'N/A' }}
+                                </span>
                         </td>
 
-                        <!-- CPU s mini grafem -->
+                        <!-- CPU mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['cpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['cpu'] > 60)
@@ -194,7 +194,7 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                " data-value="{{ $metrics['cpu'] }}">
+                                ">
                                     {{ $metrics['cpu'] }}%
                                 </span>
                                 <canvas
@@ -207,10 +207,10 @@
                             </div>
                         </td>
 
-                        <!-- RAM s mini grafem -->
+                        <!-- RAM mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['ram'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['ram'] > 60)
@@ -218,7 +218,7 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                " data-value="{{ $metrics['ram'] }}">
+                                ">
                                     {{ $metrics['ram'] }}%
                                 </span>
                                 <canvas
@@ -231,10 +231,10 @@
                             </div>
                         </td>
 
-                        <!-- GPU s mini grafem -->
+                        <!-- GPU mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['gpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['gpu'] > 60)
@@ -242,7 +242,7 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                " data-value="{{ $metrics['gpu'] }}">
+                                ">
                                     {{ $metrics['gpu'] }}%
                                 </span>
                                 <canvas
@@ -260,9 +260,9 @@
                             @if($disk)
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between gap-2">
-                                        <span class="text-sm text-zinc-700 dark:text-zinc-300">
-                                            {{ $disk['name'] }}
-                                        </span>
+                                            <span class="text-sm text-zinc-700 dark:text-zinc-300">
+                                                {{ $disk['name'] }}
+                                            </span>
                                         <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -277,7 +277,7 @@
                                     </div>
                                     <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                         <div
-                                            class="disk-progress h-1.5 rounded-full transition-all duration-300
+                                            class="h-1.5 rounded-full transition-all
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-500
                                             @elseif($disk['usage_percent'] > 75)
@@ -344,97 +344,59 @@
 
     @script
     <script>
-        const sparklineCache = new Map();
-
-        function drawSparkline(canvas, data, color) {
-            if (!data || data.length === 0) return;
-
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const max = Math.max(...data, 1);
-            const min = Math.min(...data, 0);
-            const range = max - min || 1;
-
-            ctx.clearRect(0, 0, width, height);
-
-            ctx.beginPath();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 1.5;
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-
-            data.forEach((value, index) => {
-                const x = (index / (data.length - 1)) * width;
-                const y = height - ((value - min) / range) * height;
-                index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-            });
-
-            ctx.stroke();
-            ctx.lineTo(width, height);
-            ctx.lineTo(0, height);
-            ctx.closePath();
-            ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
-            ctx.fill();
-        }
-
         function initSparklines() {
-            document.querySelectorAll('.sparkline-chart').forEach(canvas => {
-                const data = JSON.parse(canvas.dataset.sparkline);
-                const color = canvas.dataset.color;
-                drawSparkline(canvas, data, color);
+            document.querySelectorAll('.sparkline-chart').forEach((canvas) => {
+                const data = JSON.parse(canvas.getAttribute('data-sparkline'));
+                const color = canvas.getAttribute('data-color');
+
+                if (data.length === 0) return;
+
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                const max = Math.max(...data, 1);
+                const min = Math.min(...data, 0);
+                const range = max - min || 1;
+
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw line
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+
+                data.forEach((value, index) => {
+                    const x = (index / (data.length - 1)) * width;
+                    const y = height - ((value - min) / range) * height;
+
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+
+                ctx.stroke();
+
+                // Draw fill
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.closePath();
+                ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
+                ctx.fill();
             });
         }
 
-        function updateMetricValues() {
-            document.querySelectorAll('.metric-value').forEach(el => {
-                const newValue = parseFloat(el.dataset.value);
-                const oldValue = parseFloat(el.textContent);
-                if (!isNaN(newValue) && newValue !== oldValue) {
-                    el.textContent = newValue + '%';
-                }
-            });
-        }
+        // Inicializace při načtení
+        document.addEventListener('DOMContentLoaded', initSparklines);
 
-        // 🟢 Lokální simulovaný refresh (i když offline)
-        function simulateMetricDrift() {
-            document.querySelectorAll('.metric-value').forEach(el => {
-                let value = parseFloat(el.dataset.value);
-                if (isNaN(value)) return;
-
-                // náhodná změna +-2 %
-                const drift = (Math.random() * 4 - 2);
-                value = Math.max(0, Math.min(100, value + drift));
-
-                el.dataset.value = value.toFixed(1);
-                el.textContent = value.toFixed(1) + '%';
-            });
-
-            // překresli grafy podle nových dat
-            document.querySelectorAll('.sparkline-chart').forEach(canvas => {
-                const data = JSON.parse(canvas.dataset.sparkline);
-                data.push(parseFloat(canvas.previousElementSibling.dataset.value));
-                if (data.length > 20) data.shift(); // omez délku historie
-                canvas.dataset.sparkline = JSON.stringify(data);
-                drawSparkline(canvas, data, canvas.dataset.color);
-            });
-        }
-
-        // Inicializace
-        document.addEventListener('livewire:load', () => {
-            initSparklines();
-            updateMetricValues();
-
-            // ⚡ znovu po Livewire morph
-            Livewire.hook('morph.updated', () => {
-                initSparklines();
-                updateMetricValues();
-            });
-
-            // 🔁 běží pořád - každých 5 sekund aktualizuje grafy lokálně
-            setInterval(simulateMetricDrift, 5000);
+        // Reinicializace po Livewire aktualizaci
+        Livewire.hook('morph.updated', () => {
+            setTimeout(initSparklines, 50);
         });
     </script>
     @endscript
-
 </div>
