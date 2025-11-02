@@ -94,16 +94,13 @@ jobs:
           script: |
             cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f/patronmonitoring.cz/www
 
-            # Přepni .env na produkci
-            sed -i 's/^APP_NAME=.*/APP_NAME=&{{ vars.APP_NAME}}/' .env
-
-            sed -i 's/^APP_ENV=.*/APP_ENV=&{{ vars.APP_ENV}}/' .env
-            sed -i 's/^APP_DEBUG=.*/APP_DEBUG=&{{ vars.APP_DEBUG}}/' .env
-            sed -i 's|^APP_URL=.*|APP_URL="&{{ vars.APP_URL}}"|' .env
-
+            sed -i "s/^APP_NAME=.*/APP_NAME='${{ vars.APP_NAME }}'/" .env
+            sed -i "s/^APP_ENV=.*/APP_ENV=${{ vars.APP_ENV }}/" .env
+            sed -i "s/^APP_DEBUG=.*/APP_DEBUG=${{ vars.APP_DEBUG }}/" .env
+            sed -i "s|^APP_URL=.*|APP_URL='${{ vars.APP_URL }}'|" .env
 
             php8.2 artisan optimize:clear
             php8.2 artisan storage:link
             php8.2 artisan optimize
 
-            echo "✅ Environment switched to PRODUCTION mode"
+            echo '✅ Environment switched to PRODUCTION mode'
