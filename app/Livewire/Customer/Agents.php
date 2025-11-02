@@ -8,7 +8,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -53,7 +52,6 @@ class Agents extends Component
         $this->showDetailModal = true;
     }
 
-    #[On('closeDetail')]
     public function closeDetail(): void
     {
         $this->showDetailModal = false;
@@ -78,9 +76,6 @@ class Agents extends Component
             ->paginate($this->perPage);
     }
 
-    /**
-     * Získá status agenta (online/offline).
-     */
     public function getAgentStatus(Agent $agent): string
     {
         if (!$agent->last_seen_at) {
@@ -88,14 +83,11 @@ class Agents extends Component
         }
 
         $lastSeen = $agent->last_seen_at;
-        $threshold = now()->subMinutes(5); // 5 minut threshold
+        $threshold = now()->subMinutes(5);
 
         return $lastSeen->greaterThan($threshold) ? 'online' : 'offline';
     }
 
-    /**
-     * Získá aktuální metriky agenta.
-     */
     public function getCurrentMetrics(Agent $agent): array
     {
         $latest = $agent->metrics->first();
@@ -115,9 +107,6 @@ class Agents extends Component
         ];
     }
 
-    /**
-     * Získá nejvíce zaplněný disk.
-     */
     public function getMostUsedDisk(Agent $agent): ?array
     {
         $disk = $agent->disk->sortByDesc('usage_percent')->first();
@@ -134,9 +123,6 @@ class Agents extends Component
         ];
     }
 
-    /**
-     * Získá data pro mini sparkline graf.
-     */
     public function getSparklineData(Agent $agent): array
     {
         $metrics = $agent->metrics->take(10)->reverse()->values();
@@ -148,27 +134,20 @@ class Agents extends Component
         ];
     }
 
-    /**
-     * Formátuje byty na lidsky čitelný formát.
-     * Akceptuje string nebo int, vždy konvertuje na int
-     */
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
-        // Konvertuj string na int pokud je potřeba
-        if(is_int($bytes))
-        {
-            $bytes = (int) $bytes;
-
-            $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-            for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-                $bytes /= 1024;
-            }
-
-            return round($bytes, $precision) . ' ' . $units[$i];
+        if (!is_numeric($bytes)) {
+            return $bytes;
         }
 
-        return $bytes;
+        $bytes = (int) $bytes;
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     public function render(): View|Factory|\Illuminate\View\View

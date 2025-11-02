@@ -178,15 +178,15 @@
 
                         <!-- IP adresa -->
                         <td class="px-6 py-4">
-                                <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
-                                    {{ $agent->ip_address ?? 'N/A' }}
-                                </span>
+                            <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
+                                {{ $agent->ip_address ?? 'N/A' }}
+                            </span>
                         </td>
 
-                        <!-- CPU mini graf s Chart.js -->
+                        <!-- CPU s mini grafem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
                                     @if($metrics['cpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['cpu'] > 60)
@@ -194,25 +194,23 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                ">
+                                " data-value="{{ $metrics['cpu'] }}">
                                     {{ $metrics['cpu'] }}%
                                 </span>
-                                <div class="h-12 w-24">
-                                    <canvas
-                                        class="mini-chart"
-                                        data-values="{{ json_encode($sparkline['cpu']) }}"
-                                        data-color="239, 68, 68"
-                                        width="96"
-                                        height="48"
-                                    ></canvas>
-                                </div>
+                                <canvas
+                                    data-sparkline="{{ json_encode($sparkline['cpu']) }}"
+                                    data-color="rgb(239, 68, 68)"
+                                    class="sparkline-chart"
+                                    width="80"
+                                    height="20"
+                                ></canvas>
                             </div>
                         </td>
 
-                        <!-- RAM mini graf s Chart.js -->
+                        <!-- RAM s mini grafem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
                                     @if($metrics['ram'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['ram'] > 60)
@@ -220,25 +218,23 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                ">
+                                " data-value="{{ $metrics['ram'] }}">
                                     {{ $metrics['ram'] }}%
                                 </span>
-                                <div class="h-12 w-24">
-                                    <canvas
-                                        class="mini-chart"
-                                        data-values="{{ json_encode($sparkline['ram']) }}"
-                                        data-color="59, 130, 246"
-                                        width="96"
-                                        height="48"
-                                    ></canvas>
-                                </div>
+                                <canvas
+                                    data-sparkline="{{ json_encode($sparkline['ram']) }}"
+                                    data-color="rgb(59, 130, 246)"
+                                    class="sparkline-chart"
+                                    width="80"
+                                    height="20"
+                                ></canvas>
                             </div>
                         </td>
 
-                        <!-- GPU mini graf s Chart.js -->
+                        <!-- GPU s mini grafem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold metric-value
                                     @if($metrics['gpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                     @elseif($metrics['gpu'] > 60)
@@ -246,18 +242,16 @@
                                     @else
                                         bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
                                     @endif
-                                ">
+                                " data-value="{{ $metrics['gpu'] }}">
                                     {{ $metrics['gpu'] }}%
                                 </span>
-                                <div class="h-12 w-24">
-                                    <canvas
-                                        class="mini-chart"
-                                        data-values="{{ json_encode($sparkline['gpu']) }}"
-                                        data-color="34, 197, 94"
-                                        width="96"
-                                        height="48"
-                                    ></canvas>
-                                </div>
+                                <canvas
+                                    data-sparkline="{{ json_encode($sparkline['gpu']) }}"
+                                    data-color="rgb(34, 197, 94)"
+                                    class="sparkline-chart"
+                                    width="80"
+                                    height="20"
+                                ></canvas>
                             </div>
                         </td>
 
@@ -266,9 +260,9 @@
                             @if($disk)
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between gap-2">
-                                            <span class="text-sm text-zinc-700 dark:text-zinc-300">
-                                                {{ $disk['name'] }}
-                                            </span>
+                                        <span class="text-sm text-zinc-700 dark:text-zinc-300">
+                                            {{ $disk['name'] }}
+                                        </span>
                                         <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -283,7 +277,7 @@
                                     </div>
                                     <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                         <div
-                                            class="h-1.5 rounded-full transition-all
+                                            class="disk-progress h-1.5 rounded-full transition-all duration-300
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-500
                                             @elseif($disk['usage_percent'] > 75)
@@ -350,92 +344,124 @@
 
     @script
     <script>
-        let miniCharts = [];
+        // Optimalizovaná inicializace mini grafů
+        const sparklineCache = new Map();
 
-        function initMiniCharts() {
-            // Zrušit existující grafy před reinicializací
-            miniCharts.forEach(chart => {
-                if (chart) {
-                    chart.destroy();
+        function drawSparkline(canvas, data, color) {
+            if (!data || data.length === 0) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const max = Math.max(...data, 1);
+            const min = Math.min(...data, 0);
+            const range = max - min || 1;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Kreslení čáry
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            data.forEach((value, index) => {
+                const x = (index / (data.length - 1)) * width;
+                const y = height - ((value - min) / range) * height;
+                index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+
+            ctx.stroke();
+
+            // Vyplnění plochy
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.closePath();
+            ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
+            ctx.fill();
+        }
+
+        function initSparklines() {
+            const canvases = document.querySelectorAll('.sparkline-chart');
+            canvases.forEach(canvas => {
+                const data = JSON.parse(canvas.dataset.sparkline);
+                const color = canvas.dataset.color;
+                const cacheKey = `${data.join(',')}-${color}`;
+
+                // Použij cache pro rychlejší vykreslení
+                if (!sparklineCache.has(cacheKey)) {
+                    drawSparkline(canvas, data, color);
+                    sparklineCache.set(cacheKey, true);
+                } else {
+                    drawSparkline(canvas, data, color);
                 }
             });
-            miniCharts = [];
+        }
 
-            // Inicializovat mini grafy
-            document.querySelectorAll('.mini-chart').forEach((canvas) => {
-                const data = JSON.parse(canvas.getAttribute('data-values'));
-                const color = canvas.getAttribute('data-color').split(', ').map(Number);
+        // Dynamická aktualizace metrik bez překreslení
+        function updateMetricValues() {
+            document.querySelectorAll('.metric-value').forEach(el => {
+                const newValue = parseFloat(el.dataset.value);
+                const oldValue = parseFloat(el.textContent);
 
-                if (!data || data.length === 0) return;
+                if (newValue !== oldValue && !isNaN(newValue)) {
+                    // Plynulá změna hodnoty
+                    const step = (newValue - oldValue) / 10;
+                    let current = oldValue;
+                    let count = 0;
 
-                const ctx = canvas.getContext('2d');
+                    const interval = setInterval(() => {
+                        current += step;
+                        count++;
 
-                // Vytvoř labels pro osu X
-                const labels = data.map((_, index) => '');
-
-                const chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            borderColor: `rgb(${color.join(', ')})`,
-                            backgroundColor: `rgba(${color.join(', ')}, 0.1)`,
-                            borderWidth: 1.5,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0,
-                            pointHoverRadius: 0,
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                enabled: false
-                            }
-                        },
-                        scales: {
-                            x: {
-                                display: false
-                            },
-                            y: {
-                                display: false,
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
-                        },
-                        animation: {
-                            duration: 500
+                        if (count >= 10 || Math.abs(current - newValue) < 0.1) {
+                            el.textContent = newValue + '%';
+                            clearInterval(interval);
+                        } else {
+                            el.textContent = current.toFixed(1) + '%';
                         }
-                    }
-                });
+                    }, 50);
+                }
+            });
 
-                miniCharts.push(chart);
+            // Aktualizace barev podle hodnot
+            document.querySelectorAll('.metric-value').forEach(el => {
+                const value = parseFloat(el.dataset.value);
+                el.className = el.className.replace(/bg-\w+-\d+/g, '').replace(/text-\w+-\d+/g, '');
+
+                if (value > 80) {
+                    el.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-800', 'dark:text-red-300');
+                } else if (value > 60) {
+                    el.classList.add('bg-yellow-100', 'dark:bg-yellow-900/30', 'text-yellow-800', 'dark:text-yellow-300');
+                } else {
+                    el.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-800', 'dark:text-green-300');
+                }
             });
         }
 
         // Inicializace při načtení
-        document.addEventListener('DOMContentLoaded', initMiniCharts);
-
-        // Reinicializace po Livewire aktualizaci
-        Livewire.hook('morph.updated', ({el, component}) => {
-            if (component.name === 'customer.agents') {
-                setTimeout(initMiniCharts, 50);
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            initSparklines();
+            updateMetricValues();
         });
+
+        // Optimalizovaná reinicializace při Livewire aktualizaci
+        let updateTimeout;
+        Livewire.hook('morph.updated', () => {
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => {
+                initSparklines();
+                updateMetricValues();
+            }, 100);
+        });
+
+        // Vyčištění cache při velkých změnách
+        setInterval(() => {
+            if (sparklineCache.size > 100) {
+                sparklineCache.clear();
+            }
+        }, 60000);
     </script>
     @endscript
-
-    @assets
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    @endassets
 </div>

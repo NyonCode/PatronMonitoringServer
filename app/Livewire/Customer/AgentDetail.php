@@ -11,14 +11,18 @@ use Livewire\Component;
 class AgentDetail extends Component
 {
     public Agent $agent;
-    public string $period = 'day';
+    public string $period = 'hour';
     public array $chartData = [];
     public array $currentMetrics = [];
     public array $diskStatus = [];
 
-    // Pro inline editaci
+    // Inline edit name
     public bool $editingName = false;
     public string $editName = '';
+
+    // Inline edit interval
+    public bool $editInterval = false;
+    public ?int $editIntervalValue = null;
 
     protected MetricsChartService $metricsService;
 
@@ -37,7 +41,6 @@ class AgentDetail extends Component
     public function updatedPeriod(): void
     {
         $this->loadData();
-        // Vysílá event při změně období, aby se graf překreslil
         $this->dispatch('periodChanged');
     }
 
@@ -48,36 +51,22 @@ class AgentDetail extends Component
         $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
     }
 
-    /**
-     * Začne editaci názvu.
-     */
     public function startEditingName(): void
     {
         $this->editingName = true;
         $this->editName = $this->getEditName();
     }
 
-    /**
-     * Uloží nový název.
-     */
     public function saveName(): void
     {
-/*        $this->validate([
-            'editName' => 'required|string|max:255',
-        ]);*/
-
         $this->agent->update([
             'pretty_name' => $this->editName,
         ]);
 
         $this->editingName = false;
-
         $this->dispatch('name-updated');
     }
 
-    /**
-     * Zruší editaci názvu.
-     */
     public function cancelEditName(): void
     {
         $this->editingName = false;
@@ -85,25 +74,33 @@ class AgentDetail extends Component
     }
 
     /**
-     * Polling pro live aktualizaci (každých 5 sekund).
-     * Aktualizuje pouze metriky, ne graf data (aby neblikal)
+     * Polling pro živou aktualizaci - pouze metriky a případně graf
      */
     public function refreshMetrics(): void
     {
-        // Aktualizuj aktuální metriky a stav disků
-        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
-        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
+        // Aktualizuj metriky bez znovunačtení
+        $newMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        $newDiskStatus = $this->metricsService->getDiskStatus($this->agent);
 
-        // Aktualizuj graf data pouze pokud zobrazujeme poslední hodinu
-        // protože tam jsou změny častější
+        // Pokud se data změnila, aktualizuj
+        if ($newMetrics !== $this->currentMetrics) {
+            $this->currentMetrics = $newMetrics;
+        }
+
+        if ($newDiskStatus !== $this->diskStatus) {
+            $this->diskStatus = $newDiskStatus;
+        }
+
+        // Aktualizuj graf data pouze pro poslední hodinu (častější změny)
         if ($this->period === 'hour') {
-            $this->chartData = $this->metricsService->getChartData($this->agent, 'hour');
+            $newChartData = $this->metricsService->getChartData($this->agent, 'hour');
+            if ($newChartData !== $this->chartData) {
+                $this->chartData = $newChartData;
+                $this->dispatch('metrics-updated');
+            }
         }
     }
 
-    /**
-     * Získá formátované síťové informace.
-     */
     public function getNetworkInfo(): ?array
     {
         $network = $this->agent->network;
@@ -130,10 +127,6 @@ class AgentDetail extends Component
 
     private function getEditName(): string
     {
-        if (empty($this->agent->pretty_name)) {
-            return $this->agent->hostname;
-        }
-
-        return $this->agent->pretty_name;
+        return empty($this->agent->pretty_name) ? $this->agent->hostname : $this->agent->pretty_name;
     }
 }
