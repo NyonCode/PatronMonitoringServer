@@ -147,7 +147,7 @@
                         <td class="px-6 py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    @php empty($agent->pre) ? $agent->hostname : $agent->pretty_name @endphp
+                                    @php empty($agent->pretty_name) ? $agent->hostname : $agent->pretty_name @endphp
                                 </div>
                                 @if(empty($agent->pretty_name))
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">

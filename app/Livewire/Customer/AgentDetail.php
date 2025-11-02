@@ -35,7 +35,7 @@ class AgentDetail extends Component
     {
         $this->agent = $agent;
         $this->editName = $this->getEditName();
-        $this->Data();
+        $this->loadData();
     }
 
     public function updatedPeriod(): void
