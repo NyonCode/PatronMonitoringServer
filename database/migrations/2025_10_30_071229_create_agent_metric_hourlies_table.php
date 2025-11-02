@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('agent_metric_hourly', function (Blueprint $table) {
+        Schema::create('agent_metric_hourlies', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Agent::class)
                 ->constrained()
