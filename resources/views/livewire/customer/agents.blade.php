@@ -151,7 +151,7 @@
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
                                     {{ $agentName }}
                                 </div>
-                                @if(empty($agent->pretty_name))
+                                @if(! empty($agent->pretty_name))
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
                                         {{ $agent->hostname }}
                                     </div>

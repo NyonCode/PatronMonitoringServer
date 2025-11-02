@@ -73,12 +73,10 @@
             <div class="space-y-6 p-4">
 
                 @if($agent->last_seen_at?->lt(now()->subMinutes(5)))
-                    <div class="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center text-white text-lg font-semibold">
+                    <div class="inset-0 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center text-white text-lg font-semibold">
                         Agent je offline — zobrazují se poslední známá data
                     </div>
                 @endif
-
-
                 <!-- Základní informace -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- IP adresa -->
