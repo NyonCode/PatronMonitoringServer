@@ -36,6 +36,8 @@ class AgentDetail extends Component
         $this->agent = $agent;
         $this->editName = $this->getEditName();
         $this->loadData();
+        $this->dispatch('metrics-updated');
+
     }
 
     public function updatedPeriod(): void

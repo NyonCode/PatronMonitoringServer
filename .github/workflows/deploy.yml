@@ -26,7 +26,6 @@ jobs:
           # Development/staging režim pro build a migraci
           sed -i 's/^APP_ENV=.*/APP_ENV=development/' .env
           sed -i 's/^APP_DEBUG=.*/APP_DEBUG=true/' .env
-          sed -i 's|^APP_URL=.*|APP_URL="http://patronmonitoring.cz/"|' .env
 
           # DB nastavení
           sed -i "s/^#\? *DB_CONNECTION=.*/DB_CONNECTION=${{ vars.DB_CONNECTION }}/" .env
@@ -96,8 +95,12 @@ jobs:
             cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f/patronmonitoring.cz/www
 
             # Přepni .env na produkci
-            sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
-            sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env
+            sed -i 's/^APP_NAME=.*/APP_NAME=&{{ vars.APP_NAME}}/' .env
+
+            sed -i 's/^APP_ENV=.*/APP_ENV=&{{ vars.APP_ENV}}/' .env
+            sed -i 's/^APP_DEBUG=.*/APP_DEBUG=&{{ vars.APP_DEBUG}}/' .env
+            sed -i 's|^APP_URL=.*|APP_URL="&{{ vars.APP_URL}}"|' .env
+
 
             php8.2 artisan optimize:clear
             php8.2 artisan storage:link

@@ -72,6 +72,12 @@
         <div wire:poll.1s="refreshMetrics">
             <div class="space-y-6 p-4">
 
+                @if($agent->last_seen_at?->lt(now()->subMinutes(5)))
+                    <div class="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center text-white text-lg font-semibold">
+                        Agent je offline — zobrazují se poslední známá data
+                    </div>
+                @endif
+
 
                 <!-- Základní informace -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -339,9 +345,34 @@
 
                     const data = @json($chartData);
 
-                    if (!data || !data.labels || data.labels.length === 0) {
-                        console.warn('No chart data available');
-                        return;
+                    if (!data || !data.labels) {
+                        console.warn('No chart data available, creating empty chart');
+                        data = {
+                            labels: Array.from({length: 10}, (_, i) => i + 1),
+                            datasets: [
+                                {
+                                    label: 'CPU %',
+                                    data: Array(10).fill(0),
+                                    borderColor: 'rgb(239, 68, 68)',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                                    fill: true,
+                                },
+                                {
+                                    label: 'RAM %',
+                                    data: Array(10).fill(0),
+                                    borderColor: 'rgb(59, 130, 246)',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                    fill: true,
+                                },
+                                {
+                                    label: 'GPU %',
+                                    data: Array(10).fill(0),
+                                    borderColor: 'rgb(34, 197, 94)',
+                                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                                    fill: true,
+                                },
+                            ],
+                        };
                     }
 
                     // Pokud graf už existuje, pouze aktualizuj data
