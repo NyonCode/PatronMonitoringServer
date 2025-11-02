@@ -35,7 +35,7 @@ class AgentDetail extends Component
     {
         $this->agent = $agent;
         $this->editName = $this->getEditName();
-        $this->loadData();
+        $this->Data();
     }
 
     public function updatedPeriod(): void
@@ -47,8 +47,14 @@ class AgentDetail extends Component
     public function loadData(): void
     {
         $this->chartData = $this->metricsService->getChartData($this->agent, $this->period);
-        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
-        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
+
+        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent) ?? [
+            'cpu' => 0,
+            'ram' => 0,
+            'gpu' => 0,
+        ];
+
+        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent) ?? [];
     }
 
     public function startEditingName(): void

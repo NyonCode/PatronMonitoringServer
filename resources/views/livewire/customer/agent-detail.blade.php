@@ -418,6 +418,24 @@
                     }
                 });
 
+                document.addEventListener('livewire:load', () => {
+                    initChart(); // vytvoří graf i když se nepolluje
+
+                    Livewire.hook('morph.updated', ({component}) => {
+                        if (component.name === 'customer.agent-detail') {
+                            initChart();
+                        }
+                    });
+
+                    Livewire.on('periodChanged', () => {
+                        if (chart) {
+                            chart.destroy();
+                            chart = null;
+                        }
+                        setTimeout(initChart, 100);
+                    });
+                });
+
                 // Při změně období (musíme znovu vytvořit graf)
                 Livewire.on('periodChanged', () => {
                     if (chart) {
