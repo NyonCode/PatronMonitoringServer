@@ -186,6 +186,8 @@
                         <!-- CPU mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
+                                @if($status === 'online')
+
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['cpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -204,12 +206,20 @@
                                     width="80"
                                     height="20"
                                 ></canvas>
+                                @else
+                                    <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                        bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300
+                                    ">
+                                        N/A
+                                    </span>
+                                @endif
                             </div>
                         </td>
 
                         <!-- RAM mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
+                                @if($status === 'online')
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['ram'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -228,12 +238,20 @@
                                     width="80"
                                     height="20"
                                 ></canvas>
+                                @else
+                                    <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                        bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300
+                                    ">
+                                        N/A
+                                    </span>
+                                @endif
                             </div>
                         </td>
 
                         <!-- GPU mini graf -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
+                                @if($status === 'online')
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                     @if($metrics['gpu'] > 80)
                                         bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -252,6 +270,13 @@
                                     width="80"
                                     height="20"
                                 ></canvas>
+                                @else
+                                    <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
+                                        bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300
+                                    ">
+                                        N/A
+                                    </span>
+                                @endif
                             </div>
                         </td>
 
