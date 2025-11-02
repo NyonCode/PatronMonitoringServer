@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -52,6 +53,7 @@ class Agents extends Component
         $this->showDetailModal = true;
     }
 
+    #[On('closeDetail')]
     public function closeDetail(): void
     {
         $this->showDetailModal = false;

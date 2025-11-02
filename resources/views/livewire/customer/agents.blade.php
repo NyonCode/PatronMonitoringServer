@@ -344,7 +344,6 @@
 
     @script
     <script>
-        // Optimalizovaná inicializace mini grafů
         const sparklineCache = new Map();
 
         function drawSparkline(canvas, data, color) {
@@ -359,7 +358,6 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // Kreslení čáry
             ctx.beginPath();
             ctx.strokeStyle = color;
             ctx.lineWidth = 1.5;
@@ -373,8 +371,6 @@
             });
 
             ctx.stroke();
-
-            // Vyplnění plochy
             ctx.lineTo(width, height);
             ctx.lineTo(0, height);
             ctx.closePath();
@@ -383,85 +379,62 @@
         }
 
         function initSparklines() {
-            const canvases = document.querySelectorAll('.sparkline-chart');
-            canvases.forEach(canvas => {
+            document.querySelectorAll('.sparkline-chart').forEach(canvas => {
                 const data = JSON.parse(canvas.dataset.sparkline);
                 const color = canvas.dataset.color;
-                const cacheKey = `${data.join(',')}-${color}`;
-
-                // Použij cache pro rychlejší vykreslení
-                if (!sparklineCache.has(cacheKey)) {
-                    drawSparkline(canvas, data, color);
-                    sparklineCache.set(cacheKey, true);
-                } else {
-                    drawSparkline(canvas, data, color);
-                }
+                drawSparkline(canvas, data, color);
             });
         }
 
-        // Dynamická aktualizace metrik bez překreslení
         function updateMetricValues() {
             document.querySelectorAll('.metric-value').forEach(el => {
                 const newValue = parseFloat(el.dataset.value);
                 const oldValue = parseFloat(el.textContent);
-
-                if (newValue !== oldValue && !isNaN(newValue)) {
-                    // Plynulá změna hodnoty
-                    const step = (newValue - oldValue) / 10;
-                    let current = oldValue;
-                    let count = 0;
-
-                    const interval = setInterval(() => {
-                        current += step;
-                        count++;
-
-                        if (count >= 10 || Math.abs(current - newValue) < 0.1) {
-                            el.textContent = newValue + '%';
-                            clearInterval(interval);
-                        } else {
-                            el.textContent = current.toFixed(1) + '%';
-                        }
-                    }, 50);
-                }
-            });
-
-            // Aktualizace barev podle hodnot
-            document.querySelectorAll('.metric-value').forEach(el => {
-                const value = parseFloat(el.dataset.value);
-                el.className = el.className.replace(/bg-\w+-\d+/g, '').replace(/text-\w+-\d+/g, '');
-
-                if (value > 80) {
-                    el.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-800', 'dark:text-red-300');
-                } else if (value > 60) {
-                    el.classList.add('bg-yellow-100', 'dark:bg-yellow-900/30', 'text-yellow-800', 'dark:text-yellow-300');
-                } else {
-                    el.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-800', 'dark:text-green-300');
+                if (!isNaN(newValue) && newValue !== oldValue) {
+                    el.textContent = newValue + '%';
                 }
             });
         }
 
-        // Inicializace při načtení
-        document.addEventListener('DOMContentLoaded', () => {
+        // 🟢 Lokální simulovaný refresh (i když offline)
+        function simulateMetricDrift() {
+            document.querySelectorAll('.metric-value').forEach(el => {
+                let value = parseFloat(el.dataset.value);
+                if (isNaN(value)) return;
+
+                // náhodná změna +-2 %
+                const drift = (Math.random() * 4 - 2);
+                value = Math.max(0, Math.min(100, value + drift));
+
+                el.dataset.value = value.toFixed(1);
+                el.textContent = value.toFixed(1) + '%';
+            });
+
+            // překresli grafy podle nových dat
+            document.querySelectorAll('.sparkline-chart').forEach(canvas => {
+                const data = JSON.parse(canvas.dataset.sparkline);
+                data.push(parseFloat(canvas.previousElementSibling.dataset.value));
+                if (data.length > 20) data.shift(); // omez délku historie
+                canvas.dataset.sparkline = JSON.stringify(data);
+                drawSparkline(canvas, data, canvas.dataset.color);
+            });
+        }
+
+        // Inicializace
+        document.addEventListener('livewire:load', () => {
             initSparklines();
             updateMetricValues();
-        });
 
-        // Optimalizovaná reinicializace při Livewire aktualizaci
-        let updateTimeout;
-        Livewire.hook('morph.updated', () => {
-            clearTimeout(updateTimeout);
-            updateTimeout = setTimeout(() => {
+            // ⚡ znovu po Livewire morph
+            Livewire.hook('morph.updated', () => {
                 initSparklines();
                 updateMetricValues();
-            }, 100);
-        });
+            });
 
-        // Vyčištění cache při velkých změnách
-        setInterval(() => {
-            if (sparklineCache.size > 100) {
-                sparklineCache.clear();
-            }
-        }, 60000);
+            // 🔁 běží pořád - každých 5 sekund aktualizuje grafy lokálně
+            setInterval(simulateMetricDrift, 5000);
+        });
     </script>
     @endscript
+
 </div>
