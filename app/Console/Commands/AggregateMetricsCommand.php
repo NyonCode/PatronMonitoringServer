@@ -7,6 +7,7 @@ use App\Models\AgentMetricDaily;
 use App\Models\AgentMetricHourly;
 use App\Models\AgentSystemMetric;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Support\Facades\DB;
 
 class AggregateMetricsCommand extends Command
@@ -147,7 +148,7 @@ class AggregateMetricsCommand extends Command
     /**
      * Získá SQL formát pro hodiny podle typu databáze.
      */
-    private function getHourFormat(): DB
+    private function getHourFormat(): Expression|\Illuminate\Database\Query\Expression
     {
         $driver = DB::getDriverName();
 
@@ -159,10 +160,7 @@ class AggregateMetricsCommand extends Command
         };
     }
 
-    /**
-     * Získá SQL formát pro datum podle typu databáze.
-     */
-    private function getDateFormat(): DB
+    private function getDateFormat(): Expression
     {
         $driver = DB::getDriverName();
 
