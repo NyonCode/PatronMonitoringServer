@@ -57,7 +57,7 @@
                     Agent je offline — zobrazují se poslední známá data
                 </div>
             @endif
-            
+
             <!-- Základní informace -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
@@ -126,16 +126,20 @@
                 </div>
             @endif
 
-            <!-- Aktuální hodnoty metrik pouze s progress bary -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                @foreach(['cpu' => 'CPU', 'ram' => 'RAM', 'gpu' => 'GPU'] as $metric => $label)
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4" 
-                         x-data="{ value: {{ $currentMetrics[$metric] ?? 0 }} }" 
-                         x-init="$watch('$wire.currentMetrics.{{ $metric }}', val => value = val || 0)">
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-semibold text-zinc-900 dark:text-white">{{ $label }}</h4>
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
+            <!-- Aktuální hodnoty metrik - ELEGANTNÍ DESIGN jako disky -->
+            <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+                <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Aktuální metriky</h3>
+                <div class="space-y-4">
+                    @foreach(['cpu' => 'CPU', 'ram' => 'RAM', 'gpu' => 'GPU'] as $metric => $label)
+                        <div x-data="{ value: {{ $currentMetrics[$metric] ?? 0 }} }" 
+                             x-init="$watch('$wire.currentMetrics.{{ $metric }}', val => value = val || 0)">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <p class="font-medium text-zinc-900 dark:text-white">{{ $label }}</p>
+                                    <p class="text-xs text-zinc-600 dark:text-zinc-400" 
+                                       x-text="value === 0 ? 'Žádná data' : 'Aktuální využití'"></p>
+                                </div>
+                                <span class="inline-flex px-3 py-1 rounded-full text-sm font-semibold transition-colors duration-300"
                                       :class="{
                                           'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': value > 80,
                                           'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': value > 60 && value <= 80,
@@ -145,9 +149,7 @@
                                     <span x-text="value"></span>%
                                 </span>
                             </div>
-                            
-                            <!-- Progress bar s animací -->
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-3 overflow-hidden">
                                 <div class="h-3 rounded-full transition-all duration-500 ease-out"
                                      :class="{
                                          'bg-red-500': value > 80,
@@ -157,21 +159,9 @@
                                      }"
                                      :style="`width: ${value}%`"></div>
                             </div>
-                            
-                            <!-- Numerická hodnota velká -->
-                            <div class="text-center">
-                                <span class="text-4xl font-bold transition-colors duration-300"
-                                      :class="{
-                                          'text-red-600 dark:text-red-400': value > 80,
-                                          'text-yellow-600 dark:text-yellow-400': value > 60 && value <= 80,
-                                          'text-green-600 dark:text-green-400': value > 0 && value <= 60,
-                                          'text-gray-400 dark:text-gray-500': value === 0
-                                      }"
-                                      x-text="value + '%'"></span>
-                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
 
             <!-- Upozornění pokud nejsou data -->
@@ -247,7 +237,7 @@
                 @endif
             </div>
 
-            <!-- Disk status -->
+            <!-- Disk status - VZOR PRO ELEGANTNÍ DESIGN -->
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                 <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Stav disků</h3>
                 <div class="space-y-4">
@@ -260,7 +250,7 @@
                                     <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $disk['free'] }} volných
                                         z {{ $disk['size'] }}</p>
                                 </div>
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
+                                <span class="inline-flex px-3 py-1 rounded-full text-sm font-semibold transition-colors duration-300"
                                       :class="{
                                           'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': usage > 90,
                                           'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': usage > 75 && usage <= 90,
@@ -269,7 +259,7 @@
                                     <span x-text="usage"></span>%
                                 </span>
                             </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-3 overflow-hidden">
                                 <div class="h-3 rounded-full transition-all duration-500 ease-out"
                                      :class="{
                                          'bg-red-500': usage > 90,
