@@ -188,7 +188,9 @@
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-between gap-2">
+                                    <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
+                                    -->
                                     <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
                                           :class="{
                                               'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': cpu > 80,
@@ -222,7 +224,9 @@
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-between gap-2">
+                                    <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">RAM</span>
+                                    -->
                                     <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
                                           :class="{
                                               'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': ram > 80,
@@ -256,7 +260,9 @@
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-between gap-2">
+                                    <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">GPU</span>
+                                    -->
                                     <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
                                           :class="{
                                               'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': gpu > 80,
