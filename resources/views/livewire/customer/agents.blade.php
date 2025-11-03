@@ -1,7 +1,6 @@
 <div class="space-y-6 p-4 md:p-6" wire:poll.5s>
     <!-- Header se statistikami -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- Celkem agentů -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -14,7 +13,6 @@
             </div>
         </div>
 
-        <!-- Online -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -27,7 +25,6 @@
             </div>
         </div>
 
-        <!-- Offline -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -40,7 +37,6 @@
             </div>
         </div>
 
-        <!-- Varování -->
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -144,9 +140,9 @@
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
-                            cpu: {{ $metrics['cpu'] }},
-                            ram: {{ $metrics['ram'] }},
-                            gpu: {{ $metrics['gpu'] }}
+                            cpu: {{ $metrics['cpu'] ?? 0 }},
+                            ram: {{ $metrics['ram'] ?? 0 }},
+                            gpu: {{ $metrics['gpu'] ?? 0 }}
                         }">
                         <!-- Název -->
                         <td class="px-6 py-4">
@@ -183,126 +179,100 @@
 
                         <!-- IP adresa -->
                         <td class="px-6 py-4">
-                                <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
-                                    {{ $agent->ip_address ?? 'N/A' }}
-                                </span>
+                            <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
+                                {{ $agent->ip_address ?? 'N/A' }}
+                            </span>
                         </td>
 
-                        <!-- CPU s grafickým ukazatelem -->
+                        <!-- CPU s progress barem a hodnotou -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-2">
-                                <!-- Circular gauge -->
-                                <svg class="transform -rotate-90" width="60" height="60">
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            class="text-gray-200 dark:text-gray-700" 
-                                            stroke-width="6" fill="none" />
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            :class="{
-                                                'text-red-500': cpu > 80,
-                                                'text-yellow-500': cpu > 60 && cpu <= 80,
-                                                'text-green-500': cpu <= 60
-                                            }"
-                                            stroke-width="6" fill="none"
-                                            stroke-linecap="round"
-                                            :stroke-dasharray="`${(cpu * 163.36) / 100} 163.36`"
-                                            class="transition-all duration-500 ease-out" />
-                                    <!-- Value in center -->
-                                    <text x="30" y="30" 
-                                          text-anchor="middle" 
-                                          dominant-baseline="central"
-                                          class="text-xs font-bold transform rotate-90"
-                                          :class="{
-                                              'fill-red-600 dark:fill-red-400': cpu > 80,
-                                              'fill-yellow-600 dark:fill-yellow-400': cpu > 60 && cpu <= 80,
-                                              'fill-green-600 dark:fill-green-400': cpu <= 60
-                                          }">
-                                        <tspan x="30" y="35" class="text-[10px]" x-text="cpu + '%'"></tspan>
-                                    </text>
-                                </svg>
+                            <div class="flex flex-col items-center gap-2 min-w-[100px]">
+                                <span class="text-2xl font-bold transition-colors duration-300"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': cpu > 80,
+                                          'text-yellow-600 dark:text-yellow-400': cpu > 60 && cpu <= 80,
+                                          'text-green-600 dark:text-green-400': cpu > 0 && cpu <= 60,
+                                          'text-gray-400 dark:text-gray-500': cpu === 0
+                                      }"
+                                      x-text="cpu + '%'"></span>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="h-2 rounded-full transition-all duration-500 ease-out"
+                                         :class="{
+                                             'bg-red-500': cpu > 80,
+                                             'bg-yellow-500': cpu > 60 && cpu <= 80,
+                                             'bg-green-500': cpu > 0 && cpu <= 60,
+                                             'bg-gray-400': cpu === 0
+                                         }"
+                                         :style="`width: ${cpu}%`"></div>
+                                </div>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['cpu']) }}"
                                     data-color="rgb(239, 68, 68)"
                                     class="sparkline-chart"
-                                    width="60"
-                                    height="15"
+                                    width="100"
+                                    height="20"
                                 ></canvas>
                             </div>
                         </td>
 
-                        <!-- RAM s grafickým ukazatelem -->
+                        <!-- RAM -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-2">
-                                <svg class="transform -rotate-90" width="60" height="60">
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            class="text-gray-200 dark:text-gray-700" 
-                                            stroke-width="6" fill="none" />
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            :class="{
-                                                'text-red-500': ram > 80,
-                                                'text-yellow-500': ram > 60 && ram <= 80,
-                                                'text-green-500': ram <= 60
-                                            }"
-                                            stroke-width="6" fill="none"
-                                            stroke-linecap="round"
-                                            :stroke-dasharray="`${(ram * 163.36) / 100} 163.36`"
-                                            class="transition-all duration-500 ease-out" />
-                                    <text x="30" y="30" 
-                                          text-anchor="middle" 
-                                          dominant-baseline="central"
-                                          class="text-xs font-bold transform rotate-90"
-                                          :class="{
-                                              'fill-red-600 dark:fill-red-400': ram > 80,
-                                              'fill-yellow-600 dark:fill-yellow-400': ram > 60 && ram <= 80,
-                                              'fill-green-600 dark:fill-green-400': ram <= 60
-                                          }">
-                                        <tspan x="30" y="35" class="text-[10px]" x-text="ram + '%'"></tspan>
-                                    </text>
-                                </svg>
+                            <div class="flex flex-col items-center gap-2 min-w-[100px]">
+                                <span class="text-2xl font-bold transition-colors duration-300"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': ram > 80,
+                                          'text-yellow-600 dark:text-yellow-400': ram > 60 && ram <= 80,
+                                          'text-green-600 dark:text-green-400': ram > 0 && ram <= 60,
+                                          'text-gray-400 dark:text-gray-500': ram === 0
+                                      }"
+                                      x-text="ram + '%'"></span>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="h-2 rounded-full transition-all duration-500 ease-out"
+                                         :class="{
+                                             'bg-red-500': ram > 80,
+                                             'bg-yellow-500': ram > 60 && ram <= 80,
+                                             'bg-green-500': ram > 0 && ram <= 60,
+                                             'bg-gray-400': ram === 0
+                                         }"
+                                         :style="`width: ${ram}%`"></div>
+                                </div>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['ram']) }}"
                                     data-color="rgb(59, 130, 246)"
                                     class="sparkline-chart"
-                                    width="60"
-                                    height="15"
+                                    width="100"
+                                    height="20"
                                 ></canvas>
                             </div>
                         </td>
 
-                        <!-- GPU s grafickým ukazatelem -->
+                        <!-- GPU -->
                         <td class="px-6 py-4">
-                            <div class="flex flex-col items-center gap-2">
-                                <svg class="transform -rotate-90" width="60" height="60">
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            class="text-gray-200 dark:text-gray-700" 
-                                            stroke-width="6" fill="none" />
-                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
-                                            :class="{
-                                                'text-red-500': gpu > 80,
-                                                'text-yellow-500': gpu > 60 && gpu <= 80,
-                                                'text-green-500': gpu <= 60
-                                            }"
-                                            stroke-width="6" fill="none"
-                                            stroke-linecap="round"
-                                            :stroke-dasharray="`${(gpu * 163.36) / 100} 163.36`"
-                                            class="transition-all duration-500 ease-out" />
-                                    <text x="30" y="30" 
-                                          text-anchor="middle" 
-                                          dominant-baseline="central"
-                                          class="text-xs font-bold transform rotate-90"
-                                          :class="{
-                                              'fill-red-600 dark:fill-red-400': gpu > 80,
-                                              'fill-yellow-600 dark:fill-yellow-400': gpu > 60 && gpu <= 80,
-                                              'fill-green-600 dark:fill-green-400': gpu <= 60
-                                          }">
-                                        <tspan x="30" y="35" class="text-[10px]" x-text="gpu + '%'"></tspan>
-                                    </text>
-                                </svg>
+                            <div class="flex flex-col items-center gap-2 min-w-[100px]">
+                                <span class="text-2xl font-bold transition-colors duration-300"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': gpu > 80,
+                                          'text-yellow-600 dark:text-yellow-400': gpu > 60 && gpu <= 80,
+                                          'text-green-600 dark:text-green-400': gpu > 0 && gpu <= 60,
+                                          'text-gray-400 dark:text-gray-500': gpu === 0
+                                      }"
+                                      x-text="gpu + '%'"></span>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="h-2 rounded-full transition-all duration-500 ease-out"
+                                         :class="{
+                                             'bg-red-500': gpu > 80,
+                                             'bg-yellow-500': gpu > 60 && gpu <= 80,
+                                             'bg-green-500': gpu > 0 && gpu <= 60,
+                                             'bg-gray-400': gpu === 0
+                                         }"
+                                         :style="`width: ${gpu}%`"></div>
+                                </div>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['gpu']) }}"
                                     data-color="rgb(34, 197, 94)"
                                     class="sparkline-chart"
-                                    width="60"
-                                    height="15"
+                                    width="100"
+                                    height="20"
                                 ></canvas>
                             </div>
                         </td>
@@ -310,11 +280,9 @@
                         <!-- Nejvíce zaplněný disk -->
                         <td class="px-6 py-4">
                             @if($disk)
-                                <div class="space-y-1">
+                                <div class="space-y-1 min-w-[150px]">
                                     <div class="flex items-center justify-between gap-2">
-                                            <span class="text-sm text-zinc-700 dark:text-zinc-300">
-                                                {{ $disk['name'] }}
-                                            </span>
+                                        <span class="text-sm text-zinc-700 dark:text-zinc-300">{{ $disk['name'] }}</span>
                                         <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
@@ -327,9 +295,9 @@
                                             {{ $disk['usage_percent'] }}%
                                         </span>
                                     </div>
-                                    <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                                    <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
                                         <div
-                                            class="h-1.5 rounded-full transition-all
+                                            class="h-2 rounded-full transition-all duration-500
                                             @if($disk['usage_percent'] > 90)
                                                 bg-red-500
                                             @elseif($disk['usage_percent'] > 75)
@@ -381,7 +349,6 @@
             </table>
         </div>
 
-        <!-- Pagination -->
         @if($this->agents->hasPages())
             <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700">
                 {{ $this->agents->links() }}
@@ -429,7 +396,6 @@
                 });
 
                 ctx.stroke();
-
                 ctx.lineTo(width, height);
                 ctx.lineTo(0, height);
                 ctx.closePath();
