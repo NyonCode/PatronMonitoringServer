@@ -24,4 +24,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Cron jobs
+|--------------------------------------------------------------------------
+|
+*/
+Route::get('/cron/schedule/{token}', [CronController::class, 'runSchedule']);
+Route::get('/cron/queue/{token}', [CronController::class, 'runQueue']);
+Route::get('/cron/notifications/{token}', [CronController::class, 'runNotifications']);
+
+
 require __DIR__.'/auth.php';
