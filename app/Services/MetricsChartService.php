@@ -98,7 +98,7 @@ class MetricsChartService
     {
         return [
             'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-            Carbon::parse($time)->format('H:i')
+                Carbon::parse($time)->setTimezone('Europe/Prague')->format('H:i')
             )->toArray(),
             'datasets' => [
                 [
@@ -135,10 +135,10 @@ class MetricsChartService
     public function formatAggregatedMetrics(Collection $metrics, string $timeField): array
     {
         $format = $timeField === 'date' ? 'd.m.' : 'H:i';
-
+    
         return [
             'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-            Carbon::parse($time)->format($format)
+                Carbon::parse($time)->setTimezone('Europe/Prague')->format($format)
             )->toArray(),
             'datasets' => [
                 [
