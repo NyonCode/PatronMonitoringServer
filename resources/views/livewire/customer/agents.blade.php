@@ -142,7 +142,12 @@
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
                     @endphp
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
+                        x-data="{
+                            cpu: {{ $metrics['cpu'] }},
+                            ram: {{ $metrics['ram'] }},
+                            gpu: {{ $metrics['gpu'] }}
+                        }">
                         <!-- Název -->
                         <td class="px-6 py-4">
                             <div>
@@ -183,74 +188,121 @@
                                 </span>
                         </td>
 
-                        <!-- CPU mini graf -->
+                        <!-- CPU s grafickým ukazatelem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
-                                    @if($metrics['cpu'] > 80)
-                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
-                                    @elseif($metrics['cpu'] > 60)
-                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
-                                    @else
-                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
-                                    @endif
-                                ">
-                                    {{ $metrics['cpu'] }}%
-                                </span>
+                                <!-- Circular gauge -->
+                                <svg class="transform -rotate-90" width="60" height="60">
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            class="text-gray-200 dark:text-gray-700" 
+                                            stroke-width="6" fill="none" />
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            :class="{
+                                                'text-red-500': cpu > 80,
+                                                'text-yellow-500': cpu > 60 && cpu <= 80,
+                                                'text-green-500': cpu <= 60
+                                            }"
+                                            stroke-width="6" fill="none"
+                                            stroke-linecap="round"
+                                            :stroke-dasharray="`${(cpu * 163.36) / 100} 163.36`"
+                                            class="transition-all duration-500 ease-out" />
+                                    <!-- Value in center -->
+                                    <text x="30" y="30" 
+                                          text-anchor="middle" 
+                                          dominant-baseline="central"
+                                          class="text-xs font-bold transform rotate-90"
+                                          :class="{
+                                              'fill-red-600 dark:fill-red-400': cpu > 80,
+                                              'fill-yellow-600 dark:fill-yellow-400': cpu > 60 && cpu <= 80,
+                                              'fill-green-600 dark:fill-green-400': cpu <= 60
+                                          }">
+                                        <tspan x="30" y="35" class="text-[10px]" x-text="cpu + '%'"></tspan>
+                                    </text>
+                                </svg>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['cpu']) }}"
                                     data-color="rgb(239, 68, 68)"
                                     class="sparkline-chart"
-                                    width="80"
-                                    height="20"
+                                    width="60"
+                                    height="15"
                                 ></canvas>
                             </div>
                         </td>
 
-                        <!-- RAM mini graf -->
+                        <!-- RAM s grafickým ukazatelem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
-                                    @if($metrics['ram'] > 80)
-                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
-                                    @elseif($metrics['ram'] > 60)
-                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
-                                    @else
-                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
-                                    @endif
-                                ">
-                                    {{ $metrics['ram'] }}%
-                                </span>
+                                <svg class="transform -rotate-90" width="60" height="60">
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            class="text-gray-200 dark:text-gray-700" 
+                                            stroke-width="6" fill="none" />
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            :class="{
+                                                'text-red-500': ram > 80,
+                                                'text-yellow-500': ram > 60 && ram <= 80,
+                                                'text-green-500': ram <= 60
+                                            }"
+                                            stroke-width="6" fill="none"
+                                            stroke-linecap="round"
+                                            :stroke-dasharray="`${(ram * 163.36) / 100} 163.36`"
+                                            class="transition-all duration-500 ease-out" />
+                                    <text x="30" y="30" 
+                                          text-anchor="middle" 
+                                          dominant-baseline="central"
+                                          class="text-xs font-bold transform rotate-90"
+                                          :class="{
+                                              'fill-red-600 dark:fill-red-400': ram > 80,
+                                              'fill-yellow-600 dark:fill-yellow-400': ram > 60 && ram <= 80,
+                                              'fill-green-600 dark:fill-green-400': ram <= 60
+                                          }">
+                                        <tspan x="30" y="35" class="text-[10px]" x-text="ram + '%'"></tspan>
+                                    </text>
+                                </svg>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['ram']) }}"
                                     data-color="rgb(59, 130, 246)"
                                     class="sparkline-chart"
-                                    width="80"
-                                    height="20"
+                                    width="60"
+                                    height="15"
                                 ></canvas>
                             </div>
                         </td>
 
-                        <!-- GPU mini graf -->
+                        <!-- GPU s grafickým ukazatelem -->
                         <td class="px-6 py-4">
                             <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex px-2 py-1 rounded text-sm font-semibold
-                                    @if($metrics['gpu'] > 80)
-                                        bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
-                                    @elseif($metrics['gpu'] > 60)
-                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300
-                                    @else
-                                        bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
-                                    @endif
-                                ">
-                                    {{ $metrics['gpu'] }}%
-                                </span>
+                                <svg class="transform -rotate-90" width="60" height="60">
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            class="text-gray-200 dark:text-gray-700" 
+                                            stroke-width="6" fill="none" />
+                                    <circle cx="30" cy="30" r="26" stroke="currentColor" 
+                                            :class="{
+                                                'text-red-500': gpu > 80,
+                                                'text-yellow-500': gpu > 60 && gpu <= 80,
+                                                'text-green-500': gpu <= 60
+                                            }"
+                                            stroke-width="6" fill="none"
+                                            stroke-linecap="round"
+                                            :stroke-dasharray="`${(gpu * 163.36) / 100} 163.36`"
+                                            class="transition-all duration-500 ease-out" />
+                                    <text x="30" y="30" 
+                                          text-anchor="middle" 
+                                          dominant-baseline="central"
+                                          class="text-xs font-bold transform rotate-90"
+                                          :class="{
+                                              'fill-red-600 dark:fill-red-400': gpu > 80,
+                                              'fill-yellow-600 dark:fill-yellow-400': gpu > 60 && gpu <= 80,
+                                              'fill-green-600 dark:fill-green-400': gpu <= 60
+                                          }">
+                                        <tspan x="30" y="35" class="text-[10px]" x-text="gpu + '%'"></tspan>
+                                    </text>
+                                </svg>
                                 <canvas
                                     data-sparkline="{{ json_encode($sparkline['gpu']) }}"
                                     data-color="rgb(34, 197, 94)"
                                     class="sparkline-chart"
-                                    width="80"
-                                    height="20"
+                                    width="60"
+                                    height="15"
                                 ></canvas>
                             </div>
                         </td>
@@ -358,10 +410,7 @@
                 const min = Math.min(...data, 0);
                 const range = max - min || 1;
 
-                // Clear canvas
                 ctx.clearRect(0, 0, width, height);
-
-                // Draw line
                 ctx.beginPath();
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 1.5;
@@ -381,7 +430,6 @@
 
                 ctx.stroke();
 
-                // Draw fill
                 ctx.lineTo(width, height);
                 ctx.lineTo(0, height);
                 ctx.closePath();
@@ -390,12 +438,12 @@
             });
         }
 
-        // Inicializace při načtení
         document.addEventListener('DOMContentLoaded', initSparklines);
 
-        // Reinicializace po Livewire aktualizaci
+        let debounceTimer;
         Livewire.hook('morph.updated', () => {
-            setTimeout(initSparklines, 50);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(initSparklines, 50);
         });
     </script>
     @endscript
