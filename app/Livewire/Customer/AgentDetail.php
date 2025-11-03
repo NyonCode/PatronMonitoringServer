@@ -16,13 +16,12 @@ class AgentDetail extends Component
     public array $currentMetrics = [];
     public array $diskStatus = [];
 
-    // Inline edit name
+    // Pro inline editaci
     public bool $editingName = false;
     public string $editName = '';
 
-    // Inline edit interval
-    public bool $editInterval = false;
-    public ?int $editIntervalValue = null;
+    // Cache pro optimalizaci
+    private bool $isOnline = true;
 
     protected MetricsChartService $metricsService;
 
@@ -35,9 +34,8 @@ class AgentDetail extends Component
     {
         $this->agent = $agent;
         $this->editName = $this->getEditName();
+        $this->checkOnlineStatus();
         $this->loadData();
-        $this->dispatch('metrics-updated');
-
     }
 
     public function updatedPeriod(): void
@@ -46,25 +44,49 @@ class AgentDetail extends Component
         $this->dispatch('periodChanged');
     }
 
-    public function loadData(): void
+    /**
+     * Kontrola online stavu agenta
+     */
+    private function checkOnlineStatus(): void
     {
-        $this->chartData = $this->metricsService->getChartData($this->agent, $this->period);
+        if (!$this->agent->last_seen_at) {
+            $this->isOnline = false;
+            return;
+        }
 
-        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent) ?? [
-            'cpu' => 0,
-            'ram' => 0,
-            'gpu' => 0,
-        ];
-
-        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent) ?? [];
+        $threshold = now()->subMinutes(5);
+        $this->isOnline = $this->agent->last_seen_at->greaterThan($threshold);
     }
 
+    /**
+     * Načtení dat s optimalizací pro offline agenty
+     */
+    public function loadData(): void
+    {
+        $this->checkOnlineStatus();
+
+        // Vždy načti historická data (i pro offline agenty)
+        $this->chartData = $this->metricsService->getChartData($this->agent, $this->period);
+        
+        // Pro offline agenty načti poslední známé metriky
+        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        
+        // Diskový status (i pro offline)
+        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
+    }
+
+    /**
+     * Začne editaci názvu.
+     */
     public function startEditingName(): void
     {
         $this->editingName = true;
         $this->editName = $this->getEditName();
     }
 
+    /**
+     * Uloží nový název.
+     */
     public function saveName(): void
     {
         $this->agent->update([
@@ -75,6 +97,9 @@ class AgentDetail extends Component
         $this->dispatch('name-updated');
     }
 
+    /**
+     * Zruší editaci názvu.
+     */
     public function cancelEditName(): void
     {
         $this->editingName = false;
@@ -82,33 +107,42 @@ class AgentDetail extends Component
     }
 
     /**
-     * Polling pro živou aktualizaci - pouze metriky a případně graf
+     * Optimalizovaný polling - aktualizuje pouze pokud je agent online
      */
     public function refreshMetrics(): void
     {
-        // Aktualizuj metriky bez znovunačtení
-        $newMetrics = $this->metricsService->getCurrentMetrics($this->agent);
-        $newDiskStatus = $this->metricsService->getDiskStatus($this->agent);
+        // Refresh agent z DB
+        $this->agent->refresh();
+        $this->checkOnlineStatus();
 
-        // Pokud se data změnila, aktualizuj
-        if ($newMetrics !== $this->currentMetrics) {
-            $this->currentMetrics = $newMetrics;
+        // Pokud je agent offline, nepřenačítej data tak často
+        if (!$this->isOnline) {
+            return;
         }
 
-        if ($newDiskStatus !== $this->diskStatus) {
-            $this->diskStatus = $newDiskStatus;
+        // Aktualizuj aktuální metriky
+        $currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        
+        // Optimalizace - pouze pokud se změnily
+        if ($this->currentMetrics !== $currentMetrics) {
+            $this->currentMetrics = $currentMetrics;
+        }
+
+        // Disk status
+        $diskStatus = $this->metricsService->getDiskStatus($this->agent);
+        if ($this->diskStatus !== $diskStatus) {
+            $this->diskStatus = $diskStatus;
         }
 
         // Aktualizuj graf data pouze pro poslední hodinu (častější změny)
         if ($this->period === 'hour') {
-            $newChartData = $this->metricsService->getChartData($this->agent, 'hour');
-            if ($newChartData !== $this->chartData) {
-                $this->chartData = $newChartData;
-                $this->dispatch('metrics-updated');
-            }
+            $this->chartData = $this->metricsService->getChartData($this->agent, 'hour');
         }
     }
 
+    /**
+     * Získá formátované síťové informace.
+     */
     public function getNetworkInfo(): ?array
     {
         $network = $this->agent->network;
@@ -126,15 +160,28 @@ class AgentDetail extends Component
         ];
     }
 
+    /**
+     * Uzavře detail
+     */
+    public function closeDetail(): void
+    {
+        $this->dispatch('closeDetail')->to('customer.agents');
+    }
+
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agent-detail', [
             'networkInfo' => $this->getNetworkInfo(),
+            'isOnline' => $this->isOnline,
         ]);
     }
 
     private function getEditName(): string
     {
-        return empty($this->agent->pretty_name) ? $this->agent->hostname : $this->agent->pretty_name;
+        if (empty($this->agent->pretty_name)) {
+            return $this->agent->hostname;
+        }
+
+        return $this->agent->pretty_name;
     }
 }
