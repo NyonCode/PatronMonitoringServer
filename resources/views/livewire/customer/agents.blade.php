@@ -150,7 +150,7 @@
                         <td class="px-6 py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{!! $name !!}}
+                                    {{-- $name --}}
                                 </div>
                                 @if($agent->pretty_name)
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -213,7 +213,7 @@
                                          :style="`width: ${cpu}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                    {{-- $disk['free'] }} / {{ $disk['size'] --}}
                                 </div>
                             </div>
                         </td>
@@ -245,7 +245,7 @@
                                          :style="`width: ${ram}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                    {{-- $disk['free'] }} / {{ $disk['size'] --}}
                                 </div>
                             </div>
                         </td>
@@ -277,7 +277,7 @@
                                          :style="`width: ${gpu}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                    {{-- $disk['free'] }} / {{ $disk['size'] --}}
                                 </div>
                             </div>
                         </td>
