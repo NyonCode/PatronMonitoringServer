@@ -137,7 +137,7 @@
                         $metrics = $this->getCurrentMetrics($agent);
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
-                        $name = empty($agent->pretty_name) ? $agent->pretty_name : $agent->hostname;
+                        $name = empty($agent->pretty_name) ? $agent->hostname : $aget->pretty_name;
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
@@ -151,7 +151,7 @@
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
                                     {{ $name }}
                                 </div>
-                                @if(! empty($agent->pretty_name))
+                                @if(empty($agent->pretty_name))
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
                                         {{ $agent->hostname }}
                                     </div>
