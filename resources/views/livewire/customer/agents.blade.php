@@ -379,7 +379,7 @@
 
     <!-- Modal s logem agenta -->
     @if($showLogModal && $selectedAgentId)
-        @livewire('customer.agent-log', ['agent' => $this->agents->find($selectedAgentId)], key('agent-log-'.$selectedAgentId))
+        @livewire('customer.agent-log', ['agentLog' => $this->agents->find($selectedAgentId)], key('agent-log-'.$selectedAgentId))
     @endif
     
 </div>
