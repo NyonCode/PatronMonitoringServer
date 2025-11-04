@@ -1,24 +1,9 @@
 {
   "name": "Laravel 12 Dev",
-  "dockerFile": "Dockerfile",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "appPort": [8000],
   "forwardPorts": [8000, 3306, 6379],
-  "postCreateCommand": "composer install && npm install && cp .env.example .env && php artisan key:generate",
-  "customizations": {
-    "vscode": {
-      "settings": {
-        "php.validate.executablePath": "/usr/local/bin/php",
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-      },
-      "extensions": [
-        "bmewburn.vscode-intelephense-client",
-        "MehediDracula.php-namespace-resolver",
-        "ms-azuretools.vscode-docker",
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
-      ]
-    }
-  },
-  "remoteUser": "vscode"
+  "postCreateCommand": "composer install && npm install && cp .env.example .env && php artisan key:generate"
 }
