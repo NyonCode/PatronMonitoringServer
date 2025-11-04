@@ -125,7 +125,7 @@
                     <th class="px-6 py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Disk</span>
                     </th>
-                    <th class="px-6 py-3 text-right">
+                    <th class="px-6 py-3 text-center">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Akce</span>
                     </th>
                 </tr>
@@ -325,7 +325,7 @@
                         </td>
 
                         <!-- Tlačítko Detail -->
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-6 py-4 text-center">
                             <button
                                 wire:click="showDetail({{ $agent->id }})"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
