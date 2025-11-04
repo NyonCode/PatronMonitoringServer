@@ -19,17 +19,14 @@ class AgentLog extends Model
     ];
 
     /**
-     * Get the casts array for the model.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'agent_log' => 'array',
-            'system_logs' => 'array',
-        ];
-    }
+    protected $casts = [
+        'agent_log' => 'array',
+        'system_logs' => 'array',
+    ];
 
     /**
      * Get the agent that owns the log.
