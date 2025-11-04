@@ -184,15 +184,15 @@ class AgentController extends Controller
      */
     public function logs(string $UUID, Request $request): JsonResponse
     {
-        $agent = Agent::where('uuid', $UUID)->first();
-
+        $agent = Agent::where('uuid', $UUID)->firstOrFail();
 
         $agent->log()->updateOrCreate(
-            [],
+            ['agent_id' => $agent->id],
             [
-            'agent_log' => $request->logs,
-            'system_logs' => $request->system_logs
-        ]);
+                'agent_log' => $request->input('logs', []),
+                'system_logs' => $request->input('system_logs', []),
+            ]
+        );
 
         return response()->json(['status' => 'ok']);
     }
