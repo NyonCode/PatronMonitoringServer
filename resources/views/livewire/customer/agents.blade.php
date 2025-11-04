@@ -1,4 +1,4 @@
-<div class="space-y-6 p-4 md:p-6" wire:poll.5s>
+<div class="space-y-6 p-4 md:p-6" wire:poll.500s>
     <!-- Header se statistikami -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
@@ -132,13 +132,12 @@
                 </thead>
                 <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
                 @forelse($this->agents as $agent)
-                    @dump($agent)
                     @php
                         $status = $this->getAgentStatus($agent);
                         $metrics = $this->getCurrentMetrics($agent);
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
-                        $name = empty($agent->pretty_name) ? $agent->hostname : $agent->pretty_name;
+                        $name = empty($agent->pretty_name) ? $agent->pretty_name : $agent->hostname;
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
