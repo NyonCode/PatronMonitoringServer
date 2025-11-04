@@ -10,11 +10,15 @@ use Illuminate\Contracts\View\View;
 class AgentLog extends Component
 {
     public ModelsAgentLog $agentLog;
+    public $log;
 
     public function mount(ModelsAgentLog $agentLog): void
     {
-        dump($agentLog);
         $this->agentLog = $agentLog;
+        $this->log = json_decode($agentLog->agent_log, true);
+
+        dump($this->log);
+
     }
 
     public function render(): View|Factory|\Illuminate\View\View
