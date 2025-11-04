@@ -338,6 +338,7 @@
                             </button>
 
                             <button
+                                wire:click="showLog({{ $agent->id }})"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -374,6 +375,11 @@
     <!-- Modal s detaily agenta -->
     @if($showDetailModal && $selectedAgentId)
         @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
+    @endif
+
+    <!-- Modal s logem agenta -->
+    @if($showLogModal && $selectedAgentId)
+        @livewire('customer.agent-log', ['agent' => $this->agents->find($selectedAgentId)], key('agent-log-'.$selectedAgentId))
     @endif
     
 </div>
