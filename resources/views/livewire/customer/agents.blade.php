@@ -138,7 +138,7 @@
                         $metrics = $this->getCurrentMetrics($agent);
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
-                        /* $name = empty($agent->pretty_name) $agent->hostname : $agent->pretty_name; */
+                        $name = empty($agent->pretty_name) $agent->hostname : $agent->pretty_name;
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
@@ -150,7 +150,7 @@
                         <td class="px-6 py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{-- $name --}}
+                                    {{ $name }}
                                 </div>
                                 @if($agent->pretty_name)
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -189,7 +189,7 @@
                         <!-- CPU -->
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
-                                <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
                                     -->
@@ -221,7 +221,7 @@
                         <!-- RAM -->
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
-                                <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">RAM</span>
                                     -->
@@ -253,7 +253,7 @@
                         <!-- GPU -->
                         <td class="px-6 py-4">
                             <div class="space-y-1 min-w-[120px]">
-                                <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <!--
                                     <span class="text-sm text-zinc-700 dark:text-zinc-300">GPU</span>
                                     -->
