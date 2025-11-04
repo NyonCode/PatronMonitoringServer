@@ -336,6 +336,15 @@
                                 </svg>
                                 Detail
                             </button>
+
+                            <button
+                                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                </svg>
+                                    Log
+                            </button>
                         </td>
                     </tr>
                 @empty
@@ -366,57 +375,5 @@
     @if($showDetailModal && $selectedAgentId)
         @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
     @endif
-
-    @script
-    <script>
-        function initSparklines() {
-            document.querySelectorAll('.sparkline-chart').forEach((canvas) => {
-                const data = JSON.parse(canvas.getAttribute('data-sparkline'));
-                const color = canvas.getAttribute('data-color');
-
-                if (data.length === 0) return;
-
-                const ctx = canvas.getContext('2d');
-                const width = canvas.width;
-                const height = canvas.height;
-                const max = Math.max(...data, 1);
-                const min = Math.min(...data, 0);
-                const range = max - min || 1;
-
-                ctx.clearRect(0, 0, width, height);
-                ctx.beginPath();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 1.5;
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-
-                data.forEach((value, index) => {
-                    const x = (index / (data.length - 1)) * width;
-                    const y = height - ((value - min) / range) * height;
-
-                    if (index === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                });
-
-                ctx.stroke();
-                ctx.lineTo(width, height);
-                ctx.lineTo(0, height);
-                ctx.closePath();
-                ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
-                ctx.fill();
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', initSparklines);
-
-        let debounceTimer;
-        Livewire.hook('morph.updated', () => {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(initSparklines, 50);
-        });
-    </script>
-    @endscript
+    
 </div>
