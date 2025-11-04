@@ -17,7 +17,7 @@ class AgentLog extends Component
         $this->agentLog = $agentLog;
 
         dump($agentLog); // --- IGNORE ---
-        $this->log = json_decode($agentLog->agent_log, true);
+        //$this->log = json_decode($agentLog->agent_log, true);
 
 
     }
