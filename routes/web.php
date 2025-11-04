@@ -1,14 +1,19 @@
 <?php
 
 use App\Livewire\Customer\Agents;
+use App\Livewire\Frontend\LandingPage;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 
+/*
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+*/
+
+Route::get('/', LandingPage::class)->name('landing');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
