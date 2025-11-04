@@ -137,6 +137,7 @@
                         $metrics = $this->getCurrentMetrics($agent);
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
+                        $name = empty($agent->pretty_name) $agent->hostname : $agent->pretty_name;
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
@@ -148,7 +149,7 @@
                         <td class="px-6 py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ $agent->hostname }}
+                                    {{ $name }}
                                 </div>
                                 @if($agent->pretty_name)
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -210,13 +211,9 @@
                                          }"
                                          :style="`width: ${cpu}%`"></div>
                                 </div>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['cpu']) }}"
-                                    data-color="rgb(239, 68, 68)"
-                                    class="sparkline-chart"
-                                    width="120"
-                                    height="20"
-                                ></canvas>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                </div>
                             </div>
                         </td>
 
@@ -246,13 +243,9 @@
                                          }"
                                          :style="`width: ${ram}%`"></div>
                                 </div>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['ram']) }}"
-                                    data-color="rgb(59, 130, 246)"
-                                    class="sparkline-chart"
-                                    width="120"
-                                    height="20"
-                                ></canvas>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                </div>
                             </div>
                         </td>
 
@@ -282,13 +275,9 @@
                                          }"
                                          :style="`width: ${gpu}%`"></div>
                                 </div>
-                                <canvas
-                                    data-sparkline="{{ json_encode($sparkline['gpu']) }}"
-                                    data-color="rgb(34, 197, 94)"
-                                    class="sparkline-chart"
-                                    width="120"
-                                    height="20"
-                                ></canvas>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{!! $disk['free'] }} / {{ $disk['size'] !!}}
+                                </div>
                             </div>
                         </td>
 
