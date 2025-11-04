@@ -15,9 +15,10 @@ class AgentLog extends Component
     public function mount(ModelsAgentLog $agentLog): void
     {
         $this->agentLog = $agentLog;
+
+        dump($agentLog); // --- IGNORE ---
         $this->log = json_decode($agentLog->agent_log, true);
 
-        dump($this->log);
 
     }
 
