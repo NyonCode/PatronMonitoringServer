@@ -138,7 +138,7 @@
                         $metrics = $this->getCurrentMetrics($agent);
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
-                        $name = empty($agent->pretty_name) $agent->hostname : $agent->pretty_name;
+                        $name = empty($agent->pretty_name) $agent->pretty_name : $agent->hostname;
                     @endphp
                     <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
                         x-data="{
