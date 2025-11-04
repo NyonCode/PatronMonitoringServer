@@ -2,15 +2,16 @@
 
 namespace App\Livewire\Customer;
 
+use App\Models\AgentLog as ModelsAgentLog;
 use Livewire\Component;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 
 class AgentLog extends Component
 {
-    public AgentLog $agentLog;
+    public ModelsAgentLog $agentLog;
 
-    public function mount(AgentLog $agentLog): void
+    public function mount(ModelsAgentLog $agentLog): void
     {
         dump($agentLog);
         $this->agentLog = $agentLog;
