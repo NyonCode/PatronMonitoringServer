@@ -24,6 +24,7 @@ class Agents extends Component
     // Modal state
     public ?int $selectedAgentId = null;
     public bool $showDetailModal = false;
+    public bool $showLogModal = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -57,6 +58,19 @@ class Agents extends Component
     public function closeDetail(): void
     {
         $this->showDetailModal = false;
+        $this->selectedAgentId = null;
+    }
+
+    public function showLog(int $agentId): void
+    {
+        $this->selectedAgentId = $agentId;
+        $this->showLogModal = true;
+    }
+
+    #[On('closeLog')]
+    public function closeLog(): void
+    {
+        $this->showLogModal = false;
         $this->selectedAgentId = null;
     }
 
