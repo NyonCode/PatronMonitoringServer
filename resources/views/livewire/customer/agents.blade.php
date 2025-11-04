@@ -187,32 +187,34 @@
 
                         <!-- CPU -->
                         <td class="px-6 py-4">
-                            <div class="space-y-1 min-w-[120px]">
-                                <div class="flex items-center justify-end gap-2">
-                                    <!--
-                                    <span class="text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
-                                    -->
-                                    <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
-                                          :class="{
-                                              'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': cpu > 80,
-                                              'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': cpu > 60 && cpu <= 80,
-                                              'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': cpu > 0 && cpu <= 60,
-                                              'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300': cpu === 0
-                                          }"
-                                          x-text="cpu + '%'"></span>
-                                </div>
-                                <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
-                                    <div class="h-2 rounded-full transition-all duration-500"
-                                         :class="{
-                                             'bg-red-500': cpu > 80,
-                                             'bg-yellow-500': cpu > 60 && cpu <= 80,
-                                             'bg-green-500': cpu > 0 && cpu <= 60,
-                                             'bg-gray-400': cpu === 0
-                                         }"
-                                         :style="`width: ${cpu}%`"></div>
-                                </div>
-                                <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{-- $disk['free'] }} / {{ $disk['size'] --}}
+                            <div class="flex items-start"> 
+                                <div class="space-y-1 min-w-[120px]">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!--
+                                        <span class="text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
+                                        -->
+                                        <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
+                                              :class="{
+                                                  'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300': cpu > 80,
+                                                  'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': cpu > 60 && cpu <= 80,
+                                                  'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': cpu > 0 && cpu <= 60,
+                                                  'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300': cpu === 0
+                                              }"
+                                              x-text="cpu + '%'"></span>
+                                    </div>
+                                    <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
+                                        <div class="h-2 rounded-full transition-all duration-500"
+                                             :class="{
+                                                 'bg-red-500': cpu > 80,
+                                                 'bg-yellow-500': cpu > 60 && cpu <= 80,
+                                                 'bg-green-500': cpu > 0 && cpu <= 60,
+                                                 'bg-gray-400': cpu === 0
+                                             }"
+                                             :style="`width: ${cpu}%`"></div>
+                                    </div>
+                                    <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                        {{-- $disk['free'] }} / {{ $disk['size'] --}}
+                                    </div>
                                 </div>
                             </div>
                         </td>
