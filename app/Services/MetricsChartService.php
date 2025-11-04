@@ -98,7 +98,7 @@ class MetricsChartService
     {
         return [
             'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-            Carbon::parse($time)->format('H:i')
+                Carbon::parse($time)->setTimezone('Europe/Prague')->format('H:i')
             )->toArray(),
             'datasets' => [
                 [
@@ -135,10 +135,10 @@ class MetricsChartService
     public function formatAggregatedMetrics(Collection $metrics, string $timeField): array
     {
         $format = $timeField === 'date' ? 'd.m.' : 'H:i';
-
+    
         return [
             'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-            Carbon::parse($time)->format($format)
+                Carbon::parse($time)->setTimezone('Europe/Prague')->format($format)
             )->toArray(),
             'datasets' => [
                 [
@@ -174,9 +174,24 @@ class MetricsChartService
      */
     public function getCurrentMetrics(Agent $agent): array
     {
-        $latest = $agent->metrics()->latest('c')->first();
+        $latest = $agent->metrics()->latest('recorded_at')->first();
 
         if (!$latest) {
+            // Pokud agent nemá aktuální metriky, vrať poslední známé historické
+            $fallback = AgentSystemMetric::where('agent_id', $agent->id)
+                ->orderByDesc('recorded_at')
+                ->first();
+
+            if ($fallback) {
+                return [
+                    'cpu' => round($fallback->cpu_usage_percent, 2),
+                    'ram' => round($fallback->ram_usage_percent, 2),
+                    'gpu' => round($fallback->gpu_usage_percent ?? 0, 2),
+                    'timestamp' => $fallback->recorded_at,
+                ];
+            }
+
+            // Pokud ani to neexistuje, vrať nulové hodnoty
             return [
                 'cpu' => 0,
                 'ram' => 0,

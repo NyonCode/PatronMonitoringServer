@@ -11,14 +11,22 @@ use Livewire\Component;
 class AgentDetail extends Component
 {
     public Agent $agent;
-    public string $period = 'day';
+    public string $period = 'hour';
     public array $chartData = [];
     public array $currentMetrics = [];
     public array $diskStatus = [];
 
+    // Indikátory dostupnosti dat
+    public bool $hasCurrentData = false;
+    public bool $hasHistoricalData = false;
+    public ?string $suggestedPeriod = null;
+    public ?string $suggestedPeriodLabel = null;
+
     // Pro inline editaci
     public bool $editingName = false;
     public string $editName = '';
+
+    private bool $isOnline = true;
 
     protected MetricsChartService $metricsService;
 
@@ -31,25 +39,110 @@ class AgentDetail extends Component
     {
         $this->agent = $agent;
         $this->editName = $this->getEditName();
+        $this->checkOnlineStatus();
         $this->loadData();
+        $this->findPeriodWithData();
     }
 
     public function updatedPeriod(): void
     {
         $this->loadData();
-        // Vysílá event při změně období, aby se graf překreslil
         $this->dispatch('periodChanged');
     }
 
+    /**
+     * Kontrola online stavu agenta
+     */
+    private function checkOnlineStatus(): void
+    {
+        if (!$this->agent->last_seen_at) {
+            $this->isOnline = false;
+            return;
+        }
+
+        $threshold = now()->subMinutes(5);
+        $this->isOnline = $this->agent->last_seen_at->greaterThan($threshold);
+    }
+
+    /**
+     * Načtení dat s kontrolou dostupnosti
+     */
     public function loadData(): void
     {
+        $this->checkOnlineStatus();
+
+        // Inicializuj prázdné hodnoty
+        $this->currentMetrics = [
+            'cpu' => 0,
+            'ram' => 0,
+            'gpu' => 0,
+        ];
+        $this->hasCurrentData = false;
+
+        // Zkus načíst aktuální metriky
+        $metrics = $this->metricsService->getCurrentMetrics($this->agent);
+        if ($metrics && ($metrics['cpu'] > 0 || $metrics['ram'] > 0 || $metrics['gpu'] > 0)) {
+            $this->currentMetrics = $metrics;
+            $this->hasCurrentData = true;
+        }
+
+        // Historická data
         $this->chartData = $this->metricsService->getChartData($this->agent, $this->period);
-        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        $this->hasHistoricalData = !empty($this->chartData['labels']) && count($this->chartData['labels']) > 0;
+
+        // Diskový status
         $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
     }
 
     /**
-     * Začne editaci názvu.
+     * Najde období s dostupnými daty
+     */
+    private function findPeriodWithData(): void
+    {
+        $this->suggestedPeriod = null;
+        $this->suggestedPeriodLabel = null;
+
+        // Pokud aktuální období má data, není třeba hledat
+        if ($this->hasHistoricalData) {
+            return;
+        }
+
+        $periods = [
+            'hour' => 'Poslední hodina',
+            'day' => 'Poslední den',
+            'week' => 'Poslední týden',
+            'month' => 'Poslední měsíc',
+            'year' => 'Poslední rok',
+        ];
+
+        foreach ($periods as $period => $label) {
+            if ($period === $this->period) {
+                continue;
+            }
+
+            $data = $this->metricsService->getChartData($this->agent, $period);
+            if (!empty($data['labels']) && count($data['labels']) > 0) {
+                $this->suggestedPeriod = $period;
+                $this->suggestedPeriodLabel = $label;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Přepne na období s daty
+     */
+    public function switchToPeriodWithData(): void
+    {
+        if ($this->suggestedPeriod) {
+            $this->period = $this->suggestedPeriod;
+            $this->loadData();
+            $this->dispatch('periodChanged');
+        }
+    }
+
+    /**
+     * Začne editaci názvu
      */
     public function startEditingName(): void
     {
@@ -58,25 +151,20 @@ class AgentDetail extends Component
     }
 
     /**
-     * Uloží nový název.
+     * Uloží nový název
      */
     public function saveName(): void
     {
-/*        $this->validate([
-            'editName' => 'required|string|max:255',
-        ]);*/
-
         $this->agent->update([
             'pretty_name' => $this->editName,
         ]);
 
         $this->editingName = false;
-
         $this->dispatch('name-updated');
     }
 
     /**
-     * Zruší editaci názvu.
+     * Zruší editaci názvu
      */
     public function cancelEditName(): void
     {
@@ -85,24 +173,63 @@ class AgentDetail extends Component
     }
 
     /**
-     * Polling pro live aktualizaci (každých 5 sekund).
-     * Aktualizuje pouze metriky, ne graf data (aby neblikal)
+     * Optimalizovaný polling - aktualizuje pouze pokud je agent online
      */
     public function refreshMetrics(): void
     {
-        // Aktualizuj aktuální metriky a stav disků
-        $this->currentMetrics = $this->metricsService->getCurrentMetrics($this->agent);
-        $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
+        $this->agent->refresh();
+        $this->checkOnlineStatus();
 
-        // Aktualizuj graf data pouze pokud zobrazujeme poslední hodinu
-        // protože tam jsou změny častější
+        // Pokud je agent offline, nepřenačítej data tak často
+        if (!$this->isOnline) {
+            // Zkontroluj pouze jednou za delší dobu, jestli se neobjevila nová data
+            if (rand(1, 12) === 1) { // Každou minutu (5s * 12)
+                $this->findPeriodWithData();
+            }
+            return;
+        }
+
+        // Aktualizuj aktuální metriky
+        $newMetrics = $this->metricsService->getCurrentMetrics($this->agent);
+        
+        // Kontrola zda jsou validní data
+        if ($newMetrics && ($newMetrics['cpu'] > 0 || $newMetrics['ram'] > 0 || $newMetrics['gpu'] > 0)) {
+            $this->hasCurrentData = true;
+            if ($this->currentMetrics !== $newMetrics) {
+                $this->currentMetrics = $newMetrics;
+            }
+        } else {
+            $this->hasCurrentData = false;
+            $this->currentMetrics = [
+                'cpu' => 0,
+                'ram' => 0,
+                'gpu' => 0,
+            ];
+        }
+
+        // Disk status
+        $diskStatus = $this->metricsService->getDiskStatus($this->agent);
+        if ($this->diskStatus !== $diskStatus) {
+            $this->diskStatus = $diskStatus;
+        }
+
+        // Aktualizuj graf data pouze pro poslední hodinu
         if ($this->period === 'hour') {
-            $this->chartData = $this->metricsService->getChartData($this->agent, 'hour');
+            $newChartData = $this->metricsService->getChartData($this->agent, 'hour');
+            $hasData = !empty($newChartData['labels']) && count($newChartData['labels']) > 0;
+            
+            if ($hasData !== $this->hasHistoricalData) {
+                $this->hasHistoricalData = $hasData;
+            }
+            
+            if ($hasData) {
+                $this->chartData = $newChartData;
+            }
         }
     }
 
     /**
-     * Získá formátované síťové informace.
+     * Získá formátované síťové informace
      */
     public function getNetworkInfo(): ?array
     {
@@ -121,10 +248,19 @@ class AgentDetail extends Component
         ];
     }
 
+    /**
+     * Uzavře detail
+     */
+    public function closeDetail(): void
+    {
+        $this->dispatch('closeDetail')->to('customer.agents');
+    }
+
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agent-detail', [
             'networkInfo' => $this->getNetworkInfo(),
+            'isOnline' => $this->isOnline,
         ]);
     }
 

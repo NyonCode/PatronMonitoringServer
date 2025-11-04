@@ -1,0 +1,9 @@
+{
+  "name": "Laravel 12 Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "appPort": [8000],
+  "forwardPorts": [8000, 3306, 6379],
+  "postCreateCommand": "composer install && npm install && cp .env.example .env && php artisan key:generate"
+}
