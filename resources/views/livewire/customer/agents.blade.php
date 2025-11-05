@@ -139,7 +139,7 @@
                         $sparkline = $this->getSparklineData($agent);
                         $name = empty($agent->pretty_name) ? $agent->hostname : $agent->pretty_name;
                     @endphp
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors" 
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
                         x-data="{
                             cpu: {{ $metrics['cpu'] ?? 0 }},
                             ram: {{ $metrics['ram'] ?? 0 }},
@@ -151,7 +151,7 @@
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
                                     {{ $name }}
                                 </div>
-                                @if(empty($agent->pretty_name))
+                                @if(! empty($agent->pretty_name))
                                     <div class="text-sm text-zinc-500 dark:text-zinc-400">
                                         {{ $agent->hostname }}
                                     </div>
@@ -187,7 +187,7 @@
 
                         <!-- CPU -->
                         <td class="px-6 py-4">
-                            <div class="flex items-start"> 
+                            <div class="flex items-start">
                                 <div class="space-y-1 min-w-[120px]">
                                     <div class="flex items-center justify-end gap-2">
                                         <!--
@@ -381,5 +381,5 @@
     @if($showLogModal && $selectedAgentId)
         @livewire('customer.agent-log', ['agentLog' => $this->agents->find($selectedAgentId)->log], key('agent-log-'.$selectedAgentId))
     @endif
-    
+
 </div>
