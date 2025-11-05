@@ -7,7 +7,7 @@
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Celkem agentů</p>
                     <p class="text-3xl font-bold text-zinc-900 dark:text-white">{{ $this->agents->total() }}</p>
                 </div>
-                <svg class="w-12 h-12 text-zinc-400" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20m0 0l-.75 3M9 20a6 6 0 1112 0m0 0l.75 3M21 20l.75 3"></path>
                 </svg>
             </div>
@@ -19,7 +19,7 @@
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Online</p>
                     <p class="text-3xl font-bold text-green-600">{{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'online')->count() }}</p>
                 </div>
-                <svg class="w-12 h-12 text-green-600" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-green-600" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
                 </svg>
             </div>
@@ -31,7 +31,7 @@
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">Offline</p>
                     <p class="text-3xl font-bold text-red-600">{{ $this->agents->filter(fn($agent) => $this->getAgentStatus($agent) === 'offline')->count() }}</p>
                 </div>
-                <svg class="w-12 h-12 text-red-600" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-red-600" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
                 </svg>
             </div>
@@ -46,7 +46,7 @@
                         return $metrics['cpu'] > 80 || $metrics['ram'] > 80;
                     })->count() }}</p>
                 </div>
-                <svg class="w-12 h-12 text-yellow-600" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
                 </svg>
             </div>
@@ -64,7 +64,7 @@
                         placeholder="Hledat podle názvu, pretty name nebo IP adresy..."
                         class="w-full px-4 py-2 pl-10 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-zinc-400" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
@@ -91,7 +91,7 @@
                         >
                             Název
                             @if($sortBy === 'hostname')
-                                <svg class="w-4 h-4" viewBox="0 0 20 20">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M3 8l2.828-2.828a2 2 0 112.828 0L9 8m2 0l2.828-2.828a2 2 0 112.828 0L17 8m-8 8l2.828-2.828a2 2 0 112.828 0L17 16" stroke="currentColor" stroke-width="2" fill="none"></path>
                                 </svg>
                             @endif
@@ -107,7 +107,7 @@
                         >
                             IP adresa
                             @if($sortBy === 'ip_address')
-                                <svg class="w-4 h-4" viewBox="0 0 20 20">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M3 8l2.828-2.828a2 2 0 112.828 0L9 8m2 0l2.828-2.828a2 2 0 112.828 0L17 8m-8 8l2.828-2.828a2 2 0 112.828 0L17 16" stroke="currentColor" stroke-width="2" fill="none"></path>
                                 </svg>
                             @endif
@@ -163,14 +163,14 @@
                         <td class="px-6 py-4">
                             @if($status === 'online')
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
-                                    <svg class="w-4 h-4" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
                                     </svg>
                                     Online
                                 </span>
                             @else
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
-                                    <svg class="w-4 h-4"  viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
                                     </svg>
                                     Offline
@@ -328,7 +328,7 @@
                                 wire:click="showDetail({{ $agent->id }})"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                             >
-                                <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
@@ -339,7 +339,7 @@
                                 wire:click="showLog({{ $agent->id }})"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
                             >
-                                <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                 </svg>
                                     Log
@@ -350,7 +350,7 @@
                     <tr>
                         <td colspan="8" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center gap-2">
-                                <svg class="w-12 h-12 text-zinc-400" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                                 </svg>
                                 <p class="font-semibold text-zinc-900 dark:text-white">Žádní agenti nenalezeni</p>
@@ -372,12 +372,12 @@
 
     <!-- Modal s detaily agenta -->
     @if($showDetailModal && $selectedAgentId)
-        @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key(['agent-detail-'.$selectedAgentId]))
+        @livewire('customer.agent-detail', ['agent' => $this->agents->find($selectedAgentId)], key('agent-detail-'.$selectedAgentId))
     @endif
 
     <!-- Modal s logem agenta -->
     @if($showLogModal && $selectedAgentId)
-        @livewire('customer.agent-log', ['agent' => $this->agents->find($selectedAgentId)], key(['agent-log-'.$selectedAgentId]))
+        @livewire('customer.agent-log', ['agents' => $this->agents->find($selectedAgentId)], key('agent-log-'.$selectedAgentId))
     @endif
 
 </div>
