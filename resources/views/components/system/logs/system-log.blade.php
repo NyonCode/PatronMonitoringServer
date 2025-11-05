@@ -9,9 +9,8 @@
     <div
         class="divide-y divide-zinc-100 dark:divide-zinc-800 max-h-[600px] overflow-y-auto font-mono text-sm leading-relaxed">
         @forelse ($logs as $log)
-            @dd($log)
             @php
-                $type = strtolower($log->EntryType ?? 'info');
+                $type = strtolower($log['EntryType'] ?? 'info');
                 $colors = [
                     'info' => 'text-blue-600 dark:text-blue-400',
                     'warning' => 'text-amber-600 dark:text-amber-400',
@@ -19,6 +18,9 @@
                 ];
                 $color = $colors[$type] ?? 'text-zinc-400';
             @endphp
+
+
+            @dump($log)
 
             <div class="flex items-start gap-3 px-6 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
                 <div class="{{ $color }}">
@@ -45,7 +47,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span
-                                class="font-semibold {{ $color }}">{{ strtoupper($log->EntryType ?? 'INFO') }}</span>
+                                class="font-semibold {{ $color }}">{{ Str::upper($log['EntryType'] ?? 'INFO') }}</span>
                             <span class="text-zinc-400 text-xs">{{ $log['Source'] ?? 'Unknown Source' }}</span>
                         </div>
                         <span class="text-zinc-500 text-xs font-medium">
