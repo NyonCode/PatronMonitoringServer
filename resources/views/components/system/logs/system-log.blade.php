@@ -42,8 +42,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M13 16h-1v-4h-1m1-4h.01M12 4a8 8 0 100 16 8 8 0 000-16z"/>
                         </svg>
-                    @endif                </div>
-                <p class="flex-1">
+                    @endif
+                </div>
+
+                <div class="flex-1">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span

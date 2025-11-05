@@ -28,13 +28,10 @@
 
         <!-- Content -->
         <div class="space-y-6 p-4">
-
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
                 <x-system.logs.agent-log :logs="$agentLog->agent_log" />
                 <x-system.logs.system-log :logs="$agentLog->system_logs" />
             </div>
-
         </div>
 
         <!-- Footer -->
