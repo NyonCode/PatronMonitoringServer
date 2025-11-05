@@ -212,7 +212,7 @@
                                          :style="`width: ${cpu}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{ ' ' }}
+                                    &nbsp;
                                 </div>
                             </div>
                         </td>
@@ -244,6 +244,7 @@
                                          :style="`width: ${ram}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    &nbsp;
                                     {{-- $disk['free'] }} / {{ $disk['size'] --}}
                                 </div>
                             </div>
@@ -276,6 +277,7 @@
                                          :style="`width: ${gpu}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
+                                    &nbsp;
                                     {{-- $disk['free'] }} / {{ $disk['size'] --}}
                                 </div>
                             </div>
