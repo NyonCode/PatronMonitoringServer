@@ -1,4 +1,5 @@
 <div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4" wire:poll.5s="refreshMetrics">
+
     <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
@@ -28,8 +29,13 @@
                                 <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
                                     {{ $this->getEditName() }}
                                 </h2>
+                                <button wire:click="startEditingName" class="p-2 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            @if(! empty($agent->pretty_name))
+                            @if($agent->pretty_name)
                                 <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
                             @endif
                         </div>
