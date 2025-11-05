@@ -10,9 +10,8 @@ use Illuminate\Contracts\View\View;
 
 class AgentLog extends Component
 {
-    public Agent $agent;
-    public ModelsAgentLog $agentLog;
-    public $log;
+    public ?Agent $agent = null;
+    public ?ModelsAgentLog $agentLog = null;
 
     public function mount(Agent $agent): void
     {
