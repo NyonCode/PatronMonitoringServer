@@ -13,7 +13,7 @@ Route::get('/', function () {
 })->name('home');
 */
 
-Route::get('/', LandingPage::class)->name('landing');
+Route::get('/', LandingPage::class)->name('home');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

@@ -2,14 +2,19 @@
 
 namespace App\Livewire\Frontend;
 
-use App\Models\AgentLog;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class LandingPage extends Component
 {
-    public function render()
+    public function mount(): void
     {
-        return view('frontend.landing-page')
-            ->layout('layouts.frontend');
+        //
+    }
+    public function render(): View|Factory|\Illuminate\View\View
+    {
+        return view('livewire.frontend.landing-page')
+            ->layout('components.layouts.frontend');
     }
 }
