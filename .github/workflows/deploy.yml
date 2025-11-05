@@ -54,7 +54,9 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
-          npm ci
+          echo "📦 Installing Node.js dependencies..."
+          npm install
+          echo "🏗️ Building frontend..."
           npm run build
 
       # 5️⃣ Upload přes FTP
