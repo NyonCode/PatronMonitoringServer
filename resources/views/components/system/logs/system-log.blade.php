@@ -9,6 +9,7 @@
     <div
         class="divide-y divide-zinc-100 dark:divide-zinc-800 max-h-[600px] overflow-y-auto font-mono text-sm leading-relaxed">
         @forelse ($logs as $log)
+            @dd($log)
             @php
                 $type = strtolower($log->EntryType ?? 'info');
                 $colors = [
