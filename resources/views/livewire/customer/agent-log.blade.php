@@ -1,5 +1,8 @@
 <div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4" wire:poll.5s="refreshMetrics">
     <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        @php
+            $prettyName = empty($agent->pretty_name) ? $agent->hostname : $agent->pretty_name;
+        @endphp
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
             <div class="flex items-center justify-between w-full">
@@ -7,10 +10,10 @@
                     <div class="flex flex-col">
                         <div class="flex items-center gap-2">
                             <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
-                                Log: {{ $this->prettyName() }}
+                                Log: {{ $prettyName }}
                             </h2>
                         </div>
-                        @if(! empty($this->prettyName()))
+                        @if(! empty($agent->pretty_name))
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
                         @endif
                     </div>

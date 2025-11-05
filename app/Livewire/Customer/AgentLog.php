@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Customer;
 
+use App\Models\Agent;
 use App\Models\AgentLog as ModelsAgentLog;
 use Livewire\Component;
 use Illuminate\Contracts\View\Factory;
@@ -9,16 +10,14 @@ use Illuminate\Contracts\View\View;
 
 class AgentLog extends Component
 {
+    public Agent $agent;
     public ModelsAgentLog $agentLog;
     public $log;
 
-    public function mount(ModelsAgentLog $agentLog): void
+    public function mount(Agent $agent): void
     {
-        $this->agentLog = $agentLog;
-
-        dump($agentLog); // --- IGNORE ---
-        //$this->log = json_decode($agentLog->agent_log, true);
-
+        $this->agent = $agent;
+        $this->agentLog = $agent->log;
 
     }
 
