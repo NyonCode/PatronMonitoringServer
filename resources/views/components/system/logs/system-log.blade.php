@@ -41,9 +41,11 @@
                             {{ \Carbon\Carbon::parse($log['Time'])->format('Y-m-d H:i:s') }}
                         </span>
                     </div>
-                    <p class="text-zinc-700 dark:text-zinc-300 mt-1 text-sm whitespace-pre-line">
-                        {{ $log['Message'] ?? '' }}
-                    </p>
+                    <div class="bg-zinc-900/40 border border-zinc-700 rounded-xl p-4">
+                        <p class="font-semibold mb-2 text-zinc-100">{{ $log->EntryType }}</p>
+                        <p class="text-zinc-300 mb-4">{{ $log->Time }}</p>
+                        {!! $log->formatted_message !!}
+                    </div>
                 </div>
             </div>
         @empty
