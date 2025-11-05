@@ -4,40 +4,52 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 class AgentLog extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'agent_id',
         'agent_log',
         'system_logs',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'agent_log' => 'array',
-        'system_logs' => 'array',
-    ];
+    // JSON dekódujeme ručně – ne pomocí castu 'array'
+    protected $casts = [];
 
     /**
-     * Return formatted system log message
-     *
-     * @param  string  $message
-     *
-     * @return string
+     * Vrátí system_logs jako kolekci objektů.
+     */
+    public function getSystemLogsAttribute($value): Collection
+    {
+        $logs = collect(json_decode($value, false));
+
+        return $logs->map(function ($log) {
+            $log->formatted_message = $this->getFormattedSystemMessage($log->Message ?? '');
+            return $log;
+        });
+    }
+
+    /**
+     * Vrátí agent_log jako kolekci objektů.
+     */
+    public function getAgentLogAttribute($value): Collection
+    {
+        $logs = collect(json_decode($value, false));
+
+        return $logs->map(function ($log) {
+            $log->Time = $log->Time ?? now()->toISOString();
+            $log->EntryType = $log->EntryType ?? 'Info';
+            $log->Message = $log->Message ?? '';
+            return $log;
+        });
+    }
+
+    /**
+     * Formátuje text systémového logu.
      */
     public function getFormattedSystemMessage(string $message): string
     {
-        // zachytí text mezi apostrofy
         preg_match_all("/'([^']+)'/", $message, $matches);
 
         $labels = [
@@ -51,7 +63,7 @@ class AgentLog extends Model
             'SID',
             'Místo volání',
             'Aplikace',
-            'Aplikační SID'
+            'Aplikační SID',
         ];
 
         $details = collect($matches[1] ?? [])
@@ -61,16 +73,10 @@ class AgentLog extends Model
             })
             ->implode('');
 
-        // nahradí původní text prvním řádkem + oddělí detaily
         $header = strtok($message, "\n");
         return "<p>{$header}</p><hr>{$details}";
     }
 
-    /**
-     * Get the agent that owns the log.
-     *
-     * @return BelongsTo
-     */
     public function agent(): BelongsTo
     {
         return $this->belongsTo(Agent::class);
