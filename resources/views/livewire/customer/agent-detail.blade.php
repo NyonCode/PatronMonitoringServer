@@ -1,5 +1,4 @@
 <div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4" wire:poll.5s="refreshMetrics">
-
     <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
@@ -29,13 +28,8 @@
                                 <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
                                     {{ $this->getEditName() }}
                                 </h2>
-                                <button wire:click="startEditingName" class="p-2 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                                    </svg>
-                                </button>
                             </div>
-                            @if($agent->pretty_name)
+                            @if(! empty($agent->pretty_name))
                                 <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
                             @endif
                         </div>
@@ -57,7 +51,7 @@
                     Agent je offline — zobrazují se poslední známá data
                 </div>
             @endif
-            
+
             <!-- Základní informace -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
@@ -129,8 +123,8 @@
             <!-- Aktuální hodnoty metrik pouze s progress bary -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 @foreach(['cpu' => 'CPU', 'ram' => 'RAM', 'gpu' => 'GPU'] as $metric => $label)
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4" 
-                         x-data="{ value: {{ $currentMetrics[$metric] ?? 0 }} }" 
+                    <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4"
+                         x-data="{ value: {{ $currentMetrics[$metric] ?? 0 }} }"
                          x-init="$watch('$wire.currentMetrics.{{ $metric }}', val => value = val || 0)">
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
@@ -145,7 +139,7 @@
                                     <span x-text="value"></span>%
                                 </span>
                             </div>
-                            
+
                             <!-- Progress bar s animací -->
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                 <div class="h-3 rounded-full transition-all duration-500 ease-out"
@@ -178,7 +172,7 @@
                                 @endif
                             </p>
                             @if($suggestedPeriod)
-                                <button 
+                                <button
                                     wire:click="switchToPeriodWithData"
                                     class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +218,7 @@
                             <h3 class="text-lg font-semibold text-zinc-900 dark:text-white mb-2">Žádná historická data</h3>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Pro vybrané období nejsou k dispozici žádná data.</p>
                             @if($suggestedPeriod && $suggestedPeriod !== $period)
-                                <button 
+                                <button
                                     wire:click="switchToPeriodWithData"
                                     class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
                                     Zobrazit data za {{ $suggestedPeriodLabel }}
@@ -240,7 +234,7 @@
                 <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Stav disků</h3>
                 <div class="space-y-4">
                     @forelse($diskStatus as $disk)
-                        <div x-data="{ usage: {{ $disk['usage_percent'] ?? 0 }} }" 
+                        <div x-data="{ usage: {{ $disk['usage_percent'] ?? 0 }} }"
                              x-init="$watch('$wire.diskStatus', () => usage = {{ $disk['usage_percent'] ?? 0 }})">
                             <div class="flex items-center justify-between mb-2">
                                 <div>
@@ -293,11 +287,11 @@
 
         function updateChartData() {
             if (!chart || updateInProgress) return;
-            
+
             updateInProgress = true;
             const data = $wire.get('chartData');
             const hasData = $wire.get('hasHistoricalData');
-            
+
             if (!hasData || !data || !data.labels || data.labels.length === 0) {
                 updateInProgress = false;
                 return;
@@ -309,7 +303,7 @@
                     dataset.data = data.datasets[index].data;
                 }
             });
-            
+
             chart.update('none');
             updateInProgress = false;
         }
