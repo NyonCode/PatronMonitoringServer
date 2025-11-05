@@ -186,11 +186,13 @@ class AgentController extends Controller
     {
         $agent = Agent::where('uuid', $UUID)->firstOrFail();
 
+        $logs = $this->removeFullHtmlDocument($request->logs);
+
         $agent->log()->updateOrCreate(
             ['agent_id' => $agent->id],
             [
-                'agent_log' => $request->input('logs', []),
-                'system_logs' => $request->input('system_logs', []),
+                'agent_log' => $logs,
+                'system_logs' => $request->system_logs,
             ]
         );
 
@@ -205,5 +207,14 @@ class AgentController extends Controller
     public function health(): JsonResponse
     {
         return response()->json(['status' => 'ok', "timestamp" => now()]);
+    }
+
+    private function removeFullHtmlDocument(string $input): string
+    {
+        return preg_replace(
+            '#<!DOCTYPE html>\\\\n<html lang="en">.*?</body>\\\\n</html>#si',
+            '',
+            $input
+        );
     }
 }

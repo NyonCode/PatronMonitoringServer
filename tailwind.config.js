@@ -16,11 +16,17 @@ export default {
                     '50%': { transform: 'translateX(10%)' },
                     '100%': { transform: 'translateX(-10%)' },
                 },
+                slowFloat: {
+                    '0%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-15px)' },
+                    '100%': { transform: 'translateY(0)' },
+                },
             },
             animation: {
                 'fade-in': 'fadeIn 1s ease-in-out forwards',
                 'float-slow': 'float-slow 6s ease-in-out infinite',
                 'gradient-move': 'gradient-move 10s ease-in-out infinite',
+                'slow-float': 'slowFloat 12s ease-in-out infinite',
             },
         },
     },
