@@ -15,15 +15,13 @@ class AgentLog extends Component
 
     public function mount(Agent $agent): void
     {
-        $agent->dump();
-
         $this->agent = $agent;
         $this->agentLog = $this->agent->log;
     }
 
     public function render(): View|Factory|\Illuminate\View\View
     {
-        $this->agent->dump();
+        dump($this->agent);
 
         return view('livewire.customer.agent-log', ['agentLog' => $this->agentLog] );
     }
