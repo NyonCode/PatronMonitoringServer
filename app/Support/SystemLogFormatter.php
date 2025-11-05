@@ -30,6 +30,6 @@ class SystemLogFormatter
             ->implode('');
 
         $header = strtok($message, "\n");
-        return "<p>{$header}</p><hr>{$details}";
+        return "<div>{$header}</div><hr class='py-2'>{$details}";
     }
 }
