@@ -57,7 +57,7 @@
                     <div class="bg-zinc-900/40 border border-zinc-700 rounded-xl p-4">
                         <p class="font-semibold mb-2 text-zinc-100">{{ $log['EntryType'] }}</p>
                         <p class="text-zinc-300 mb-4">{{ $log['Time'] }}</p>
-                        {!! $log->formatted_message !!}
+                        {!! SystemLogFormatter::format($log['Message']) !!}
                     </div>
                 </div>
             </div>
