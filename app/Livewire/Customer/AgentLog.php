@@ -18,6 +18,8 @@ class AgentLog extends Component
         $this->agent = $agent;
         $this->agentLog = $this->agent->log;
 
+        dump($this->agentLog);
+
     }
 
     public function render(): View|Factory|\Illuminate\View\View
