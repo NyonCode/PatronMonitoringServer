@@ -24,7 +24,6 @@ class AgentLog extends Component
     public function render(): View|Factory|\Illuminate\View\View
     {
         $this->agent->dump();
-        $this->agentLog->dump();
 
         return view('livewire.customer.agent-log', ['agentLog' => $this->agentLog] );
     }
