@@ -16,7 +16,7 @@ class AgentLog extends Component
     public function mount(Agent $agent): void
     {
         $this->agent = $agent;
-        $this->agentLog = $agent->logs;
+        $this->agentLog = $this->agent->log;
 
     }
 
