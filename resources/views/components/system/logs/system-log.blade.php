@@ -1,4 +1,7 @@
-@php use App\Support\SystemLogFormatter;use Carbon\Carbon; @endphp
+@php
+    use App\Support\SystemLogFormatter;
+    use Carbon\Carbon;
+@endphp
 
 <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-sm">
     <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
@@ -18,9 +21,6 @@
                 ];
                 $color = $colors[$type] ?? 'text-zinc-400';
             @endphp
-
-
-            @dump($log)
 
             <div class="flex items-start gap-3 px-6 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
                 <div class="{{ $color }}">
