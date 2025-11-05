@@ -367,7 +367,7 @@
             <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-700">
                 {{ $this->agents->links() }}
             </div>
-            {@}endif
+        @endif
     </div>
 
     <!-- Modal s detaily agenta -->
