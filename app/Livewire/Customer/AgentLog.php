@@ -17,14 +17,13 @@ class AgentLog extends Component
     {
         $this->agent = $agent;
         $this->agentLog = $this->agent->log;
-
-
     }
 
     public function render(): View|Factory|\Illuminate\View\View
     {
         dump($this->agentLog);
         dump($this->agent->log);
+        dump($this->agent);
         return view('livewire.customer.agent-log', ['agentLog' => $this->agentLog] );
     }
 }
