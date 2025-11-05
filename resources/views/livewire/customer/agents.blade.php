@@ -212,7 +212,7 @@
                                          :style="`width: ${cpu}%`"></div>
                                 </div>
                                 <div class="text-xs text-zinc-500 dark:text-zinc-400">
-
+                                    {{ ' ' }}
                                 </div>
                             </div>
                         </td>
