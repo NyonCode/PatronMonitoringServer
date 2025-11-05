@@ -43,7 +43,7 @@
                                   d="M13 16h-1v-4h-1m1-4h.01M12 4a8 8 0 100 16 8 8 0 000-16z"/>
                         </svg>
                     @endif                </div>
-                <div class="flex-1">
+                <p class="flex-1">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span
@@ -54,11 +54,9 @@
                             {{ Carbon::parse($log['Time'])->format('Y-m-d H:i:s') }}
                         </span>
                     </div>
-                    <div class="bg-zinc-900/40 border border-zinc-700 rounded-xl p-4">
-                        <p class="font-semibold mb-2 text-zinc-100">{{ $log['EntryType'] }}</p>
-                        <p class="text-zinc-300 mb-4">{{ $log['Time'] }}</p>
+                    <p class="text-zinc-700 dark:text-zinc-300 mt-1 text-sm whitespace-pre-line">
                         {!! SystemLogFormatter::formatted($log['Message']) !!}
-                    </div>
+                    </p>
                 </div>
             </div>
         @empty
