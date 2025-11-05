@@ -64,6 +64,7 @@ class Agents extends Component
     public function showLog(int $agentId): void
     {
         $this->selectedAgentId = $agentId;
+        dump($agentId);
         $this->showLogModal = true;
     }
 
