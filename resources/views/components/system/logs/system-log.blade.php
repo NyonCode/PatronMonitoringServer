@@ -13,19 +13,24 @@
                     'warning' => 'text-amber-600 dark:text-amber-400',
                     'error' => 'text-red-600 dark:text-red-400',
                 ];
-                $icons = [
-                    'info' => 'i-lucide-info',
-                    'warning' => 'i-lucide-alert-triangle',
-                    'error' => 'i-lucide-x-octagon',
-                ];
                 $color = $colors[$type] ?? 'text-zinc-400';
-                $icon = $icons[$type] ?? 'i-lucide-info';
             @endphp
 
             <div class="flex items-start gap-3 px-6 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
                 <div class="{{ $color }}">
-                    <x-dynamic-component :component="$icon" class="w-5 h-5 mt-0.5" />
-                </div>
+                    @if ($type === 'error')
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0zM12 9v4m0 4h.01" />
+                        </svg>
+                    @elseif ($type === 'warning')
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.68 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.32.19 3 1.73 3z" />
+                        </svg>
+                    @else
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 4a8 8 0 100 16 8 8 0 000-16z" />
+                        </svg>
+                    @endif                </div>
                 <div class="flex-1">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
