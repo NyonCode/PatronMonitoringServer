@@ -3,66 +3,93 @@
     use Carbon\Carbon;
 @endphp
 
-<div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-sm">
-    <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-100">System Logs</h3>
-        <span class="text-sm text-zinc-500">Last updated {{ now()->format('H:i:s') }}</span>
-    </div>
+<div class="space-y-3">
+    @forelse ($logs as $log)
+        @php
+            $type = strtolower($log['EntryType'] ?? 'info');
+            $colors = [
+                'info' => [
+                    'bg' => 'bg-blue-50 dark:bg-blue-900/10',
+                    'border' => 'border-blue-200 dark:border-blue-800',
+                    'text' => 'text-blue-700 dark:text-blue-300',
+                    'badge' => 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                ],
+                'warning' => [
+                    'bg' => 'bg-yellow-50 dark:bg-yellow-900/10',
+                    'border' => 'border-yellow-200 dark:border-yellow-800',
+                    'text' => 'text-yellow-700 dark:text-yellow-300',
+                    'badge' => 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
+                ],
+                'error' => [
+                    'bg' => 'bg-red-50 dark:bg-red-900/10',
+                    'border' => 'border-red-200 dark:border-red-800',
+                    'text' => 'text-red-700 dark:text-red-300',
+                    'badge' => 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+                ],
+            ];
+            $color = $colors[$type] ?? $colors['info'];
+        @endphp
 
-    <div
-        class="divide-y divide-zinc-100 dark:divide-zinc-800 max-h-[600px] overflow-y-auto font-mono text-sm leading-relaxed">
-        @forelse ($logs as $log)
-            @php
-                $type = strtolower($log['EntryType'] ?? 'info');
-                $colors = [
-                    'info' => 'text-blue-600 dark:text-blue-400',
-                    'warning' => 'text-amber-600 dark:text-amber-400',
-                    'error' => 'text-red-600 dark:text-red-400',
-                ];
-                $color = $colors[$type] ?? 'text-zinc-400';
-            @endphp
-
-            <div class="flex items-start gap-3 px-6 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                <div class="{{ $color }}">
+        <div class="rounded-lg border {{ $color['border'] }} {{ $color['bg'] }} p-4 transition-all hover:shadow-md">
+            <div class="flex items-start gap-3">
+                <!-- Icon -->
+                <div class="{{ $color['text'] }} flex-shrink-0">
                     @if ($type === 'error')
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0zM12 9v4m0 4h.01"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     @elseif ($type === 'warning')
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.68 1.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16c-.77 1.32.19 3 1.73 3z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     @else
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13 16h-1v-4h-1m1-4h.01M12 4a8 8 0 100 16 8 8 0 000-16z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     @endif
                 </div>
 
-                <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span
-                                class="font-semibold {{ $color }}">{{ Str::upper($log['EntryType'] ?? 'INFO') }}</span>
-                            <span class="text-zinc-400 text-xs">{{ $log['Source'] ?? 'Unknown Source' }}</span>
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="inline-flex px-2 py-1 rounded text-xs font-semibold {{ $color['badge'] }}">
+                                {{ strtoupper($log['EntryType'] ?? 'INFO') }}
+                            </span>
+                            @if(!empty($log['Source']))
+                                <span class="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                                    {{ $log['Source'] }}
+                                </span>
+                            @endif
                         </div>
-                        <span class="text-zinc-500 text-xs font-medium">
+                        <time class="text-xs text-zinc-500 dark:text-zinc-400 font-mono whitespace-nowrap">
                             {{ Carbon::parse($log['Time'])->format('Y-m-d H:i:s') }}
-                        </span>
+                        </time>
                     </div>
-                    <p class="text-zinc-700 dark:text-zinc-300 mt-1 text-sm whitespace-pre-line">
-                        {!! SystemLogFormatter::formatted($log['Message']) !!}
-                    </p>
+
+                    <!-- Message -->
+                    <div class="prose prose-sm dark:prose-invert max-w-none">
+                        <div class="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-words">
+                            {!! SystemLogFormatter::formatted($log['Message'] ?? 'No message') !!}
+                        </div>
+                    </div>
                 </div>
             </div>
-        @empty
-            <div class="text-center text-zinc-500 py-6">Žádné systémové logy k zobrazení.</div>
-        @endforelse
-    </div>
+        </div>
+    @empty
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <svg class="w-16 h-16 text-zinc-300 dark:text-zinc-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p class="text-lg font-semibold text-zinc-900 dark:text-white mb-1">Žádné systémové logy</p>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                @if(!empty($search) || !empty($filterType))
+                    Zkuste upravit filtr nebo vyhledávání
+                @else
+                    Zatím nebyly zaznamenány žádné systémové logy
+                @endif
+            </p>
+        </div>
+    @endforelse
 </div>
