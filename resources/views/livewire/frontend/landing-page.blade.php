@@ -324,4 +324,164 @@
             </div>
         </div>
     </footer>
+
+    @script
+    <script>
+        // Chart instances
+        let demoChart = null;
+        let liveChart = null;
+
+        // Initialize Demo Chart (top dashboard preview)
+        function initDemoChart() {
+            const ctx = document.getElementById('demo-cpu-chart');
+            if (!ctx) return;
+
+            if (demoChart) {
+                demoChart.destroy();
+            }
+
+            demoChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['-25s', '-20s', '-15s', '-10s', '-5s', 'now'],
+                    datasets: [{
+                        label: 'CPU %',
+                        data: [25, 35, 42, 40, 38, 44],
+                        tension: 0.4,
+                        borderWidth: 2,
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        }
+                    },
+                },
+            });
+        }
+
+        // Initialize Live Chart (demo section)
+        function initLiveChart() {
+            const ctx = document.getElementById('live-cpu-chart');
+            if (!ctx) return;
+
+            if (liveChart) {
+                liveChart.destroy();
+            }
+
+            const devices = @json($devices);
+
+            liveChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: devices.map(d => d.name),
+                    datasets: [{
+                        label: 'CPU %',
+                        data: devices.map(d => d.cpu),
+                        backgroundColor: devices.map(d => {
+                            if (d.status === 'critical') return '#ef4444';
+                            if (d.status === 'warning') return '#f59e0b';
+                            return '#0ea5e9';
+                        }),
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'CPU: ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                },
+            });
+        }
+
+        // Update charts when data changes
+        function updateCharts() {
+            const devices = @json($devices);
+
+            // Update live chart
+            if (liveChart) {
+                liveChart.data.labels = devices.map(d => d.name);
+                liveChart.data.datasets[0].data = devices.map(d => d.cpu);
+                liveChart.data.datasets[0].backgroundColor = devices.map(d => {
+                    if (d.status === 'critical') return '#ef4444';
+                    if (d.status === 'warning') return '#f59e0b';
+                    return '#0ea5e9';
+                });
+                liveChart.update('none');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initDemoChart();
+            initLiveChart();
+        });
+
+        // Re-initialize after Livewire updates
+        Livewire.hook('morph.updated', () => {
+            setTimeout(() => {
+                if (!demoChart) initDemoChart();
+                if (!liveChart) initLiveChart();
+                updateCharts();
+            }, 100);
+        });
+
+        // Update charts on polling
+        document.addEventListener('livewire:update', () => {
+            updateCharts();
+        });
+    </script>
+    @endscript
 </div>

@@ -13,46 +13,101 @@ class AgentLog extends Component
     public Agent $agent;
     public ?ModelsAgentLog $agentLog = null;
 
+    // Filtry a vyhledávání
+    public string $searchAgent = '';
+    public string $searchSystem = '';
+    public string $filterTypeAgent = '';
+    public string $filterTypeSystem = '';
+    public bool $autoRefresh = false;
+
     public function mount(Agent $agent): void
     {
         $this->agent = $agent;
+        $this->loadLogs();
+    }
+
+    public function loadLogs(): void
+    {
         $this->agentLog = $this->agent->log;
     }
 
-
-    public function getFormattedMessage(string $message): string
+    public function refreshLogs(): void
     {
-        // zachytí text mezi apostrofy
-        preg_match_all("/'([^']+)'/", $message, $matches);
+        $this->loadLogs();
+        $this->dispatch('logs-refreshed');
+    }
 
-        $labels = [
-            'Výchozí pro počítač',
-            'Oprávnění',
-            'Operace',
-            'CLSID',
-            'APPID',
-            'Počítač',
-            'Uživatel',
-            'SID',
-            'Místo volání',
-            'Aplikace',
-            'Aplikační SID'
-        ];
+    public function toggleAutoRefresh(): void
+    {
+        $this->autoRefresh = !$this->autoRefresh;
+    }
 
-        $details = collect($matches[1] ?? [])
-            ->map(function ($value, $index) use ($labels) {
-                $label = $labels[$index] ?? "Parametr $index";
-                return "<div><strong>{$label}:</strong> {$value}</div>";
-            })
-            ->implode('');
+    public function getFilteredAgentLogs(): array
+    {
+        if (!$this->agentLog || !$this->agentLog->agent_log) {
+            return [];
+        }
 
-        // nahradí původní text prvním řádkem + oddělí detaily
-        $header = strtok($message, "\n");
-        return "<p>{$header}</p><hr>{$details}";
+        $logs = collect($this->agentLog->agent_log);
+
+        // Filtr podle typu
+        if ($this->filterTypeAgent) {
+            $logs = $logs->filter(fn($log) =>
+                strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeAgent)
+            );
+        }
+
+        // Vyhledávání
+        if ($this->searchAgent) {
+            $search = strtolower($this->searchAgent);
+            $logs = $logs->filter(fn($log) =>
+            str_contains(strtolower($log['Message'] ?? ''), $search)
+            );
+        }
+
+        return $logs->sortByDesc('Time')->values()->toArray();
+    }
+
+    public function getFilteredSystemLogs(): array
+    {
+        if (!$this->agentLog || !$this->agentLog->system_logs) {
+            return [];
+        }
+
+        $logs = collect($this->agentLog->system_logs);
+
+        // Filtr podle typu
+        if ($this->filterTypeSystem) {
+            $logs = $logs->filter(fn($log) =>
+                strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeSystem)
+            );
+        }
+
+        // Vyhledávání
+        if ($this->searchSystem) {
+            $search = strtolower($this->searchSystem);
+            $logs = $logs->filter(fn($log) =>
+                str_contains(strtolower($log['Message'] ?? ''), $search) ||
+                str_contains(strtolower($log['Source'] ?? ''), $search)
+            );
+        }
+
+        return $logs->sortByDesc('Time')->values()->toArray();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->searchAgent = '';
+        $this->searchSystem = '';
+        $this->filterTypeAgent = '';
+        $this->filterTypeSystem = '';
     }
 
     public function render(): View|Factory|\Illuminate\View\View
     {
-        return view('livewire.customer.agent-log', ['agentLog' => $this->agentLog] );
+        return view('livewire.customer.agent-log', [
+            'agentLogs' => $this->getFilteredAgentLogs(),
+            'systemLogs' => $this->getFilteredSystemLogs(),
+        ]);
     }
 }
