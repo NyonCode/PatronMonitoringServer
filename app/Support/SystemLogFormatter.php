@@ -94,6 +94,10 @@ class SystemLogFormatter
         // Odstraní "Event ID XXXX ve zdroji DCOM."
         $mainPart = preg_replace('/Event ID \d+ ve zdroji \w+\.\s*/', '', $mainPart);
 
+        // Odstraní "Následující informace jsou součástí události:"
+        $mainPart = str_replace('Následující informace jsou součástí události:', '', $mainPart);
+        $mainPart = trim($mainPart);
+
         return $mainPart;
     }
 

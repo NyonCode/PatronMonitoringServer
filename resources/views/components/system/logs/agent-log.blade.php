@@ -64,7 +64,7 @@
                     </div>
 
                     <!-- Message -->
-                    <div class="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-words">
+                    <div class="text-sm text-zinc-700 dark:text-zinc-300 whitespace-normal break-words">
                         {{ Str::trim($log['Message']) ?? 'No message' }}
                     </div>
                 </div>
