@@ -1,4 +1,4 @@
-<div class="relative min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden" wire:poll.5s>
+<div class="relative min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden" wire:poll.10s>
 
     {{-- Animated background - Custom network visualization --}}
     <div class="fixed inset-0 pointer-events-none">
@@ -79,7 +79,7 @@
     <section id="hero" class="min-h-screen flex items-center justify-center relative pt-20">
         <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
             {{-- Left content --}}
-            <div class="space-y-8 z-10" x-data x-intersect="$el.classList.add('animate-fade-in-up')">
+            <div class="space-y-8 z-10">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-full text-sm font-medium backdrop-blur-sm">
                     <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
                     <span class="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
@@ -89,7 +89,7 @@
 
                 <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight">
                     <span class="block text-white">Dokonalý</span>
-                    <span class="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-gradient-x">
+                    <span class="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                         přehled
                     </span>
                     <span class="block text-white">o vaší infrastruktuře</span>
@@ -101,29 +101,29 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#demo" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-lg shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-500/75 overflow-hidden transition-all duration-300 hover:scale-105">
+                    <a href="#demo" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-lg shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-500/75 overflow-hidden hover:scale-105">
                         <span class="relative z-10">Vyzkoušet demo</span>
-                        <svg class="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="relative z-10 w-5 h-5 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                         </svg>
-                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100"></div>
                     </a>
-                    <a href="#features" class="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-600 rounded-xl text-slate-300 hover:border-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all duration-300 font-bold text-lg backdrop-blur-sm">
+                    <a href="#features" class="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-600 rounded-xl text-slate-300 hover:border-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 font-bold text-lg backdrop-blur-sm">
                         <span>Zjistit více</span>
                     </a>
                 </div>
 
                 {{-- Stats --}}
                 <div class="grid grid-cols-3 gap-4 pt-8">
-                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50 transition-all">
+                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50">
                         <div class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">99.9%</div>
                         <div class="text-xs text-slate-400 mt-1">Uptime</div>
                     </div>
-                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50 transition-all">
+                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50">
                         <div class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">&lt;100ms</div>
                         <div class="text-xs text-slate-400 mt-1">Response</div>
                     </div>
-                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50 transition-all">
+                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/50">
                         <div class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">24/7</div>
                         <div class="text-xs text-slate-400 mt-1">Support</div>
                     </div>
@@ -131,7 +131,7 @@
             </div>
 
             {{-- Right - Dashboard Preview with Live Chart --}}
-            <div class="relative z-10" x-data x-intersect="$el.classList.add('animate-fade-in-right')">
+            <div class="relative z-10" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-300" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
                 <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-3xl blur-3xl"></div>
                 <div class="relative bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/50 p-8 transform hover:scale-[1.02] transition-all duration-500">
                     {{-- Header --}}
@@ -153,9 +153,9 @@
                         </div>
                     </div>
 
-                    {{-- Chart --}}
-                    <div class="mb-6 h-48 relative">
-                        <canvas id="hero-chart" class="w-full h-full"></canvas>
+                    {{-- Chart with fixed height --}}
+                    <div class="mb-6 relative" style="height: 200px;">
+                        <canvas id="hero-chart" style="width: 100%; height: 100%;"></canvas>
                     </div>
 
                     {{-- Metrics Grid --}}
@@ -195,7 +195,7 @@
     {{-- FEATURES SECTION --}}
     <section id="features" class="py-32 relative">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-20" x-data x-intersect="$el.classList.add('animate-fade-in-up')">
+            <div class="text-center mb-20" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-sm font-medium mb-6">
                     <span class="text-cyan-400">✨ Funkce</span>
                 </div>
@@ -210,8 +210,8 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 {{-- Feature 1 --}}
-                <div class="group relative" x-data x-intersect="$el.classList.add('animate-fade-in-up')" style="animation-delay: 0.1s">
-                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="group relative" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="relative p-8 bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-500 h-full">
                         <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-cyan-500/50">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,8 +226,8 @@
                 </div>
 
                 {{-- Feature 2 --}}
-                <div class="group relative" x-data x-intersect="$el.classList.add('animate-fade-in-up')" style="animation-delay: 0.2s">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="group relative" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="relative p-8 bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 hover:border-blue-500/50 transition-all duration-500 h-full">
                         <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-blue-500/50">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,8 +242,8 @@
                 </div>
 
                 {{-- Feature 3 --}}
-                <div class="group relative" x-data x-intersect="$el.classList.add('animate-fade-in-up')" style="animation-delay: 0.3s">
-                    <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="group relative" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-300" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="relative p-8 bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 hover:border-purple-500/50 transition-all duration-500 h-full">
                         <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-purple-500/50">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,10 +260,126 @@
         </div>
     </section>
 
+    {{-- DETAILED FEATURES SECTION --}}
+    <section class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                {{-- Left - Image/Visual --}}
+                <div class="relative" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 -translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-3xl blur-3xl"></div>
+                    <div class="relative bg-slate-900/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8">
+                        <div class="space-y-4">
+                            {{-- Metric rows --}}
+                            <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Server uptime</div>
+                                    <div class="text-xl font-bold text-white">99.99%</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Response time</div>
+                                    <div class="text-xl font-bold text-white">&lt;50ms</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400">Security score</div>
+                                    <div class="text-xl font-bold text-white">A+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Right - Content --}}
+                <div class="space-y-8" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full text-sm font-medium mb-6">
+                            <span class="text-purple-400">💎 Premium Features</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-white mb-6">
+                            Pokročilé funkce pro<br/>
+                            <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">profesionály</span>
+                        </h2>
+                        <p class="text-lg text-slate-400 leading-relaxed">
+                            Náš monitorovací systém nabízí komplexní sadu nástrojů pro správu a sledování vaší infrastruktury.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-1">Automatické alerty</h4>
+                                <p class="text-slate-400">Okamžité notifikace při překročení prahových hodnot přes email, SMS nebo webhook.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-1">Historická data</h4>
+                                <p class="text-slate-400">Uchovávání dat až 1 rok zpět s možností exportu do CSV, JSON nebo PDF.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-1">Multi-tenant architektura</h4>
+                                <p class="text-slate-400">Správa více projektů a týmů s granulárními oprávněními a izolací dat.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-pink-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-1">Custom dashboardy</h4>
+                                <p class="text-slate-400">Vytvořte si vlastní pohledy s přetahováním widgetů a uložením layoutů.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- DEMO SECTION --}}
     <section id="demo" class="py-32 relative">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-20" x-data x-intersect="$el.classList.add('animate-fade-in-up')">
+            <div class="text-center mb-20" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-sm font-medium mb-6">
                     <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     <span class="text-cyan-400">Live Demo</span>
@@ -275,19 +391,19 @@
             </div>
 
             <div class="grid lg:grid-cols-2 gap-8">
-                {{-- Device list --}}
-                <div class="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50" x-data x-intersect="$el.classList.add('animate-fade-in-left')">
+                {{-- Device list with fixed height --}}
+                <div class="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 -translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
                     <div class="flex items-center justify-between mb-8">
                         <h3 class="text-2xl font-bold text-white">Monitorovaná zařízení</h3>
                         <div class="flex items-center gap-2 text-sm text-slate-400">
                             <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            Aktualizace každých 5s
+                            Aktualizace každých 10s
                         </div>
                     </div>
 
-                    <div class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+                    <div class="space-y-3" style="height: 600px; overflow-y: auto;">
                         @foreach($devices as $device)
-                            <div class="group p-5 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-300">
+                            <div class="group p-5 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-300" wire:key="device-{{ $device['id'] }}">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-3">
                                         <div class="w-3 h-3 rounded-full {{ $device['status'] === 'critical' ? 'bg-red-500 shadow-lg shadow-red-500/50' : ($device['status'] === 'warning' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' : 'bg-green-500 shadow-lg shadow-green-500/50') }} animate-pulse"></div>
@@ -301,21 +417,21 @@
                                     <div class="text-center">
                                         <div class="text-xs text-slate-400 mb-1">CPU</div>
                                         <div class="text-lg font-bold text-cyan-400">{{ $device['cpu'] }}%</div>
-                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2 overflow-hidden">
                                             <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ $device['cpu'] }}%"></div>
                                         </div>
                                     </div>
                                     <div class="text-center">
                                         <div class="text-xs text-slate-400 mb-1">RAM</div>
                                         <div class="text-lg font-bold text-blue-400">{{ $device['mem'] }}%</div>
-                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2 overflow-hidden">
                                             <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ $device['mem'] }}%"></div>
                                         </div>
                                     </div>
                                     <div class="text-center">
                                         <div class="text-xs text-slate-400 mb-1">Disk</div>
                                         <div class="text-lg font-bold text-purple-400">{{ $device['disk'] }}%</div>
-                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+                                        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2 overflow-hidden">
                                             <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ $device['disk'] }}%"></div>
                                         </div>
                                     </div>
@@ -325,11 +441,11 @@
                     </div>
                 </div>
 
-                {{-- Live chart --}}
-                <div class="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50" x-data x-intersect="$el.classList.add('animate-fade-in-right')">
+                {{-- Live chart with fixed dimensions --}}
+                <div class="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-700/50" x-data="{ visible: false }" x-intersect.once="visible = true" x-show="visible" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
                     <h3 class="text-2xl font-bold text-white mb-8">Zatížení CPU (live)</h3>
-                    <div class="h-[600px]">
-                        <canvas id="demo-chart"></canvas>
+                    <div class="relative" style="height: 600px;">
+                        <canvas id="demo-chart" style="width: 100%; height: 100%;"></canvas>
                     </div>
                     <p class="text-sm text-slate-400 mt-6 text-center">
                         Data jsou v demo režimu simulována pro ukázku funkcionality
@@ -406,61 +522,6 @@
 
     {{-- Custom Styles --}}
     <style>
-        @keyframes gradient-x {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .animate-gradient-x {
-            background-size: 200% 200%;
-            animation: gradient-x 3s ease infinite;
-        }
-
-        @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fade-in-left {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fade-in-right {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in-left {
-            animation: fade-in-left 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in-right {
-            animation: fade-in-right 0.8s ease-out forwards;
-        }
-
         .metrics-particle {
             position: absolute;
             left: var(--x);
@@ -470,6 +531,7 @@
             color: rgba(6, 182, 212, 0.4);
             animation: float 8s ease-in-out infinite;
             animation-delay: var(--delay);
+            pointer-events: none;
         }
 
         @keyframes float {
@@ -479,22 +541,35 @@
             90% { opacity: 0.4; }
         }
 
-        .custom-scrollbar::-webkit-scrollbar {
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
             width: 8px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: rgba(51, 65, 85, 0.3);
             border-radius: 10px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: linear-gradient(to bottom, #06b6d4, #3b82f6);
             border-radius: 10px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(to bottom, #0891b2, #2563eb);
+        }
+
+        /* Smooth transitions for all elements */
+        * {
+            transition-property: color, background-color, border-color, opacity, transform;
+            transition-duration: 300ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Disable transitions for animations and specific properties */
+        canvas, svg, img {
+            transition: none !important;
         }
     </style>
 
