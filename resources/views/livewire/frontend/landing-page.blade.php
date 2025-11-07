@@ -498,7 +498,11 @@
         }
     </style>
 
-    {{-- Scripts --}}
+    @assets
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    @endassets
+
+    @script
     <script>
         // Network Canvas Animation
         function initNetworkCanvas() {
@@ -574,13 +578,13 @@
 
         function initHeroChart() {
             const ctx = document.getElementById('hero-chart');
-            if (!ctx) return;
+            if (!ctx || typeof Chart === 'undefined') return;
 
             if (heroChart) {
                 heroChart.destroy();
             }
 
-            const data = @json($devices);
+            const data = $wire.get('devices');
             
             heroChart = new Chart(ctx, {
                 type: 'line',
@@ -651,13 +655,13 @@
 
         function initDemoChart() {
             const ctx = document.getElementById('demo-chart');
-            if (!ctx) return;
+            if (!ctx || typeof Chart === 'undefined') return;
 
             if (demoChart) {
                 demoChart.destroy();
             }
 
-            const devices = @json($devices);
+            const devices = $wire.get('devices');
 
             demoChart = new Chart(ctx, {
                 type: 'bar',
@@ -731,9 +735,9 @@
         }
 
         function updateCharts() {
-            const devices = @json($devices);
+            const devices = $wire.get('devices');
 
-            if (demoChart) {
+            if (demoChart && devices) {
                 demoChart.data.labels = devices.map(d => d.name);
                 demoChart.data.datasets[0].data = devices.map(d => d.cpu);
                 demoChart.data.datasets[0].backgroundColor = devices.map(d => {
@@ -745,15 +749,22 @@
             }
         }
 
-        // Initialize everything
+        // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             initNetworkCanvas();
-            initHeroChart();
-            initDemoChart();
+            
+            // Wait for Chart.js to load
+            const checkChart = setInterval(() => {
+                if (typeof Chart !== 'undefined') {
+                    clearInterval(checkChart);
+                    initHeroChart();
+                    initDemoChart();
+                }
+            }, 100);
         });
 
-        // Livewire hooks
-        Livewire.hook('morph.updated', () => {
+        // Livewire hooks for Livewire 3
+        Livewire.hook('morph.updated', ({ component }) => {
             setTimeout(() => {
                 if (!heroChart) initHeroChart();
                 if (!demoChart) initDemoChart();
@@ -761,4 +772,5 @@
             }, 100);
         });
     </script>
+    @endscript
 </div>
