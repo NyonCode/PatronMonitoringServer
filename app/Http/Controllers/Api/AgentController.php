@@ -209,8 +209,9 @@ class AgentController extends Controller
         return response()->json(['status' => 'ok', "timestamp" => now()]);
     }
 
-    private function removeFullHtmlDocument(string $input): string
+    private function removeFullHtmlDocument($input): mixed
     {
+        dump($input)
         return preg_replace(
             '#<!DOCTYPE html>\\\\n<html lang="en">.*?</body>\\\\n</html>#si',
             '',
