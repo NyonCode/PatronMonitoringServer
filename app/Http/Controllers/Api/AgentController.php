@@ -211,7 +211,7 @@ class AgentController extends Controller
 
     private function removeFullHtmlDocument($input): string
     {
-        dump($input)
+        dump($input);
         return preg_replace(
             '#<!DOCTYPE html>\\\\n<html lang="en">.*?</body>\\\\n</html>#si',
             '',
