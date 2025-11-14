@@ -186,12 +186,12 @@ class AgentController extends Controller
     {
         $agent = Agent::where('uuid', $UUID)->firstOrFail();
 
-        $logs = $this->removeFullHtmlDocument($request->logs);
+        //$logs = $this->removeFullHtmlDocument($request->logs);
 
         $agent->log()->updateOrCreate(
             ['agent_id' => $agent->id],
             [
-                'agent_log' => $logs,
+                'agent_log' => $request->logs,
                 'system_logs' => $request->system_logs,
             ]
         );
