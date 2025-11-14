@@ -84,7 +84,7 @@
             <table class="w-full">
                 <thead class="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                 <tr>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-1 lg:py-3 text-left">
                         <button
                             wire:click="sortBy('hostname')"
                             class="flex items-center gap-2 font-semibold text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -97,10 +97,10 @@
                             @endif
                         </button>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-1 lg:py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Status</span>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-1 lg:py-3 text-left">
                         <button
                             wire:click="sortBy('ip_address')"
                             class="flex items-center gap-2 font-semibold text-sm text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -113,19 +113,19 @@
                             @endif
                         </button>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">CPU</span>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">RAM</span>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">GPU</span>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-left">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-3 text-left">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Disk</span>
                     </th>
-                    <th class="px-1 md:px-2 lg:px-4 xl:px-6 py-3 text-center">
+                    <th class="px-1 md:px-2 lg:px-4 2xl:px-6 py-3 text-center">
                         <span class="font-semibold text-sm text-zinc-700 dark:text-zinc-300">Akce</span>
                     </th>
                 </tr>
@@ -146,7 +146,7 @@
                             gpu: {{ $metrics['gpu'] ?? 0 }}
                         }">
                         <!-- Název -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             <div>
                                 <div class="font-medium text-zinc-900 dark:text-zinc-100">
                                     {{ $name }}
@@ -160,7 +160,7 @@
                         </td>
 
                         <!-- Status -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             @if($status === 'online')
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -179,14 +179,14 @@
                         </td>
 
                         <!-- IP adresa -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono">
                                 {{ $agent->ip_address ?? 'N/A' }}
                             </span>
                         </td>
 
                         <!-- CPU -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-end gap-2">
                                     <!--
@@ -218,7 +218,7 @@
                         </td>
 
                         <!-- RAM -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-end gap-2">
                                     <!--
@@ -251,7 +251,7 @@
                         </td>
 
                         <!-- GPU -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             <div class="space-y-1 min-w-[120px]">
                                 <div class="flex items-center justify-end gap-2">
                                     <!--
@@ -284,7 +284,7 @@
                         </td>
 
                         <!-- Nejvíce zaplněný disk -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4">
                             @if($disk)
                                 <div class="space-y-1 min-w-[150px]">
                                     <div class="flex items-center justify-between gap-2">
@@ -325,7 +325,7 @@
                         </td>
 
                         <!-- Tlačítko Detail -->
-                        <td class="px-1 md:px-2 lg:px-4 xl:px-6 py-4 text-center">
+                        <td class="px-1 md:px-2 lg:px-4 2xl:px-6 py-2 lg:py-4 text-center">
                             <button
                                 wire:click="showDetail({{ $agent->id }})"
                                 class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -350,7 +350,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-1 md:px-2 lg:px-4 xl:px-6 py-12 text-center">
+                        <td colspan="8" class="px-1 md:px-2 lg:px-4 2xl:px-6 py-12 text-center">
                             <div class="flex flex-col items-center gap-2">
                                 <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
