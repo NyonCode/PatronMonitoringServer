@@ -147,7 +147,7 @@
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Mapper drivers</p>
                             @dump($sessionInfo->mapped_drivers)
                             @foreach($sessionInfo->mapped_drivers as $mappedDrivers)
-                                    <p class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers->Letter }}</p>
+                                    <p class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers['Letter'] }}</p>
                             @endforeach
                         </div>
 
