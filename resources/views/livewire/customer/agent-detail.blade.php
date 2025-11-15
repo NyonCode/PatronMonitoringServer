@@ -145,19 +145,20 @@
                         </div>
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Mapper drivers</p>
-                            @dump($sessionInfo->mapped_drivers)
                             @foreach($sessionInfo->mapped_drivers as $mappedDrivers)
-                                    <p class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers['Letter'] }}</p>
+                                <div>
+                                    <div class="font-mono font-bold text-zinc-900 dark:text-white">{{ $mappedDrivers['Letter'] }}</div>
+                                    <div class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers['Path'] }}</div>
+                                </div>
                             @endforeach
                         </div>
 
                         <div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Session time</p>
-                            @dump($sessionInfo->accessible_paths)
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Accessible paths</p>
                             @foreach($sessionInfo->accessible_paths as $accessiblePaths)
                                 <p class="font-mono text-zinc-900 dark:text-white">
+                                    {{ $accessiblePaths }}
                                 </p>
-
                             @endforeach
                         </div>
 
