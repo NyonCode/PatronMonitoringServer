@@ -11,19 +11,27 @@ use Livewire\Component;
 class AgentDetail extends Component
 {
     public Agent $agent;
+
     public string $period = 'hour';
+
     public array $chartData = [];
+
     public array $currentMetrics = [];
+
     public array $diskStatus = [];
 
     // Indikátory dostupnosti dat
     public bool $hasCurrentData = false;
+
     public bool $hasHistoricalData = false;
+
     public ?string $suggestedPeriod = null;
+
     public ?string $suggestedPeriodLabel = null;
 
     // Pro inline editaci
     public bool $editingName = false;
+
     public string $editName = '';
 
     private bool $isOnline = true;
@@ -55,8 +63,9 @@ class AgentDetail extends Component
      */
     private function checkOnlineStatus(): void
     {
-        if (!$this->agent->last_seen_at) {
+        if (! $this->agent->last_seen_at) {
             $this->isOnline = false;
+
             return;
         }
 
@@ -88,7 +97,7 @@ class AgentDetail extends Component
 
         // Historická data
         $this->chartData = $this->metricsService->getChartData($this->agent, $this->period);
-        $this->hasHistoricalData = !empty($this->chartData['labels']) && count($this->chartData['labels']) > 0;
+        $this->hasHistoricalData = ! empty($this->chartData['labels']) && count($this->chartData['labels']) > 0;
 
         // Diskový status
         $this->diskStatus = $this->metricsService->getDiskStatus($this->agent);
@@ -121,7 +130,7 @@ class AgentDetail extends Component
             }
 
             $data = $this->metricsService->getChartData($this->agent, $period);
-            if (!empty($data['labels']) && count($data['labels']) > 0) {
+            if (! empty($data['labels']) && count($data['labels']) > 0) {
                 $this->suggestedPeriod = $period;
                 $this->suggestedPeriodLabel = $label;
                 break;
@@ -181,17 +190,18 @@ class AgentDetail extends Component
         $this->checkOnlineStatus();
 
         // Pokud je agent offline, nepřenačítej data tak často
-        if (!$this->isOnline) {
+        if (! $this->isOnline) {
             // Zkontroluj pouze jednou za delší dobu, jestli se neobjevila nová data
             if (rand(1, 12) === 1) { // Každou minutu (5s * 12)
                 $this->findPeriodWithData();
             }
+
             return;
         }
 
         // Aktualizuj aktuální metriky
         $newMetrics = $this->metricsService->getCurrentMetrics($this->agent);
-        
+
         // Kontrola zda jsou validní data
         if ($newMetrics && ($newMetrics['cpu'] > 0 || $newMetrics['ram'] > 0 || $newMetrics['gpu'] > 0)) {
             $this->hasCurrentData = true;
@@ -216,12 +226,12 @@ class AgentDetail extends Component
         // Aktualizuj graf data pouze pro poslední hodinu
         if ($this->period === 'hour') {
             $newChartData = $this->metricsService->getChartData($this->agent, 'hour');
-            $hasData = !empty($newChartData['labels']) && count($newChartData['labels']) > 0;
-            
+            $hasData = ! empty($newChartData['labels']) && count($newChartData['labels']) > 0;
+
             if ($hasData !== $this->hasHistoricalData) {
                 $this->hasHistoricalData = $hasData;
             }
-            
+
             if ($hasData) {
                 $this->chartData = $newChartData;
             }
@@ -235,7 +245,7 @@ class AgentDetail extends Component
     {
         $network = $this->agent->network;
 
-        if (!$network) {
+        if (! $network) {
             return null;
         }
 

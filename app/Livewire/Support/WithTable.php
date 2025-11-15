@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Support;
 
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 
@@ -11,23 +10,29 @@ trait WithTable
     use WithPagination;
 
     public int $perPage = 10;
+
     public $sortBy;
+
     public string $sortDirection = 'asc';
+
     public string $globalSearch = '';
+
     /**
      * @var array <string, string>
      */
     public array $filters = [];
+
     public array $columnsVisible = [];
+
     public array $perPageOptions = [5, 10, 25, 50];
-        /**
+
+    /**
      * @var string[]
      */
-
     public function mountWithTable(): void
     {
         foreach ($this->columns() as $key => $column) {
-            if (!isset($this->columnsVisible[$key])) {
+            if (! isset($this->columnsVisible[$key])) {
                 $this->columnsVisible[$key] = $column['default'] ?? true;
             }
         }
@@ -37,8 +42,6 @@ trait WithTable
 
     /**
      * Sort the table by a column.
-     *
-     * @param string $column
      */
     public function sort(string $column): void
     {
@@ -52,7 +55,7 @@ trait WithTable
 
     public function toggleColumn($key): void
     {
-        $this->columnsVisible[$key] = !($this->columnsVisible[$key] ?? false);
+        $this->columnsVisible[$key] = ! ($this->columnsVisible[$key] ?? false);
     }
 
     #[Computed]
@@ -65,19 +68,19 @@ trait WithTable
     {
         $query = $this->model();
 
-        if (!empty($this->relationships)) {
+        if (! empty($this->relationships)) {
             $query = $query->with($this->relationships);
         }
 
         if ($this->globalSearch) {
             $query = $query->where(function ($q) {
                 foreach ($this->columns() as $key => $col) {
-                    if (!empty($col['searchable'])) {
+                    if (! empty($col['searchable'])) {
                         if (str_contains($key, '.')) {
                             [$relation, $field] = explode('.', $key);
-                            $q->orWhereHas($relation, fn ($r) => $r->where($field, 'like', '%' . $this->globalSearch . '%'));
+                            $q->orWhereHas($relation, fn ($r) => $r->where($field, 'like', '%'.$this->globalSearch.'%'));
                         } else {
-                            $q->orWhere($key, 'like', '%' . $this->globalSearch . '%');
+                            $q->orWhere($key, 'like', '%'.$this->globalSearch.'%');
                         }
                     }
                 }
@@ -89,9 +92,9 @@ trait WithTable
             if (strlen($value) > 0) {
                 if (str_contains($key, '.')) {
                     [$relation, $field] = explode('.', $key);
-                    $query->whereHas($relation, fn ($r) => $r->where($field, 'like', '%' . $value . '%'));
+                    $query->whereHas($relation, fn ($r) => $r->where($field, 'like', '%'.$value.'%'));
                 } else {
-                    $query->where($key, 'like', '%' . $value . '%');
+                    $query->where($key, 'like', '%'.$value.'%');
                 }
             }
         }
@@ -112,9 +115,7 @@ trait WithTable
             'sortDirection',
             'globalSearch',
             'filters',
-            'columnsVisible'
+            'columnsVisible',
         ];
     }
-
-
 }

@@ -35,8 +35,6 @@ class AgentNetworkInfo extends Model
 
     /**
      * Get the agent that owns the network info.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {

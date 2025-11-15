@@ -39,8 +39,6 @@ class Agent extends Model
 
     /**
      * Define a one-to-one relationship with the AgentLog model.
-     *
-     * @return HasOne
      */
     public function log(): HasOne
     {
@@ -49,8 +47,6 @@ class Agent extends Model
 
     /**
      * Define a one-to-one relationship with the AgentNetworkInfo model.
-     *
-     * @return HasOne
      */
     public function network(): HasOne
     {
@@ -59,8 +55,6 @@ class Agent extends Model
 
     /**
      * Define a one-to-many relationship with the AgentDisk model.
-     *
-     * @return HasMany
      */
     public function disk(): HasMany
     {
@@ -69,11 +63,14 @@ class Agent extends Model
 
     /**
      * Define a one-to-many relationship with the AgentSystemMetric model.
-     *
-     * @return HasMany
      */
     public function metrics(): HasMany
     {
         return $this->hasMany(AgentSystemMetric::class);
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(AgentUserSession::class);
     }
 }

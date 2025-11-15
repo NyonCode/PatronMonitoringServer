@@ -45,11 +45,8 @@ class AgentMetricDaily extends Model
         'gpu_max' => 'decimal:2',
     ];
 
-
     /**
      * Get the agent that owns the metric.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {

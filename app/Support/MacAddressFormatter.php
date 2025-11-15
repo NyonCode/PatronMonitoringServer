@@ -18,6 +18,7 @@ class MacAddressFormatter
     public static function formatWithColons(string $mac): string
     {
         $normalized = self::normalize($mac);
+
         return implode(':', str_split($normalized, 2));
     }
 
@@ -27,6 +28,7 @@ class MacAddressFormatter
     public static function formatWithDashes(string $mac): string
     {
         $normalized = self::normalize($mac);
+
         return implode('-', str_split($normalized, 2));
     }
 
@@ -40,7 +42,6 @@ class MacAddressFormatter
 
     /**
      * Check if the given MAC address is valid.
-     * @param string $mac
      */
     public static function isValid(string $mac): bool
     {

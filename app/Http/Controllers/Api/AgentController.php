@@ -9,15 +9,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
-use Psy\Util\Json;
 
 class AgentController extends Controller
 {
-
     /**
      * Return all agents
-     *
-     * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection
     {
@@ -26,10 +22,6 @@ class AgentController extends Controller
 
     /**
      * Create new agent
-     *
-     * @param  Request  $request
-     *
-     * @return AgentResource
      */
     public function store(Request $request): AgentResource
     {
@@ -44,10 +36,6 @@ class AgentController extends Controller
 
     /**
      * Show agent
-     *
-     * @param  Agent  $agent
-     *
-     * @return AgentResource
      */
     public function show(Agent $agent): AgentResource
     {
@@ -56,11 +44,6 @@ class AgentController extends Controller
 
     /**
      * Update agent
-     *
-     * @param  Request  $request
-     * @param  Agent  $agent
-     *
-     * @return AgentResource
      */
     public function update(Request $request, Agent $agent): AgentResource
     {
@@ -77,10 +60,6 @@ class AgentController extends Controller
 
     /**
      * Delete agent
-     *
-     * @param  Agent  $agent
-     *
-     * @return JsonResponse
      */
     public function destroy(Agent $agent): JsonResponse
     {
@@ -91,10 +70,6 @@ class AgentController extends Controller
 
     /**
      * Check if agent exists
-     *
-     * @param  string|int  $agent_id
-     *
-     * @return JsonResponse
      */
     public function checkUserExists(string|int $agent_id): JsonResponse
     {
@@ -105,10 +80,6 @@ class AgentController extends Controller
 
     /**
      * Register client
-     *
-     * @param  Request  $request
-     *
-     * @return JsonResponse
      */
     public function registerClient(Request $request): JsonResponse
     {
@@ -119,7 +90,7 @@ class AgentController extends Controller
                 'hostname' => $request->hostname,
                 'ip_address' => $request->ip_address,
                 'last_seen_at' => now(),
-                'token' => Str::uuid()
+                'token' => Str::uuid(),
             ]
         );
         $agent->save();
@@ -129,18 +100,13 @@ class AgentController extends Controller
 
     /**
      * Heartbeat from agent
-     *
-     * @param  string  $UUID
-     * @param  Request  $request
-     *
-     * @return JsonResponse
      */
     public function heartbeat(string $UUID, Request $request): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->first();
 
         $agent->update([
-            'last_seen_at' => now()
+            'last_seen_at' => now(),
         ]);
 
         $agent->metrics()->create([
@@ -156,7 +122,7 @@ class AgentController extends Controller
                 [
                     'usage_percent' => $diskData['UsagePercent'],
                     'free' => $diskData['Free'],
-                    'size' => $diskData['Size']
+                    'size' => $diskData['Size'],
                 ]
             );
         }
@@ -168,25 +134,29 @@ class AgentController extends Controller
                 'subnet_mask' => $request->network_info['SubnetMask'],
                 'gateway' => $request->network_info['Gateway'],
                 'dns' => $request->network_info['Dns'],
-                'mac_address' => $request->network_info['MacAddress']
-        ]);
+                'mac_address' => $request->network_info['MacAddress'],
+            ]);
+
+        $agent->sessions()->updateOrCreate(
+            [],
+            [
+                'session_user' => $request->session_info['User'],
+                'session_start' => $request->session_info['SessionStart'],
+                'mapped_drivers' => $request->session_info['MappedDrivers'],
+                'accessible_paths' => $request->session_info['AccessiblePaths'],
+            ]);
 
         return response()->json(['RemoteCommands' => '', 'interval' => $agent->update_interval]);
     }
 
     /**
      * Create or update logs for agent
-     *
-     * @param  string  $UUID
-     * @param  Request  $request
-     *
-     * @return JsonResponse
      */
     public function logs(string $UUID, Request $request): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->firstOrFail();
 
-        //$logs = $this->removeFullHtmlDocument($request->logs);
+        // $logs = $this->removeFullHtmlDocument($request->logs);
 
         $agent->log()->updateOrCreate(
             ['agent_id' => $agent->id],
@@ -201,25 +171,22 @@ class AgentController extends Controller
 
     /**
      * Return health status
-     *
-     * @return JsonResponse
      */
     public function health(): JsonResponse
     {
-        return response()->json(['status' => 'ok', "timestamp" => now()]);
+        return response()->json(['status' => 'ok', 'timestamp' => now()]);
     }
 
     private function removeFullHtmlDocument(mixed $input): mixed
     {
-        if (!is_string($input)) {
+        if (! is_string($input)) {
             return $input;
         }
-    
+
         return preg_replace(
             '#<!DOCTYPE html>\s*<html[^>]*>.*?</body>\s*</html>#si',
             '',
             $input
         );
     }
-
 }

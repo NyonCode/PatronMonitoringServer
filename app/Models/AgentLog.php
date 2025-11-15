@@ -30,10 +30,6 @@ class AgentLog extends Model
 
     /**
      * Return formatted system log message
-     *
-     * @param  string  $message
-     *
-     * @return string
      */
     public function getFormattedSystemMessage(string $message): string
     {
@@ -51,25 +47,25 @@ class AgentLog extends Model
             'SID',
             'Místo volání',
             'Aplikace',
-            'Aplikační SID'
+            'Aplikační SID',
         ];
 
         $details = collect($matches[1] ?? [])
             ->map(function ($value, $index) use ($labels) {
                 $label = $labels[$index] ?? "Parametr $index";
+
                 return "<div><strong>{$label}:</strong> {$value}</div>";
             })
             ->implode('');
 
         // nahradí původní text prvním řádkem + oddělí detaily
         $header = strtok($message, "\n");
+
         return "<p>{$header}</p><hr>{$details}";
     }
 
     /**
      * Get the agent that owns the log.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {
