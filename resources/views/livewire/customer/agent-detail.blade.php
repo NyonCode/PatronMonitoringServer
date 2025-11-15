@@ -130,14 +130,14 @@
             @if($sessionInfo)
 
                 @php
-                    $diff = now()->diff($sessionInfo['session_start']);
+                    $diff = now()->diff($sessionInfo->session_start);
                 @endphp
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                     <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Session info</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">User</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $sessionInfo['session_user'] ?? 'N/A' }}</p>
+                            <p class="font-mono text-zinc-900 dark:text-white">{{ $sessionInfo->session_user ?? 'N/A' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Session time</p>
