@@ -154,11 +154,12 @@
                         </div>
 
                         <div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Accessible paths</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Session time</p>
+                            @dump($sessionInfo->accessible_paths)
                             @foreach($sessionInfo->accessible_paths as $accessiblePaths)
                                 <p class="font-mono text-zinc-900 dark:text-white">
-                                    {{ $accessiblePaths }}
                                 </p>
+
                             @endforeach
                         </div>
 
