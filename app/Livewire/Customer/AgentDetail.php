@@ -3,11 +3,9 @@
 namespace App\Livewire\Customer;
 
 use App\Models\Agent;
-use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use LaravelIdea\Helper\App\Models\_IH_AgentUserSession_C;
 use Livewire\Component;
 
 class AgentDetail extends Component
@@ -260,20 +258,22 @@ class AgentDetail extends Component
         ];
     }
 
+    /**
+     * Returns agent session info
+     */
     private function getAgentSessionInfo(): ?array
     {
         $session = $this->agent->sessions;
 
-        if (!$session) {
+        if (! $session) {
             return null;
         }
 
-        dd($session);
-
+        return $session;
     }
 
     /**
-     * Uzavře detail
+     * Closed detail
      */
     public function closeDetail(): void
     {
@@ -289,6 +289,9 @@ class AgentDetail extends Component
         ]);
     }
 
+    /**
+     * Returns agent name for editing
+     */
     private function getEditName(): string
     {
         if (empty($this->agent->pretty_name)) {
