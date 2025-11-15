@@ -16,6 +16,7 @@ class AgentUserSession extends Model
     ];
 
     protected $casts = [
+        'session_user' => 'string',
         'session_start' => 'datetime',
         'mapped_drivers' => 'array',
         'accessible_paths' => 'array',
