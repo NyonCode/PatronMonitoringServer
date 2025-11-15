@@ -52,6 +52,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('agent_metric_hourlies', function (Blueprint $table) {
+            $table->dropForeign(['agent_id']);
+        });
+
         Schema::dropIfExists('agent_metric_hourlies');
     }
 };

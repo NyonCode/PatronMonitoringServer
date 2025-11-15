@@ -171,6 +171,15 @@ class AgentController extends Controller
                 'mac_address' => $request->network_info['MacAddress']
         ]);
 
+        $agent->sessions()->updateOrCreate(
+            [],
+            [
+                'session_user' => $request->session_info['User'],
+                'session_start' => $request->session_info['SessionStart'],
+                'mapped_drivers' => $request->session_info['MappedDrivers'],
+                'accessible_paths' => $request->session_info['AccessiblePaths']
+        ]);
+
         return response()->json(['RemoteCommands' => '', 'interval' => $agent->update_interval]);
     }
 
@@ -214,7 +223,7 @@ class AgentController extends Controller
         if (!is_string($input)) {
             return $input;
         }
-    
+
         return preg_replace(
             '#<!DOCTYPE html>\s*<html[^>]*>.*?</body>\s*</html>#si',
             '',
