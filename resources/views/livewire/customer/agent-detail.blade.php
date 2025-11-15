@@ -129,6 +129,7 @@
             <!-- Informace o sezení -->
             @if($sessionInfo)
 
+                @dd($sessionInfo)
                 @php
                     $diff = now()->diff($sessionInfo->session_start);
                 @endphp
