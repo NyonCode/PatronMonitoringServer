@@ -142,7 +142,7 @@ class AgentController extends Controller
             [
                 'session_user' => $request->session_info['User'],
                 'session_start' => $request->session_info['SessionStart'],
-                'mapped_drivers' => $request->session_info['MappedDrivers'],
+                'mapped_drivers' => $request->session_info['MappedDrives'],
                 'accessible_paths' => $request->session_info['AccessiblePaths'],
             ]);
 
