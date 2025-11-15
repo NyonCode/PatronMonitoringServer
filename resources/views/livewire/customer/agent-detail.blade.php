@@ -158,8 +158,8 @@
                             @dump($sessionInfo->accessible_paths)
                             @foreach($sessionInfo->accessible_paths as $accessiblePaths)
                                 <p class="font-mono text-zinc-900 dark:text-white">
+                                    {{ $accessiblePaths }}
                                 </p>
-
                             @endforeach
                         </div>
 
