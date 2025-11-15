@@ -17,13 +17,18 @@ class Agents extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $sortBy = 'hostname';
+
     public string $sortDirection = 'asc';
+
     public int $perPage = 10;
 
     // Modal state
     public ?int $selectedAgentId = null;
+
     public bool $showDetailModal = false;
+
     public bool $showLogModal = false;
 
     protected $queryString = [
@@ -83,9 +88,9 @@ class Agents extends Component
             }, 'disk'])
             ->when($this->search, function (Builder $query) {
                 $query->where(function (Builder $q) {
-                    $q->where('hostname', 'like', '%' . $this->search . '%')
-                        ->orWhere('pretty_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('ip_address', 'like', '%' . $this->search . '%');
+                    $q->where('hostname', 'like', '%'.$this->search.'%')
+                        ->orWhere('pretty_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('ip_address', 'like', '%'.$this->search.'%');
                 });
             })
             ->orderBy($this->sortBy, $this->sortDirection)
@@ -94,7 +99,7 @@ class Agents extends Component
 
     public function getAgentStatus(Agent $agent): string
     {
-        if (!$agent->last_seen_at) {
+        if (! $agent->last_seen_at) {
             return 'offline';
         }
 
@@ -108,7 +113,7 @@ class Agents extends Component
     {
         $latest = $agent->metrics->first();
 
-        if (!$latest) {
+        if (! $latest) {
             return [
                 'cpu' => 0,
                 'ram' => 0,
@@ -127,7 +132,7 @@ class Agents extends Component
     {
         $disk = $agent->disk->sortByDesc('usage_percent')->first();
 
-        if (!$disk) {
+        if (! $disk) {
             return null;
         }
 
@@ -152,7 +157,7 @@ class Agents extends Component
 
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
-        if (!is_numeric($bytes)) {
+        if (! is_numeric($bytes)) {
             return $bytes;
         }
 
@@ -163,7 +168,7 @@ class Agents extends Component
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return round($bytes, $precision).' '.$units[$i];
     }
 
     public function render(): View|Factory|\Illuminate\View\View

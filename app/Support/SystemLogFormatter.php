@@ -74,7 +74,7 @@ class SystemLogFormatter
                 $details[] = [
                     'label' => $mapping[$index]['label'],
                     'value' => $value,
-                    'icon' => $mapping[$index]['icon']
+                    'icon' => $mapping[$index]['icon'],
                 ];
             }
         }
@@ -112,18 +112,18 @@ class SystemLogFormatter
         $html .= '<div class="flex items-center gap-2 mb-3">';
         $html .= '<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md text-xs font-semibold border border-blue-200 dark:border-blue-800">';
         $html .= '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-        $html .= 'Event ID: ' . htmlspecialchars($eventId);
+        $html .= 'Event ID: '.htmlspecialchars($eventId);
         $html .= '</span>';
         $html .= '<span class="text-xs text-zinc-500 dark:text-zinc-400">Zdroj: DCOM</span>';
         $html .= '</div>';
 
         // Hlavní popis
         $html .= '<div class="mb-4 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700">';
-        $html .= '<p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">' . htmlspecialchars($mainMessage) . '</p>';
+        $html .= '<p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">'.htmlspecialchars($mainMessage).'</p>';
         $html .= '</div>';
 
         // Detaily (jako v Event Vieweru)
-        if (!empty($details)) {
+        if (! empty($details)) {
             $html .= '<div class="space-y-2">';
             $html .= '<div class="flex items-center gap-2 mb-3">';
             $html .= '<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>';
@@ -132,8 +132,8 @@ class SystemLogFormatter
 
             foreach ($details as $detail) {
                 $html .= '<div class="grid grid-cols-[160px_1fr] gap-3 py-2.5 border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors rounded px-2">';
-                $html .= '<div class="text-xs font-medium text-zinc-600 dark:text-zinc-400 flex items-center">' . htmlspecialchars($detail['label']) . '</div>';
-                $html .= '<div class="text-xs text-zinc-700 dark:text-zinc-300 font-mono break-all">' . htmlspecialchars($detail['value']) . '</div>';
+                $html .= '<div class="text-xs font-medium text-zinc-600 dark:text-zinc-400 flex items-center">'.htmlspecialchars($detail['label']).'</div>';
+                $html .= '<div class="text-xs text-zinc-700 dark:text-zinc-300 font-mono break-all">'.htmlspecialchars($detail['value']).'</div>';
                 $html .= '</div>';
             }
 
@@ -156,10 +156,12 @@ class SystemLogFormatter
 
         foreach ($lines as $index => $line) {
             $line = trim($line);
-            if (empty($line)) continue;
+            if (empty($line)) {
+                continue;
+            }
 
             $class = $index === 0 ? 'font-medium text-zinc-900 dark:text-zinc-100' : 'text-zinc-600 dark:text-zinc-400';
-            $html .= '<div class="' . $class . ' text-sm mb-1">' . htmlspecialchars($line) . '</div>';
+            $html .= '<div class="'.$class.' text-sm mb-1">'.htmlspecialchars($line).'</div>';
         }
 
         $html .= '</div>';
@@ -179,7 +181,7 @@ class SystemLogFormatter
         $start = substr($value, 0, $maxLength - 15);
         $end = substr($value, -12);
 
-        return $start . '...' . $end;
+        return $start.'...'.$end;
     }
 
     /**

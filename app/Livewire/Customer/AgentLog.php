@@ -4,20 +4,25 @@ namespace App\Livewire\Customer;
 
 use App\Models\Agent;
 use App\Models\AgentLog as ModelsAgentLog;
-use Livewire\Component;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
 class AgentLog extends Component
 {
     public Agent $agent;
+
     public ?ModelsAgentLog $agentLog = null;
 
     // Filtry a vyhledávání
     public string $searchAgent = '';
+
     public string $searchSystem = '';
+
     public string $filterTypeAgent = '';
+
     public string $filterTypeSystem = '';
+
     public bool $autoRefresh = false;
 
     public function mount(Agent $agent): void
@@ -39,12 +44,12 @@ class AgentLog extends Component
 
     public function toggleAutoRefresh(): void
     {
-        $this->autoRefresh = !$this->autoRefresh;
+        $this->autoRefresh = ! $this->autoRefresh;
     }
 
     public function getFilteredAgentLogs(): array
     {
-        if (!$this->agentLog || !$this->agentLog->agent_log) {
+        if (! $this->agentLog || ! $this->agentLog->agent_log) {
             return [];
         }
 
@@ -52,16 +57,14 @@ class AgentLog extends Component
 
         // Filtr podle typu
         if ($this->filterTypeAgent) {
-            $logs = $logs->filter(fn($log) =>
-                strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeAgent)
+            $logs = $logs->filter(fn ($log) => strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeAgent)
             );
         }
 
         // Vyhledávání
         if ($this->searchAgent) {
             $search = strtolower($this->searchAgent);
-            $logs = $logs->filter(fn($log) =>
-            str_contains(strtolower($log['Message'] ?? ''), $search)
+            $logs = $logs->filter(fn ($log) => str_contains(strtolower($log['Message'] ?? ''), $search)
             );
         }
 
@@ -70,7 +73,7 @@ class AgentLog extends Component
 
     public function getFilteredSystemLogs(): array
     {
-        if (!$this->agentLog || !$this->agentLog->system_logs) {
+        if (! $this->agentLog || ! $this->agentLog->system_logs) {
             return [];
         }
 
@@ -78,16 +81,14 @@ class AgentLog extends Component
 
         // Filtr podle typu
         if ($this->filterTypeSystem) {
-            $logs = $logs->filter(fn($log) =>
-                strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeSystem)
+            $logs = $logs->filter(fn ($log) => strtolower($log['EntryType'] ?? '') === strtolower($this->filterTypeSystem)
             );
         }
 
         // Vyhledávání
         if ($this->searchSystem) {
             $search = strtolower($this->searchSystem);
-            $logs = $logs->filter(fn($log) =>
-                str_contains(strtolower($log['Message'] ?? ''), $search) ||
+            $logs = $logs->filter(fn ($log) => str_contains(strtolower($log['Message'] ?? ''), $search) ||
                 str_contains(strtolower($log['Source'] ?? ''), $search)
             );
         }

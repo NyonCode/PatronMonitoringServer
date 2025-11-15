@@ -34,8 +34,6 @@ class AgentSystemMetric extends Model
 
     /**
      * Get the agent that owns the system metric.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {

@@ -97,8 +97,7 @@ class MetricsChartService
     public function formatMetrics(Collection $metrics, string $timeField): array
     {
         return [
-            'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-                Carbon::parse($time)->setTimezone('Europe/Prague')->format('H:i')
+            'labels' => $metrics->pluck($timeField)->map(fn ($time) => Carbon::parse($time)->setTimezone('Europe/Prague')->format('H:i')
             )->toArray(),
             'datasets' => [
                 [
@@ -135,10 +134,9 @@ class MetricsChartService
     public function formatAggregatedMetrics(Collection $metrics, string $timeField): array
     {
         $format = $timeField === 'date' ? 'd.m.' : 'H:i';
-    
+
         return [
-            'labels' => $metrics->pluck($timeField)->map(fn($time) =>
-                Carbon::parse($time)->setTimezone('Europe/Prague')->format($format)
+            'labels' => $metrics->pluck($timeField)->map(fn ($time) => Carbon::parse($time)->setTimezone('Europe/Prague')->format($format)
             )->toArray(),
             'datasets' => [
                 [
@@ -176,7 +174,7 @@ class MetricsChartService
     {
         $latest = $agent->metrics()->latest('recorded_at')->first();
 
-        if (!$latest) {
+        if (! $latest) {
             // Pokud agent nemá aktuální metriky, vrať poslední známé historické
             $fallback = AgentSystemMetric::where('agent_id', $agent->id)
                 ->orderByDesc('recorded_at')
@@ -233,15 +231,14 @@ class MetricsChartService
      */
     public function formatBytes(int|string $bytes, int $precision = 2): string
     {
-        if(is_numeric($bytes))
-        {
+        if (is_numeric($bytes)) {
             $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
             for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
                 $bytes /= 1024;
             }
 
-            return round($bytes, $precision) . ' ' . $units[$i];
+            return round($bytes, $precision).' '.$units[$i];
         }
 
         return $bytes;

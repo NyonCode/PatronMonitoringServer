@@ -12,8 +12,6 @@ class LandingPageWidgetDevices extends Component
 
     /**
      * Mount the component.
-     *
-     * @return void
      */
     public function mount(): void
     {
@@ -22,19 +20,16 @@ class LandingPageWidgetDevices extends Component
 
     /**
      * Render the component.
-     *
-     * @return Factory|\Illuminate\Contracts\View\View|View
      */
     public function render(): Factory|\Illuminate\Contracts\View\View|View
     {
         $this->refreshData();
+
         return view('livewire.frontend.landing-page-widget-devices');
     }
 
     /**
      * Refresh the data.
-     *
-     * @return void
      */
     private function refreshData(): void
     {

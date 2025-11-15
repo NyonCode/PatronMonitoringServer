@@ -27,8 +27,6 @@ class AgentMetricHourly extends Model
         'sample_count',
     ];
 
-
-
     /**
      * The attributes that should be cast.
      *
@@ -49,8 +47,6 @@ class AgentMetricHourly extends Model
 
     /**
      * Get the agent that owns the metric.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {

@@ -22,8 +22,6 @@ class AgentDisk extends Model
 
     /**
      * Get the agent that owns the disk.
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {

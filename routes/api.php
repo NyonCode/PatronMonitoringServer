@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/agent-exist/{agent_id}', [AgentController::class, 'checkUserExists']);
-    //->middleware('auth:sanctum');
+// ->middleware('auth:sanctum');
 
 Route::get('/health ', [AgentController::class, 'health']);
 Route::post('/clients/register', [AgentController::class, 'registerClient']);

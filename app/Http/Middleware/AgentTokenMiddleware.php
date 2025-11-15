@@ -19,7 +19,7 @@ class AgentTokenMiddleware
         $token = $request->bearerToken();
         $client = Agent::where('token', $token)->first();
 
-        if (!$client) {
+        if (! $client) {
             return response()->json(['error' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
         }
 

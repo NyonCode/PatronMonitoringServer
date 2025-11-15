@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class AggregateMetricsCommand extends Command
 {
     protected $signature = 'metrics:aggregate {--hourly} {--daily}';
+
     protected $description = 'Agreguje metriky do hodinových a denních tabulek pro rychlejší načítání grafů';
 
     public function handle(): void
@@ -24,7 +25,7 @@ class AggregateMetricsCommand extends Command
             $this->aggregateDaily();
         }
 
-        if (!$this->option('hourly') && !$this->option('daily')) {
+        if (! $this->option('hourly') && ! $this->option('daily')) {
             $this->aggregateHourly();
             $this->aggregateDaily();
         }
@@ -44,7 +45,7 @@ class AggregateMetricsCommand extends Command
             $metrics = AgentSystemMetric::where('agent_id', $agent->id)
                 ->where('recorded_at', '>', $lastAggregated)
                 ->select(
-                    DB::raw($this->getHourFormat() . ' AS hour_start'),
+                    DB::raw($this->getHourFormat().' AS hour_start'),
                     DB::raw('AVG(cpu_usage_percent) as cpu_avg'),
                     DB::raw('MIN(cpu_usage_percent) as cpu_min'),
                     DB::raw('MAX(cpu_usage_percent) as cpu_max'),
@@ -80,7 +81,7 @@ class AggregateMetricsCommand extends Command
                 );
             }
 
-            $this->info("Agent $agent->hostname: agregováno " . $metrics->count() . " hodin");
+            $this->info("Agent $agent->hostname: agregováno ".$metrics->count().' hodin');
         }
 
         $this->info('Hodinové agregace dokončeny.');
@@ -136,7 +137,7 @@ class AggregateMetricsCommand extends Command
                 );
             }
 
-            $this->info("Agent $agent->hostname: agregováno " . $metrics->count() . " dní");
+            $this->info("Agent $agent->hostname: agregováno ".$metrics->count().' dní');
         }
 
         $this->info('Denní agregace dokončeny.');

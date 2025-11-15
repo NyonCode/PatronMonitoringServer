@@ -17,14 +17,12 @@ class LandingPage extends Component
 
     /**
      * Generate random devices
-     *
-     * @return array
      */
     private function generateDevices(): array
     {
         $names = [
             'edge-ny-01', 'edge-ny-02', 'core-prg-01',
-            'db-lon-01', 'backup-01', 'workstation-17'
+            'db-lon-01', 'backup-01', 'workstation-17',
         ];
 
         $devices = [];

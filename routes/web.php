@@ -39,5 +39,4 @@ Route::get('/cron/schedule/{token}', [CronController::class, 'runSchedule']);
 Route::get('/cron/queue/{token}', [CronController::class, 'runQueue']);
 Route::get('/cron/notifications/{token}', [CronController::class, 'runNotifications']);
 
-
 require __DIR__.'/auth.php';

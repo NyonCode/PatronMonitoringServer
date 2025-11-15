@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class GenerateCronToken extends Command
 {
@@ -38,13 +38,12 @@ class GenerateCronToken extends Command
         if (File::exists($envFile)) {
             // Uložení tokenu do .env souboru
             file_put_contents($envFile, str_replace(
-                'CRON_TOKEN=' . env('CRON_TOKEN'),
-                'CRON_TOKEN=' . $token,
+                'CRON_TOKEN='.env('CRON_TOKEN'),
+                'CRON_TOKEN='.$token,
                 file_get_contents($envFile)
             ));
 
-
-            $this->info("Nový cron token byl vygenerován a uložen do .env souboru.");
+            $this->info('Nový cron token byl vygenerován a uložen do .env souboru.');
 
             $this->info($token);
 
