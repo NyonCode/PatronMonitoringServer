@@ -69,8 +69,8 @@ class Agent extends Model
         return $this->hasMany(AgentSystemMetric::class);
     }
 
-    public function sessions(): HasMany
+    public function sessions(): HasOne
     {
-        return $this->hasMany(AgentUserSession::class);
+        return $this->HasOne(AgentUserSession::class);
     }
 }
