@@ -3,9 +3,11 @@
 namespace App\Livewire\Customer;
 
 use App\Models\Agent;
+use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use LaravelIdea\Helper\App\Models\_IH_AgentUserSession_C;
 use Livewire\Component;
 
 class AgentDetail extends Component
@@ -258,10 +260,13 @@ class AgentDetail extends Component
         ];
     }
 
+
     /**
-     * Returns agent session info
+     * Get agent session info
+     *
+     * @return AgentUserSession[]|mixed|null
      */
-    private function getAgentSessionInfo(): ?array
+    private function getAgentSessionInfo(): mixed
     {
         $session = $this->agent->sessions;
 
