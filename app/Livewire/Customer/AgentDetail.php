@@ -3,9 +3,11 @@
 namespace App\Livewire\Customer;
 
 use App\Models\Agent;
+use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use LaravelIdea\Helper\App\Models\_IH_AgentUserSession_C;
 use Livewire\Component;
 
 class AgentDetail extends Component
@@ -258,6 +260,18 @@ class AgentDetail extends Component
         ];
     }
 
+    private function getAgentSessionInfo(): ?array
+    {
+        $session = $this->agent->sessions;
+
+        if (!$session) {
+            return null;
+        }
+
+        dd($session);
+
+    }
+
     /**
      * Uzavře detail
      */
@@ -270,6 +284,7 @@ class AgentDetail extends Component
     {
         return view('livewire.customer.agent-detail', [
             'networkInfo' => $this->getNetworkInfo(),
+            'sessionInfo' => $this->getAgentSessionInfo(),
             'isOnline' => $this->isOnline,
         ]);
     }
