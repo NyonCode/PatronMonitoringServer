@@ -145,15 +145,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Mapper drivers</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ dump($sessionInfo['mapped_drivers']) ?? 'N/A' }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">DNS servery</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $networkInfo['dns'] ?? 'N/A' }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Accessible paths</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $networkInfo['mac_address'] ?? 'N/A' }}</p>
+                            <p class="font-mono text-zinc-900 dark:text-white">{{ dump($sessionInfo->mapped_drivers) ?? 'N/A' }}</p>
                         </div>
                     </div>
                 </div>
