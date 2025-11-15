@@ -146,7 +146,7 @@
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Mapper drivers</p>
                             @foreach($sessionInfo->mapped_drivers as $mappedDrivers)
-                                <div>
+                                <div class="flex flex-col">
                                     <div class="font-mono font-bold text-zinc-900 dark:text-white">{{ $mappedDrivers['Letter'] }}</div>
                                     <div class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers['Path'] }}</div>
                                 </div>
@@ -155,7 +155,6 @@
 
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Session time</p>
-                            @dump($sessionInfo->accessible_paths)
                             @foreach($sessionInfo->accessible_paths as $accessiblePaths)
                                 <p class="font-mono text-zinc-900 dark:text-white">
                                     {{ $accessiblePaths }}
