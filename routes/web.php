@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Livewire\Customer\Agents;
 use App\Livewire\Frontend\LandingPage;
 use App\Livewire\Settings\Appearance;
