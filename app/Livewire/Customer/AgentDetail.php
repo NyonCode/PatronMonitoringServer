@@ -7,7 +7,6 @@ use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use LaravelIdea\Helper\App\Models\_IH_AgentUserSession_C;
 use Livewire\Component;
 
 class AgentDetail extends Component
@@ -259,7 +258,6 @@ class AgentDetail extends Component
             'mac_address' => $network->mac_address,
         ];
     }
-
 
     /**
      * Get agent session info

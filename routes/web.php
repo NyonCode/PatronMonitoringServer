@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CronController;
+use App\Http\Controllers\Crons\CronController;
 use App\Livewire\Customer\Agents;
 use App\Livewire\Frontend\LandingPage;
 use App\Livewire\Settings\Appearance;
@@ -39,5 +39,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/cron/schedule/{token}', [CronController::class, 'runSchedule']);
 Route::get('/cron/queue/{token}', [CronController::class, 'runQueue']);
 Route::get('/cron/notifications/{token}', [CronController::class, 'runNotifications']);
+
 
 require __DIR__.'/auth.php';
