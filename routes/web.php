@@ -36,9 +36,12 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 |
 */
-Route::get('/cron/schedule/{token}', [CronController::class, 'runSchedule']);
-Route::get('/cron/queue/{token}', [CronController::class, 'runQueue']);
-Route::get('/cron/notifications/{token}', [CronController::class, 'runNotifications']);
-
+Route::prefix('cron/{token}')
+    ->controller(CronController::class)
+    ->group(function () {
+        Route::get('schedule', 'runSchedule');
+        Route::get('queue', 'runQueue');
+        Route::get('notifications', 'runNotifications');
+    });
 
 require __DIR__.'/auth.php';
