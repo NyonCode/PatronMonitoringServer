@@ -106,6 +106,7 @@ class AgentController extends Controller
         $agent = Agent::where('uuid', $UUID)->first();
 
         $agent->update([
+            'status' => $request->status,
             'last_seen_at' => now(),
         ]);
 
@@ -177,6 +178,21 @@ class AgentController extends Controller
         return response()->json(['status' => 'ok', 'timestamp' => now()]);
     }
 
+    /**
+     * Shutdown agent
+     */
+    public function shutdown(string $UUID): JsonResponse
+    {
+        $agent = Agent::where('uuid', $UUID)->firstOrFail();
+
+        $agent->update([
+            'status' => 'shutdown',
+            'last_seen_at' => now(),
+        ]);
+
+        return response()->json(['status' => 'ok']);
+    }
+
     private function removeFullHtmlDocument(mixed $input): mixed
     {
         if (! is_string($input)) {
@@ -189,4 +205,5 @@ class AgentController extends Controller
             $input
         );
     }
+
 }
