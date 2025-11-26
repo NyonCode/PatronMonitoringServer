@@ -1,4 +1,4 @@
-<div class="space-y-6 p-4 md:p-6" wire:poll.500s>
+<div class="space-y-6 p-4 md:p-6" wire:poll.60s>
     <!-- Header se statistikami -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
