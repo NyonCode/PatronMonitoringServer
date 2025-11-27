@@ -18,4 +18,5 @@ Route::post('/clients/register', [AgentController::class, 'registerClient']);
 Route::middleware(AgentTokenMiddleware::class)->group(function () {
     Route::post('/clients/{UUID}/heartbeat', [AgentController::class, 'heartbeat']);
     Route::post('/clients/{UUID}/logs', [AgentController::class, 'logs']);
+    Route::post('/clients/{UUID}/shutdown', [AgentController::class, 'shutdown']);
 });
