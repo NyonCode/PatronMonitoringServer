@@ -197,6 +197,14 @@ class AgentController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
+    public function shutdown(string $UUID, Request $request): JsonResponse
+    {
+        $agent = $thid->getAgent($UUID);
+
+        //
+        return response()->json(['status' => 'ok']);
+    }
+
     /**
      * Return health status
      *
@@ -205,5 +213,10 @@ class AgentController extends Controller
     public function health(): JsonResponse
     {
         return response()->json(['status' => 'ok', "timestamp" => now()]);
+    }
+    
+    private function getAgent(string $UUID): Agent
+    {
+        return Agent::where('uuid', $UUID)->first();
     }
 }
