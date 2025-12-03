@@ -181,15 +181,15 @@ class AgentController extends Controller
     /**
      * Shutdown agent
      */
-    public function shutdown(string $UUID): JsonResponse
+    public function shutdown(Request $request, string $UUID): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->firstOrFail();
-
+    
         $agent->update([
-            'status' => 'shutdown',
+            'status' => $request->status,
             'last_seen_at' => now(),
         ]);
-
+    
         return response()->json(['status' => 'ok']);
     }
 
