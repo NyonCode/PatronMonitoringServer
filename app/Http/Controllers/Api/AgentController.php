@@ -201,7 +201,10 @@ class AgentController extends Controller
     {
         $agent = $thid->getAgent($UUID);
 
-        //
+        $agent->update([
+            'status' => $request->status,
+            'last_seen_at' => now()
+        ])
         return response()->json(['status' => 'ok']);
     }
 
