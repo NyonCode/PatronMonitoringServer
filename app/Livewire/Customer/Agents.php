@@ -99,6 +99,9 @@ class Agents extends Component
 
     public function getAgentStatus(Agent $agent): string
     {
+        if ($agent->status == 'shutdown') {
+            return 'shutdown'
+        }
         if (! $agent->last_seen_at) {
             return 'offline';
         }
