@@ -22,6 +22,7 @@ class Agent extends Model
         'hostname',
         'ip_address',
         'pretty_name',
+        'status',
         'last_seen_at',
         'token',
     ];
