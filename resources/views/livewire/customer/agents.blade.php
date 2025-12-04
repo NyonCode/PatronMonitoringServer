@@ -134,7 +134,7 @@
                 @forelse($this->agents as $agent)
                     @php
                         $status = $this->getAgentStatus($agent);
-                        $metrics = $this->getCurrentMetrics($agent);
+                        $metrics = $this->isOnline($agent) ? $this->getCurrentMetrics($agent) : [];
                         $disk = $this->getMostUsedDisk($agent);
                         $sparkline = $this->getSparklineData($agent);
                         $name = empty($agent->pretty_name) ? $agent->hostname : $agent->pretty_name;

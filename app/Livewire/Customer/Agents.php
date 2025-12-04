@@ -174,6 +174,14 @@ class Agents extends Component
         return round($bytes, $precision).' '.$units[$i];
     }
 
+    public function isOnline(Agent $agent): bool
+    {
+        if($agent->status === 'online' or $agent->last_seen_at->greaterThan(now()->subMinutes(5)))
+            return true;
+        
+        return false;
+    }
+
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agents');
