@@ -176,9 +176,12 @@ class Agents extends Component
 
     public function isOnline(Agent $agent): bool
     {
+        if($agent->status === 'shutdown')
+            return false;
+
         if($agent->status === 'online' or $agent->last_seen_at->greaterThan(now()->subMinutes(5)))
             return true;
-        
+
         return false;
     }
 
