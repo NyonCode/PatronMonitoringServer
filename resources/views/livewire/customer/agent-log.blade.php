@@ -8,7 +8,7 @@
         @endphp
 
             <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700 flex-shrink-0">
+        <div class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 dark:border-zinc-700 flex-shrink-0">
             <div class="flex items-center gap-4 flex-1">
                 <div class="flex flex-col">
                     <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">
@@ -145,7 +145,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-between items-center gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700 flex-shrink-0">
+        <div class="flex justify-between items-center gap-3 px-6 py-3 border-t border-zinc-200 dark:border-zinc-700 flex-shrink-0">
             <div class="text-sm text-zinc-500">
                 Poslední aktualizace: <span class="font-mono">{{ now()->format('H:i:s') }}</span>
             </div>

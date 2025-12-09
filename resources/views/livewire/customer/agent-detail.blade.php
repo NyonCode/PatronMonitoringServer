@@ -2,7 +2,7 @@
 
     <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
+        <div class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 dark:border-zinc-700">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-3">
                     @if($editingName)
@@ -315,7 +315,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700">
+        <div class="flex justify-end gap-3 px-6 py-3 border-t border-zinc-200 dark:border-zinc-700">
             <button
                 wire:click="$parent.closeDetail"
                 class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
