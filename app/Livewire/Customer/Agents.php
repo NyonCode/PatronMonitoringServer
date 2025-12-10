@@ -54,12 +54,24 @@ class Agents extends Component
         }
     }
 
+    /**
+     * Show detail modal.
+     *
+     * @param  int  $agentId
+     *
+     * @return void
+     */
     public function showDetail(int $agentId): void
     {
         $this->selectedAgentId = $agentId;
         $this->showDetailModal = true;
     }
 
+    /**
+     * Close detail modal.
+     *
+     * @return void
+     */
     #[On('closeDetail')]
     public function closeDetail(): void
     {
@@ -67,18 +79,24 @@ class Agents extends Component
         $this->selectedAgentId = null;
     }
 
+    /**
+     * Show log modal.
+     *
+     * @param  int  $agentId
+     *
+     * @return void
+     */
     public function showLog(int $agentId): void
     {
         $this->selectedAgentId = $agentId;
         $this->showLogModal = true;
     }
 
-    public function showDelete(int $agentId): void
-    {
-        $this->selectedAgentId = $agentId;
-        $this->showDeleteModal = true;
-    }
-
+    /**
+     * Close log modal.
+     *
+     * @return void
+     */
     #[On('closeLog')]
     public function closeLog(): void
     {
@@ -86,6 +104,24 @@ class Agents extends Component
         $this->selectedAgentId = null;
     }
 
+    /**
+     * Show delete modal.
+     *
+     * @param  int  $agentId
+     *
+     * @return void
+     */
+    public function showDelete(int $agentId): void
+    {
+        $this->selectedAgentId = $agentId;
+        $this->showDeleteModal = true;
+    }
+
+    /**
+     * Close delete modal.
+     *
+     * @return void
+     */
     #[On('closeDelete')]
     public function closeDelete(): void
     {
@@ -93,6 +129,11 @@ class Agents extends Component
         $this->selectedAgentId = null;
     }
 
+    /**
+     * Get agents.
+     *
+     * @return LengthAwarePaginator|array
+     */
     #[Computed]
     public function agents(): LengthAwarePaginator|array
     {
