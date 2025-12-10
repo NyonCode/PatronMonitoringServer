@@ -31,13 +31,13 @@ class AgentDelete extends Component
     public function delete(): void
     {
         $this->agent->delete();
-        Toast::toast('Agent deleted successfully', 'success');
+        Toast::toast('Agent deleted successfully', variant: 'success');
         $this->dispatch('closeDelete');
     }
 
     public function testToast(): void
     {
-        Toast::toast('Agent deleted successfully', 'success');
+        Toast::success('Agent deleted successfully', );
     }
 
     /**
