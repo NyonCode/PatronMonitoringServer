@@ -5,6 +5,7 @@
             <div class="text-center py-4">{{ __('Are you sure you want to delete this agent?') }}</div>
             <flux:button variant="danger" wire:click="delete">Delete</flux:button>
             <flux:button variant="primary" wire:click="$parent.closeDelete">Close</flux:button>
+            <flux:button variant="primary" wire:click="testToast">Test toast</flux:button>
         </div>
     </div>
 </div>
