@@ -19,7 +19,7 @@
 
 <div
     x-data="toastGroupManager({{ $expanded ? 'true' : 'false' }}, {{ $isTop ? 'true' : 'false' }})"
-    x-on:toast.window="add($event.detail)"
+    x-on:toast.window="add(Array.isArray($event.detail) ? $event.detail[0] : $event.detail)"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
     {{ $attributes->class(['fixed z-50 flex flex-col', $positionClasses]) }}
@@ -135,15 +135,38 @@
                 return this.alwaysExpanded || this.hovering;
             },
 
-            add(toast) {
+            add(input) {
                 const id = ++this.counter;
-                const duration = toast.duration ?? 5000;
+
+                // Handle various input formats:
+                // - String: "message"
+                // - Object: { text: "message", heading: "...", variant: "...", duration: ... }
+                // - Livewire array: [{ text: "message", ... }] or [{0: {...}}]
+                let data;
+
+                if (typeof input === 'string') {
+                    data = { text: input };
+                } else if (Array.isArray(input)) {
+                    // Livewire dispatch sends as array
+                    data = input[0] || {};
+                } else if (input && typeof input === 'object') {
+                    // Check if it's a Livewire-style object with numeric keys
+                    if ('0' in input && typeof input['0'] === 'object') {
+                        data = input['0'];
+                    } else {
+                        data = input;
+                    }
+                } else {
+                    data = {};
+                }
+
+                const duration = data.duration ?? 5000;
 
                 const newToast = {
                     id,
-                    heading: toast.heading || null,
-                    text: toast.text || toast,
-                    variant: toast.variant || null,
+                    heading: data.heading || null,
+                    text: data.text || String(data) || '',
+                    variant: data.variant || null,
                     duration,
                     progress: 100,
                 };
