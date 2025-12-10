@@ -3,11 +3,9 @@
 namespace App\Livewire\Customer;
 
 use App\Models\Agent;
-use Illuminate\Contracts\View\Factory;
+use App\UI\Toast;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Flux\Flux;
-use phpDocumentor\Reflection\Types\Void_;
 
 class AgentDelete extends Component
 {
@@ -33,7 +31,7 @@ class AgentDelete extends Component
     public function delete(): void
     {
         $this->agent->delete();
-        Flux::toast('Agent deleted successfully', 'success');
+        Toast::toast('Agent deleted successfully', 'success');
         $this->dispatch('closeDelete');
     }
 
