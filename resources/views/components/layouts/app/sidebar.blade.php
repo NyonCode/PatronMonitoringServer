@@ -132,8 +132,8 @@
 
         @fluxScripts
 
-        <flux:toast.group expanded>
-            <flux:toast />
-        </flux:toast.group>
+        <x-toast.group>
+            <x-toast />
+        </x-toast.group>
     </body>
 </html>
