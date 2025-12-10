@@ -30,6 +30,7 @@ class Agents extends Component
     public bool $showDetailModal = false;
 
     public bool $showLogModal = false;
+    public bool $showDeleteModal = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -72,10 +73,23 @@ class Agents extends Component
         $this->showLogModal = true;
     }
 
+    public function showDelete(int $agentId): void
+    {
+        $this->selectedAgentId = $agentId;
+        $this->showDeleteModal = true;
+    }
+
     #[On('closeLog')]
     public function closeLog(): void
     {
         $this->showLogModal = false;
+        $this->selectedAgentId = null;
+    }
+
+    #[On('closeDelete')]
+    public function closeDelete(): void
+    {
+        $this->showDeleteModal = false;
         $this->selectedAgentId = null;
     }
 
