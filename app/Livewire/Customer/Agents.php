@@ -30,6 +30,7 @@ class Agents extends Component
     public bool $showDetailModal = false;
 
     public bool $showLogModal = false;
+    public bool $showConfigModal = false;
     public bool $showDeleteModal = false;
 
     protected $queryString = [
@@ -105,15 +106,40 @@ class Agents extends Component
     }
 
     /**
-     * Show delete modal.
+     * Show config modal.
      *
-     * @param  int  $agentId
+     * @param  Agent  $agent
      *
      * @return void
      */
-    public function showDelete(int $agentId): void
+    public function showConfig(Agent $agent): void
     {
-        $this->selectedAgentId = $agentId;
+        $this->selectedAgentId = $agent->id;
+        $this->showConfigModal = true;
+    }
+
+    /**
+     * Close config modal.
+     *
+     * @return void
+     */
+    #[On('closeConfig')]
+    public function closeConfig(): void
+    {
+        $this->showConfigModal = false;
+        $this->selectedAgentId = null;
+    }
+
+    /**
+     * Show delete modal.
+     *
+     * @param  Agent  $agent
+     *
+     * @return void
+     */
+    public function showDelete(Agent $agent): void
+    {
+        $this->selectedAgentId = $agent->id;
         $this->showDeleteModal = true;
     }
 
