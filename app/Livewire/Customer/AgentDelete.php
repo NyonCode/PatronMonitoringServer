@@ -31,15 +31,9 @@ class AgentDelete extends Component
     public function delete(): void
     {
         $this->agent->delete();
-        Toast::toast('Agent deleted successfully', variant: 'success');
+        Toast::success('Agent deleted successfully');
         $this->dispatch('closeDelete');
     }
-
-    public function testToast(): void
-    {
-        Toast::success('Agent deleted successfully', );
-    }
-
     /**
      * Render the component.
      *

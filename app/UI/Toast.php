@@ -16,7 +16,7 @@ class Toast
      *
      * @return void
      */
-    public static function toast(
+    public static function make(
         string $text = '',
         ?string $heading = null,
         ?string $variant = null,
@@ -45,7 +45,7 @@ class Toast
      */
     public static function success(string $text, ?string $heading = null, int $duration = 5000): void
     {
-        static::toast($text, $heading, 'success', $duration);
+        static::make($text, $heading, 'success', $duration);
     }
 
 
@@ -60,7 +60,7 @@ class Toast
      */
     public static function warning(string $text, ?string $heading = null, int $duration = 5000): void
     {
-        static::toast($text, $heading, 'warning', $duration);
+        static::make($text, $heading, 'warning', $duration);
     }
 
     /**
@@ -74,6 +74,6 @@ class Toast
      */
     public static function danger(string $text, ?string $heading = null, int $duration = 5000): void
     {
-        static::toast($text, $heading, 'danger', $duration);
+        static::make($text, $heading, 'danger', $duration);
     }
 }
