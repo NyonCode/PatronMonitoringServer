@@ -193,7 +193,7 @@
                                      :style="`width: ${cpu}%`"></div>
                             </div>
                         </div>
-                        <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
+                        <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}</div>
                     </td>
 
                     <!-- RAM -->
@@ -219,7 +219,7 @@
                                      }"
                                      :style="`width: ${ram}%`"></div>
                             </div>
-                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
+                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}</div>
                         </div>
                     </td>
 
@@ -246,7 +246,7 @@
                                      }"
                                      :style="`width: ${gpu}%`"></div>
                             </div>
-                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
+                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}</div>
 
                         </div>
                     </td>
