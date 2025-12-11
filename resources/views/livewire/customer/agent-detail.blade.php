@@ -8,7 +8,7 @@
                     @if($editingName)
                         <input
                             wire:model="editName"
-                            class="text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="text-sm lg:text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             autofocus
                         />
                         <div class="flex gap-2">
@@ -39,13 +39,15 @@
                                 <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
                             @endif
                         </div>
+
+                        <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     @endif
                 </div>
-                <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+
             </div>
         </div>
 
