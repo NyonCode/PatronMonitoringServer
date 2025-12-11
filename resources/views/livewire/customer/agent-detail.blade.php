@@ -40,13 +40,17 @@
                             @endif
                         </div>
 
-                        <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+
                     @endif
                 </div>
+
+                @if(!$editingName)
+                    <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                @endif
 
             </div>
         </div>
