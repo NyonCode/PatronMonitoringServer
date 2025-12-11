@@ -70,7 +70,7 @@
                     <input
                         type="text"
                         wire:model.live.debounce.300ms="search"
-                        placeholder="Hledat agenta..."
+                        placeholder="{{ __('Search for an agent...') }}"
                         class="w-full px-4 py-2.5 pl-10 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                     <svg class="absolute left-3 top-3 w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,10 +79,10 @@
                 </div>
             </div>
             <select wire:model.live="perPage" class="px-3 py-2.5 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm min-w-[120px]">
-                <option value="5">5 / stránka</option>
-                <option value="10">10 / stránka</option>
-                <option value="25">25 / stránka</option>
-                <option value="50">50 / stránka</option>
+                <option value="5">5 / {{ __('page') }}</option>
+                <option value="10">10 / {{  __('page') }}</option>
+                <option value="25">25 / {{  __('page') }}</option>
+                <option value="50">50 / {{  __('page') }}</option>
             </select>
         </div>
     </div>
@@ -169,8 +169,18 @@
                     </td>
                     <!-- CPU -->
                     <td class="px-3 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-bold transition-colors"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': cpu > 80,
+                                          'text-yellow-600 dark:text-yellow-400': cpu > 60 && cpu <= 80,
+                                          'text-green-600 dark:text-green-400': cpu > 0 && cpu <= 60,
+                                          'text-zinc-400': cpu === 0
+                                      }"
+                                      x-text="cpu + '%'"></span>
+                            </div>
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                 <div class="h-1.5 rounded-full transition-all duration-500"
                                      :class="{
                                          'bg-red-500': cpu > 80,
@@ -180,13 +190,22 @@
                                      }"
                                      :style="`width: ${cpu}%`"></div>
                             </div>
-                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400 w-8 text-right shrink-0" x-text="cpu + '%'"></span>
                         </div>
                     </td>
                     <!-- RAM -->
                     <td class="px-3 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-bold transition-colors"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': ram > 80,
+                                          'text-yellow-600 dark:text-yellow-400': ram > 60 && ram <= 80,
+                                          'text-green-600 dark:text-green-400': ram > 0 && ram <= 60,
+                                          'text-zinc-400': ram === 0
+                                      }"
+                                      x-text="ram + '%'"></span>
+                            </div>
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                 <div class="h-1.5 rounded-full transition-all duration-500"
                                      :class="{
                                          'bg-red-500': ram > 80,
@@ -196,13 +215,22 @@
                                      }"
                                      :style="`width: ${ram}%`"></div>
                             </div>
-                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400 w-8 text-right shrink-0" x-text="ram + '%'"></span>
                         </div>
                     </td>
                     <!-- GPU -->
                     <td class="px-3 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-bold transition-colors"
+                                      :class="{
+                                          'text-red-600 dark:text-red-400': gpu > 80,
+                                          'text-yellow-600 dark:text-yellow-400': gpu > 60 && gpu <= 80,
+                                          'text-green-600 dark:text-green-400': gpu > 0 && gpu <= 60,
+                                          'text-zinc-400': gpu === 0
+                                      }"
+                                      x-text="gpu + '%'"></span>
+                            </div>
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                 <div class="h-1.5 rounded-full transition-all duration-500"
                                      :class="{
                                          'bg-red-500': gpu > 80,
@@ -212,28 +240,36 @@
                                      }"
                                      :style="`width: ${gpu}%`"></div>
                             </div>
-                            <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400 w-8 text-right shrink-0" x-text="gpu + '%'"></span>
                         </div>
                     </td>
                     <!-- Disk -->
                     <td class="px-3 py-3">
                         @if($disk)
-                            <div class="flex items-center gap-2">
-                                <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-bold
+                                        @if($disk['usage_percent'] > 90) text-red-600 dark:text-red-400
+                                        @elseif($disk['usage_percent'] > 75) text-yellow-600 dark:text-yellow-400
+                                        @else text-green-600 dark:text-green-400 @endif">
+                                        {{ $disk['usage_percent'] }}%
+                                    </span>
+                                    <span class="text-xs text-zinc-500 dark:text-zinc-400 truncate ml-1">{{ $disk['name'] }}</span>
+                                </div>
+                                <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                     <div class="h-1.5 rounded-full transition-all duration-500
                                         @if($disk['usage_percent'] > 90) bg-red-500
                                         @elseif($disk['usage_percent'] > 75) bg-yellow-500
                                         @else bg-green-500 @endif"
                                          style="width: {{ $disk['usage_percent'] }}%"></div>
                                 </div>
-                                <span class="text-xs font-medium text-zinc-600 dark:text-zinc-400 w-8 text-right shrink-0">{{ $disk['usage_percent'] }}%</span>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">{{ $disk['free'] }} {{ __('free') }}</div>
                             </div>
                         @else
-                            <div class="flex items-center gap-2">
-                                <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                            <div class="space-y-1">
+                                <span class="text-sm font-bold text-zinc-400">N/A</span>
+                                <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
                                     <div class="h-1.5 rounded-full bg-gray-400" style="width: 0%"></div>
                                 </div>
-                                <span class="text-xs font-medium text-zinc-400 w-8 text-right shrink-0">N/A</span>
                             </div>
                         @endif
                     </td>
@@ -307,8 +343,21 @@
                             <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                             </svg>
-                            <p class="font-semibold text-zinc-900 dark:text-white">Žádní agenti nenalezeni</p>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Zkuste upravit vyhledávací kritéria</p>
+                            <p class="font-semibold text-zinc-900 dark:text-white">
+                                {{ __('No agents found') }}
+                            </p>
+                            @if(!empty($search))
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                                    {{ __('Try adjusting your search criteria') }}
+                                </p>
+                            @else
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                                    {{ __('You can download the agent here') }}
+                                    <a href="#" class="text-blue-600 hover:underline">
+                                        {{ __('Download') }}
+                                    </a>
+                                </p>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -366,82 +415,101 @@
                     </div>
                 </div>
 
-                <!-- Rychlý přehled metrik - 4 sloupce pro jednotný design -->
+                <!-- Rychlý přehled metrik - 4 sloupce s výraznými procenty -->
                 <div class="grid grid-cols-4 gap-2 mb-3">
                     <!-- CPU -->
                     <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
-                        <div class="text-xs text-zinc-600 dark:text-zinc-400 mb-1">CPU</div>
-                        <div class="flex items-center gap-1">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
-                                <div class="h-1.5 rounded-full transition-all duration-500"
-                                     :class="{
-                                         'bg-red-500': cpu > 80,
-                                         'bg-yellow-500': cpu > 60 && cpu <= 80,
-                                         'bg-green-500': cpu > 0 && cpu <= 60,
-                                         'bg-gray-400': cpu === 0
-                                     }"
-                                     :style="`width: ${cpu}%`"></div>
-                            </div>
-                            <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 shrink-0" x-text="cpu + '%'"></span>
+                        <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">CPU</div>
+                        <div class="text-base font-bold transition-colors"
+                             :class="{
+                                 'text-red-600 dark:text-red-400': cpu > 80,
+                                 'text-yellow-600 dark:text-yellow-400': cpu > 60 && cpu <= 80,
+                                 'text-green-600 dark:text-green-400': cpu > 0 && cpu <= 60,
+                                 'text-zinc-400': cpu === 0
+                             }"
+                             x-text="cpu + '%'"></div>
+                        <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
+                            <div class="h-1 rounded-full transition-all duration-500"
+                                 :class="{
+                                     'bg-red-500': cpu > 80,
+                                     'bg-yellow-500': cpu > 60 && cpu <= 80,
+                                     'bg-green-500': cpu > 0 && cpu <= 60,
+                                     'bg-gray-400': cpu === 0
+                                 }"
+                                 :style="`width: ${cpu}%`"></div>
                         </div>
                     </div>
 
                     <!-- RAM -->
                     <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
-                        <div class="text-xs text-zinc-600 dark:text-zinc-400 mb-1">RAM</div>
-                        <div class="flex items-center gap-1">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
-                                <div class="h-1.5 rounded-full transition-all duration-500"
-                                     :class="{
-                                         'bg-red-500': ram > 80,
-                                         'bg-yellow-500': ram > 60 && ram <= 80,
-                                         'bg-green-500': ram > 0 && ram <= 60,
-                                         'bg-gray-400': ram === 0
-                                     }"
-                                     :style="`width: ${ram}%`"></div>
-                            </div>
-                            <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 shrink-0" x-text="ram + '%'"></span>
+                        <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">RAM</div>
+                        <div class="text-base font-bold transition-colors"
+                             :class="{
+                                 'text-red-600 dark:text-red-400': ram > 80,
+                                 'text-yellow-600 dark:text-yellow-400': ram > 60 && ram <= 80,
+                                 'text-green-600 dark:text-green-400': ram > 0 && ram <= 60,
+                                 'text-zinc-400': ram === 0
+                             }"
+                             x-text="ram + '%'"></div>
+                        <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
+                            <div class="h-1 rounded-full transition-all duration-500"
+                                 :class="{
+                                     'bg-red-500': ram > 80,
+                                     'bg-yellow-500': ram > 60 && ram <= 80,
+                                     'bg-green-500': ram > 0 && ram <= 60,
+                                     'bg-gray-400': ram === 0
+                                 }"
+                                 :style="`width: ${ram}%`"></div>
                         </div>
                     </div>
 
                     <!-- GPU -->
                     <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
-                        <div class="text-xs text-zinc-600 dark:text-zinc-400 mb-1">GPU</div>
-                        <div class="flex items-center gap-1">
-                            <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
-                                <div class="h-1.5 rounded-full transition-all duration-500"
-                                     :class="{
-                                         'bg-red-500': gpu > 80,
-                                         'bg-yellow-500': gpu > 60 && gpu <= 80,
-                                         'bg-green-500': gpu > 0 && gpu <= 60,
-                                         'bg-gray-400': gpu === 0
-                                     }"
-                                     :style="`width: ${gpu}%`"></div>
-                            </div>
-                            <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 shrink-0" x-text="gpu + '%'"></span>
+                        <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">GPU</div>
+                        <div class="text-base font-bold transition-colors"
+                             :class="{
+                                 'text-red-600 dark:text-red-400': gpu > 80,
+                                 'text-yellow-600 dark:text-yellow-400': gpu > 60 && gpu <= 80,
+                                 'text-green-600 dark:text-green-400': gpu > 0 && gpu <= 60,
+                                 'text-zinc-400': gpu === 0
+                             }"
+                             x-text="gpu + '%'"></div>
+                        <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
+                            <div class="h-1 rounded-full transition-all duration-500"
+                                 :class="{
+                                     'bg-red-500': gpu > 80,
+                                     'bg-yellow-500': gpu > 60 && gpu <= 80,
+                                     'bg-green-500': gpu > 0 && gpu <= 60,
+                                     'bg-gray-400': gpu === 0
+                                 }"
+                                 :style="`width: ${gpu}%`"></div>
                         </div>
                     </div>
 
                     <!-- Disk -->
                     <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
-                        <div class="text-xs text-zinc-600 dark:text-zinc-400 mb-1">Disk</div>
-                        <div class="flex items-center gap-1">
-                            @if($disk)
-                                <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
-                                    <div class="h-1.5 rounded-full transition-all duration-500
-                                        @if($disk['usage_percent'] > 90) bg-red-500
-                                        @elseif($disk['usage_percent'] > 75) bg-yellow-500
-                                        @else bg-green-500 @endif"
-                                         style="width: {{ $disk['usage_percent'] }}%"></div>
-                                </div>
-                                <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 shrink-0">{{ $disk['usage_percent'] }}%</span>
-                            @else
-                                <div class="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
-                                    <div class="h-1.5 rounded-full bg-gray-400" style="width: 0%"></div>
-                                </div>
-                                <span class="text-xs font-semibold text-zinc-400 shrink-0">N/A</span>
-                            @endif
-                        </div>
+                        <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide truncate" title="{{ $disk['name'] ?? 'Disk' }}">{{ $disk['name'] ?? 'Disk' }}</div>
+                        @if($disk)
+                            <div class="text-base font-bold
+                                @if($disk['usage_percent'] > 90) text-red-600 dark:text-red-400
+                                @elseif($disk['usage_percent'] > 75) text-yellow-600 dark:text-yellow-400
+                                @else text-green-600 dark:text-green-400 @endif">
+                                {{ $disk['usage_percent'] }}%
+                            </div>
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
+                                <div class="h-1 rounded-full transition-all duration-500
+                                    @if($disk['usage_percent'] > 90) bg-red-500
+                                    @elseif($disk['usage_percent'] > 75) bg-yellow-500
+                                    @else bg-green-500 @endif"
+                                     style="width: {{ $disk['usage_percent'] }}%"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">{{ $disk['free'] }} volných</div>
+                        @else
+                            <div class="text-base font-bold text-zinc-400">N/A</div>
+                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
+                                <div class="h-1 rounded-full bg-gray-400" style="width: 0%"></div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
