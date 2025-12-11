@@ -218,9 +218,9 @@ class MetricsChartService
                     'name' => $disk->name,
                     'usage_percent' => round($disk->usage_percent, 2),
                     'free' => $this->formatBytes($disk->free),
-                    'size' => $this->formatBytes($disk->size),
+                    'total' => $this->formatBytes($disk->total),
                     'free_bytes' => $disk->free,
-                    'size_bytes' => $disk->size,
+                    'total_bytes' => $disk->total,
                 ];
             })
             ->toArray();
