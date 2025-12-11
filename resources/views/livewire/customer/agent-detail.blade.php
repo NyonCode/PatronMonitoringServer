@@ -343,7 +343,7 @@
         <div class="flex justify-end gap-3 px-6 py-6 md:py-3 border-t border-zinc-200 dark:border-zinc-700">
             <button
                 wire:click="$parent.closeDetail"
-                class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                class="px-4 py-2 text-sm font-medium text-zinc-700 border border-zinc-200 dark:border-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
             >
                 {{ __('Close') }}
             </button>
