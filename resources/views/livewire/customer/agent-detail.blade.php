@@ -2,13 +2,13 @@
 
     <div class="bg-white dark:bg-zinc-900 sm:rounded-lg shadow-xl w-full max-w-screen sm:max-w-6xl max-h-screen sm:max-h-[90vh] overflow-y-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-6 sm:py-3 border-b border-zinc-200 dark:border-zinc-700 max-w-screen overflow-x-hidden">
+        <div class="flex items-center justify-between px-6 py-6 md:py-3 border-b border-zinc-200 dark:border-zinc-700 max-w-screen overflow-x-hidden">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-3">
                     @if($editingName)
                         <input
                             wire:model="editName"
-                            class="text-sm lg:text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="text-sm md:text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             autofocus
                         />
                         <div class="flex gap-2">
@@ -39,8 +39,6 @@
                                 <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $agent->hostname }}</p>
                             @endif
                         </div>
-
-
                     @endif
                 </div>
 
