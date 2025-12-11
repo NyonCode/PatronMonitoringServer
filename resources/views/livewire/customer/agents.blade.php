@@ -87,7 +87,7 @@
         </div>
     </div>
 
-    <!-- Desktop Table View - table-fixed bez horizontálního scrollu -->
+    <!-- Desktop Table View -->
     <div class="hidden lg:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
         <table class="w-full table-fixed">
             <thead class="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
@@ -163,10 +163,12 @@
                             </span>
                         @endif
                     </td>
+
                     <!-- IP -->
                     <td class="px-3 py-3">
                         <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono truncate block">{{ $agent->ip_address ?? 'N/A' }}</span>
                     </td>
+
                     <!-- CPU -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -191,7 +193,9 @@
                                      :style="`width: ${cpu}%`"></div>
                             </div>
                         </div>
+                        <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
                     </td>
+
                     <!-- RAM -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -215,8 +219,10 @@
                                      }"
                                      :style="`width: ${ram}%`"></div>
                             </div>
+                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
                         </div>
                     </td>
+
                     <!-- GPU -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -240,8 +246,11 @@
                                      }"
                                      :style="`width: ${gpu}%`"></div>
                             </div>
+                            <div class="text-xs text-zinc-500 dark:text-zinc-400"> {!! " " !!}}</div>
+
                         </div>
                     </td>
+
                     <!-- Disk -->
                     <td class="px-3 py-3">
                         @if($disk)
@@ -273,6 +282,7 @@
                             </div>
                         @endif
                     </td>
+
                     <!-- Akce - Smart dropdown s dynamickým pozicováním -->
                     <td class="px-3 py-3">
                         <div x-data="{
