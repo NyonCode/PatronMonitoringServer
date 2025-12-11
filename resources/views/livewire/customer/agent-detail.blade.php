@@ -1,6 +1,6 @@
-<div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4" wire:poll.5s="refreshMetrics">
+<div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center sm:p-4" wire:poll.5s="refreshMetrics">
 
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white dark:bg-zinc-900 sm:rounded-lg shadow-xl w-full max-w-full sm:max-w-6xl max-h-full sm:max-h-[90vh] overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 dark:border-zinc-700">
             <div class="flex items-center justify-between w-full">
