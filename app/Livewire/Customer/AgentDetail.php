@@ -174,7 +174,7 @@ class AgentDetail extends Component
     }
 
     /**
-     * Zruší editaci názvu
+     * Cancel edit name
      */
     public function cancelEditName(): void
     {
@@ -283,6 +283,11 @@ class AgentDetail extends Component
         $this->dispatch('closeDetail')->to('customer.agents');
     }
 
+    /**
+     * Render view
+     *
+     * @return View|Factory|\Illuminate\View\View
+     */
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agent-detail', [

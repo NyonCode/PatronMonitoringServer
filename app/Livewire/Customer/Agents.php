@@ -224,7 +224,7 @@ class Agents extends Component
             'name' => $disk->name,
             'usage_percent' => round($disk->usage_percent, 1),
             'free' => $this->formatBytes($disk->free),
-            'size' => $this->formatBytes($disk->size),
+            'total' => $this->formatBytes($disk->total),
         ];
     }
 
@@ -239,6 +239,14 @@ class Agents extends Component
         ];
     }
 
+    /**
+     * Format bytes to human readable format
+     *
+     * @param  int|string  $bytes
+     * @param  int  $precision
+     *
+     * @return string
+     */
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
         if (! is_numeric($bytes)) {
@@ -255,6 +263,13 @@ class Agents extends Component
         return round($bytes, $precision).' '.$units[$i];
     }
 
+    /**
+     * Check if agent is online
+     *
+     * @param  Agent  $agent
+     *
+     * @return bool
+     */
     public function isOnline(Agent $agent): bool
     {
         if($agent->status === 'shutdown')
@@ -266,6 +281,11 @@ class Agents extends Component
         return false;
     }
 
+    /**
+     * Render view
+     *
+     * @return View|Factory|\Illuminate\View\View
+     */
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agents');
