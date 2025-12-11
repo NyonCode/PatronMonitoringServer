@@ -286,7 +286,7 @@
                                 <div>
                                     <p class="font-medium text-zinc-900 dark:text-white">{{ $disk['name'] }}</p>
                                     <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $disk['free'] }} volných
-                                        z {{ $disk['size'] }}</p>
+                                        z {{ $disk['total'] }}</p>
                                 </div>
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
                                       :class="{
