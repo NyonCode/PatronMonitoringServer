@@ -70,7 +70,7 @@
                     <input
                         type="text"
                         wire:model.live.debounce.300ms="search"
-                        placeholder="{{ __('Search for an agent...') }}"
+                        placeholder="Hledat agenta..."
                         class="w-full px-4 py-2.5 pl-10 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                     <svg class="absolute left-3 top-3 w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,15 +79,15 @@
                 </div>
             </div>
             <select wire:model.live="perPage" class="px-3 py-2.5 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm min-w-[120px]">
-                <option value="5">5 / {{ __('page') }}</option>
-                <option value="10">10 / {{  __('page') }}</option>
-                <option value="25">25 / {{  __('page') }}</option>
-                <option value="50">50 / {{  __('page') }}</option>
+                <option value="5">5 / stránka</option>
+                <option value="10">10 / stránka</option>
+                <option value="25">25 / stránka</option>
+                <option value="50">50 / stránka</option>
             </select>
         </div>
     </div>
 
-    <!-- Desktop Table View -->
+    <!-- Desktop Table View - table-fixed bez horizontálního scrollu -->
     <div class="hidden lg:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
         <table class="w-full table-fixed">
             <thead class="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
@@ -163,12 +163,10 @@
                             </span>
                         @endif
                     </td>
-
                     <!-- IP -->
                     <td class="px-3 py-3">
                         <span class="text-sm text-zinc-700 dark:text-zinc-300 font-mono truncate block">{{ $agent->ip_address ?? 'N/A' }}</span>
                     </td>
-
                     <!-- CPU -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -193,11 +191,7 @@
                                      :style="`width: ${cpu}%`"></div>
                             </div>
                         </div>
-                        <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                            &nbsp;
-                        </div>
                     </td>
-
                     <!-- RAM -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -221,12 +215,8 @@
                                      }"
                                      :style="`width: ${ram}%`"></div>
                             </div>
-                            <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                &nbsp;
-                            </div>
                         </div>
                     </td>
-
                     <!-- GPU -->
                     <td class="px-3 py-3">
                         <div class="space-y-1">
@@ -250,12 +240,8 @@
                                      }"
                                      :style="`width: ${gpu}%`"></div>
                             </div>
-                            <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                &nbsp;
-                            </div>
                         </div>
                     </td>
-
                     <!-- Disk -->
                     <td class="px-3 py-3">
                         @if($disk)
@@ -276,7 +262,7 @@
                                         @else bg-green-500 @endif"
                                          style="width: {{ $disk['usage_percent'] }}%"></div>
                                 </div>
-                                <div class="text-xs text-zinc-500 dark:text-zinc-400">{{ $disk['free'] }} / {{$disk['total']}}</div>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">{{ $disk['free'] }} {{ __('free space out of') }} {{ $disk['total'] }}</div>
                             </div>
                         @else
                             <div class="space-y-1">
@@ -287,7 +273,6 @@
                             </div>
                         @endif
                     </td>
-
                     <!-- Akce - Smart dropdown s dynamickým pozicováním -->
                     <td class="px-3 py-3">
                         <div x-data="{
@@ -358,21 +343,8 @@
                             <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                             </svg>
-                            <p class="font-semibold text-zinc-900 dark:text-white">
-                                {{ __('No agents found') }}
-                            </p>
-                            @if(!empty($search))
-                                <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                                    {{ __('Try adjusting your search criteria') }}
-                                </p>
-                            @else
-                                <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                                    {{ __('You can download the agent here') }}
-                                    <a href="#" class="text-blue-600 hover:underline">
-                                        {{ __('Download') }}
-                                    </a>
-                                </p>
-                            @endif
+                            <p class="font-semibold text-zinc-900 dark:text-white">Žádní agenti nenalezeni</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Zkuste upravit vyhledávací kritéria</p>
                         </div>
                     </td>
                 </tr>
@@ -399,7 +371,8 @@
                  x-data="{
                      cpu: {{ $metrics['cpu'] ?? 0 }},
                      ram: {{ $metrics['ram'] ?? 0 }},
-                     gpu: {{ $metrics['gpu'] ?? 0 }}
+                     gpu: {{ $metrics['gpu'] ?? 0 }},
+                     showDetails: false
                  }">
                 <!-- Header s názvem a statusem -->
                 <div class="flex items-start justify-between mb-3">
@@ -430,8 +403,8 @@
                     </div>
                 </div>
 
-                <!-- Rychlý přehled metrik - 4 sloupce s výraznými procenty -->
-                <div class="grid grid-cols-4 gap-2 mb-3">
+                <!-- Rychlý přehled metrik - 3 sloupce -->
+                <div class="grid grid-cols-3 gap-2 mb-3">
                     <!-- CPU -->
                     <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
                         <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">CPU</div>
@@ -500,36 +473,48 @@
                                  :style="`width: ${gpu}%`"></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Disk -->
-                    <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-2">
-                        <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide truncate" title="{{ $disk['name'] ?? 'Disk' }}">{{ $disk['name'] ?? 'Disk' }}</div>
+                <!-- Expandable disk info -->
+                <template x-if="showDetails">
+                    <div x-show="showDetails" x-collapse class="mb-3">
                         @if($disk)
-                            <div class="text-base font-bold
-                                @if($disk['usage_percent'] > 90) text-red-600 dark:text-red-400
-                                @elseif($disk['usage_percent'] > 75) text-yellow-600 dark:text-yellow-400
-                                @else text-green-600 dark:text-green-400 @endif">
-                                {{ $disk['usage_percent'] }}%
+                            <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">{{ $disk['name'] }}</span>
+                                    <span class="text-sm font-bold
+                                        @if($disk['usage_percent'] > 90) text-red-600 dark:text-red-400
+                                        @elseif($disk['usage_percent'] > 75) text-yellow-600 dark:text-yellow-400
+                                        @else text-green-600 dark:text-green-400 @endif">
+                                        {{ $disk['usage_percent'] }}%
+                                    </span>
+                                </div>
+                                <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5 mb-1">
+                                    <div class="h-1.5 rounded-full transition-all duration-500
+                                        @if($disk['usage_percent'] > 90) bg-red-500
+                                        @elseif($disk['usage_percent'] > 75) bg-yellow-500
+                                        @else bg-green-500 @endif"
+                                         style="width: {{ $disk['usage_percent'] }}%"></div>
+                                </div>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400">{{ $disk['free'] }} {{ __('free space out of') }} {{ $disk['total'] }}</div>
                             </div>
-                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
-                                <div class="h-1 rounded-full transition-all duration-500
-                                    @if($disk['usage_percent'] > 90) bg-red-500
-                                    @elseif($disk['usage_percent'] > 75) bg-yellow-500
-                                    @else bg-green-500 @endif"
-                                     style="width: {{ $disk['usage_percent'] }}%"></div>
-                            </div>
-                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">{{ $disk['free'] }} volných</div>
                         @else
-                            <div class="text-base font-bold text-zinc-400">N/A</div>
-                            <div class="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1 mt-1">
-                                <div class="h-1 rounded-full bg-gray-400" style="width: 0%"></div>
+                            <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-3">
+                                <div class="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">Disk</div>
+                                <div class="text-sm font-bold text-zinc-400">N/A</div>
                             </div>
                         @endif
                     </div>
-                </div>
+                </template>
 
-                <!-- Action buttons - všechny akce na jednom řádku -->
+                <!-- Primary action buttons -->
                 <div class="flex items-center gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                    <button @click="showDetails = !showDetails" class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="showDetails && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        <span x-text="showDetails ? 'Méně' : 'Více'"></span>
+                    </button>
                     <button wire:click="showDetail({{ $agent->id }})" class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -543,13 +528,26 @@
                         </svg>
                         Log
                     </button>
-                    <button wire:click="showDelete({{ $agent }})" class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition-colors">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                        </svg>
-                        Smazat
-                    </button>
                 </div>
+
+                <!-- Secondary actions - expandable -->
+                <template x-if="showDetails">
+                    <div class="flex items-center gap-2 pt-3" x-show="showDetails" x-collapse>
+                        <button disabled class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-zinc-400 dark:text-zinc-600 bg-zinc-100 dark:bg-zinc-800 rounded-lg cursor-not-allowed">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            {{ __('agents.configuration') }}
+                        </button>
+                        <button wire:click="showDelete({{ $agent }})" class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition-colors">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                            {{ __('agents.delete') }}
+                        </button>
+                    </div>
+                </template>
             </div>
         @empty
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-8">
