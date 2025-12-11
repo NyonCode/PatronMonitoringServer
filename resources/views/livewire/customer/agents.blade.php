@@ -476,7 +476,6 @@
                 </div>
 
                 <!-- Expandable disk info -->
-                <template x-if="showDetails">
                     <div x-show="showDetails" x-collapse class="mb-3">
                         @if($disk)
                             <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-3">
@@ -505,7 +504,6 @@
                             </div>
                         @endif
                     </div>
-                </template>
 
                 <!-- Primary action buttons -->
                 <div class="flex items-center gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-700">
