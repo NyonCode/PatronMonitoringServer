@@ -17,7 +17,7 @@ class AgentDisk extends Model
         'name',
         'usage_percent',
         'free',
-        'size',
+        'total',
     ];
 
     /**

@@ -123,7 +123,7 @@ class AgentController extends Controller
                 [
                     'usage_percent' => $diskData['UsagePercent'],
                     'free' => $diskData['Free'],
-                    'size' => $diskData['Size'],
+                    'total' => $diskData['Size'],
                 ]
             );
         }
@@ -184,12 +184,12 @@ class AgentController extends Controller
     public function shutdown(Request $request, string $UUID): JsonResponse
     {
         $agent = Agent::where('uuid', $UUID)->firstOrFail();
-    
+
         $agent->update([
             'status' => $request->status,
             'last_seen_at' => now(),
         ]);
-    
+
         return response()->json(['status' => 'ok']);
     }
 
