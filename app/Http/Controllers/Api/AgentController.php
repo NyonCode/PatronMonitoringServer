@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AgentResource;
 use App\Models\Agent;
+use App\Models\RemoteCommand;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -147,8 +148,14 @@ class AgentController extends Controller
                 'accessible_paths' => $request->session_info['AccessiblePaths'],
             ]);
 
-        return response()->json(['RemoteCommands' => '', 'interval' => $agent->update_interval]);
-    }
+        $pendingCommands = $agent->getPendingCommands(10);
+        $pendingCommands->each(fn(RemoteCommand $cmd) => $cmd->markAsSent());
+
+        return response()->json([
+            'status' => 'ok',
+            'interval' => $agent->update_interval,
+            'remote_commands' => $pendingCommands->map(fn(RemoteCommand $cmd) => $cmd->toApiFormat()),
+        ]);    }
 
     /**
      * Create or update logs for agent

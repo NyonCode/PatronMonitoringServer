@@ -32,6 +32,9 @@ class Agents extends Component
     public bool $showLogModal = false;
     public bool $showConfigModal = false;
     public bool $showDeleteModal = false;
+    public bool $showCommandsModal = false;
+
+    public bool $showTerminalModal = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
