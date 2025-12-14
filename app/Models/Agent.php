@@ -24,6 +24,7 @@ class Agent extends Model
         'ip_address',
         'pretty_name',
         'status',
+        'debug_mode',
         'last_seen_at',
         'token',
     ];
