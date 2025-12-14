@@ -134,6 +134,54 @@ class Agents extends Component
     }
 
     /**
+     * Show commands modal.
+     *
+     * @param  Agent  $agent
+     *
+     * @return void
+     */
+    public function showCommands(Agent $agent): void
+    {
+        $this->selectedAgentId = $agent->id;
+        $this->showCommandsModal = true;
+    }
+
+    /**
+     * Close commands modal.
+     *
+     * @return void
+     */
+    #[On('closeCommands')]
+    public function closeCommands(): void
+    {
+        $this->dispatch('closeCommands')->to('customer.agents');
+    }
+
+    /**
+     * Show the terminal.
+     *
+     * @param  Agent  $agent
+     *
+     * @return void
+     */
+    public function showTerminal(Agent $agent): void
+    {
+        $this->selectedAgentId = $agent->id;
+        $this->showTerminalModal = true;
+    }
+
+    /**
+     * Close the terminal.
+     *
+     * @return void
+     */
+    #[On('closeTerminal')]
+    public function closeTerminal(): void
+    {
+        $this->dispatch('closeTerminal')->to('customer.agents');
+    }
+
+    /**
      * Show delete modal.
      *
      * @param  Agent  $agent
