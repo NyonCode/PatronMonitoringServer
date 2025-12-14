@@ -33,7 +33,7 @@ class AgentLog extends Component
 
     public function loadLogs(): void
     {
-        $this->agentLog = $this->agent->log->take(100);
+        $this->agentLog = $this->agent->log;
     }
 
     public function refreshLogs(): void
