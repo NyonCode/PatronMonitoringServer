@@ -5,6 +5,7 @@ namespace App\Livewire\Customer;
 use App\Models\Agent;
 use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
+use App\UI\Toast;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -168,6 +169,8 @@ class AgentDetail extends Component
         $this->agent->update([
             'pretty_name' => $this->editName,
         ]);
+
+        Toast::success('Agent name has been changed to' . $this->editName);
 
         $this->editingName = false;
         $this->dispatch('name-updated');
