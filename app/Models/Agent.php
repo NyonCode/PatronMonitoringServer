@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use JetBrains\PhpStorm\ArrayShape;
 
 class Agent extends Model
 {
@@ -21,6 +22,7 @@ class Agent extends Model
         'hostname',
         'ip_address',
         'pretty_name',
+        'status',
         'last_seen_at',
         'token',
     ];
@@ -69,8 +71,8 @@ class Agent extends Model
         return $this->hasMany(AgentSystemMetric::class);
     }
 
-    public function sessions(): HasMany
+    public function sessions(): HasOne
     {
-        return $this->hasMany(AgentUserSession::class);
+        return $this->HasOne(AgentUserSession::class);
     }
 }

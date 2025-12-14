@@ -1,21 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Crons;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class CronController extends Controller
 {
+
     /**
      * Spustí všechny naplánované úkoly podle Laravel Scheduleru.
+     *
+     * @param Request  $request
+     * @param string $token
+     *
+     * @return JsonResponse
      */
-    public function runSchedule(Request $request, $token)
+    public function runSchedule(Request $request, string $token): JsonResponse
     {
         $this->validateToken($token);
 
-        // Spustí všechny naplánované úkoly definované v `Kernel.php`
         Artisan::call('schedule:run');
         Log::info('CRON: schedule:run spuštěn', ['request' => $request->all()]);
 
@@ -24,8 +31,13 @@ class CronController extends Controller
 
     /**
      * Zpracuje všechny joby ve frontě pomocí `queue:work`
+     *
+     * @param Request $request
+     * @param string $token
+     *
+     * @return JsonResponse
      */
-    public function runQueue(Request $request, $token)
+    public function runQueue(Request $request, string $token): JsonResponse
     {
         $this->validateToken($token);
 
@@ -40,8 +52,13 @@ class CronController extends Controller
 
     /**
      * Zpracuje specifické fronty jobů (e-maily a notifikace)
+     *
+     * @param  Request  $request
+     * @param  string  $token
+     *
+     * @return JsonResponse
      */
-    public function runNotifications(Request $request, $token)
+    public function runNotifications(Request $request, string $token): JsonResponse
     {
         $this->validateToken($token);
 
@@ -54,10 +71,15 @@ class CronController extends Controller
         return response()->json(['status' => 'OK', 'task' => 'notifications']);
     }
 
+
     /**
-     * Ověří platnost tokenu
+     * Validate token
+     *
+     * @param  string  $token
+     *
+     * @return void
      */
-    protected function validateToken($token)
+    protected function validateToken(string $token): void
     {
         if ($token !== config('app.cron_token')) {
             abort(403, 'Unauthorized access');

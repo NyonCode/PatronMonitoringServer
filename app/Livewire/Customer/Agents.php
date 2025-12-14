@@ -30,6 +30,8 @@ class Agents extends Component
     public bool $showDetailModal = false;
 
     public bool $showLogModal = false;
+    public bool $showConfigModal = false;
+    public bool $showDeleteModal = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -53,12 +55,24 @@ class Agents extends Component
         }
     }
 
+    /**
+     * Show detail modal.
+     *
+     * @param  int  $agentId
+     *
+     * @return void
+     */
     public function showDetail(int $agentId): void
     {
         $this->selectedAgentId = $agentId;
         $this->showDetailModal = true;
     }
 
+    /**
+     * Close detail modal.
+     *
+     * @return void
+     */
     #[On('closeDetail')]
     public function closeDetail(): void
     {
@@ -66,12 +80,24 @@ class Agents extends Component
         $this->selectedAgentId = null;
     }
 
+    /**
+     * Show log modal.
+     *
+     * @param  int  $agentId
+     *
+     * @return void
+     */
     public function showLog(int $agentId): void
     {
         $this->selectedAgentId = $agentId;
         $this->showLogModal = true;
     }
 
+    /**
+     * Close log modal.
+     *
+     * @return void
+     */
     #[On('closeLog')]
     public function closeLog(): void
     {
@@ -79,6 +105,61 @@ class Agents extends Component
         $this->selectedAgentId = null;
     }
 
+    /**
+     * Show config modal.
+     *
+     * @param  Agent  $agent
+     *
+     * @return void
+     */
+    public function showConfig(Agent $agent): void
+    {
+        $this->selectedAgentId = $agent->id;
+        $this->showConfigModal = true;
+    }
+
+    /**
+     * Close config modal.
+     *
+     * @return void
+     */
+    #[On('closeConfig')]
+    public function closeConfig(): void
+    {
+        $this->showConfigModal = false;
+        $this->selectedAgentId = null;
+    }
+
+    /**
+     * Show delete modal.
+     *
+     * @param  Agent  $agent
+     *
+     * @return void
+     */
+    public function showDelete(Agent $agent): void
+    {
+        $this->selectedAgentId = $agent->id;
+        $this->showDeleteModal = true;
+    }
+
+    /**
+     * Close delete modal.
+     *
+     * @return void
+     */
+    #[On('closeDelete')]
+    public function closeDelete(): void
+    {
+        $this->showDeleteModal = false;
+        $this->selectedAgentId = null;
+    }
+
+    /**
+     * Get agents.
+     *
+     * @return LengthAwarePaginator|array
+     */
     #[Computed]
     public function agents(): LengthAwarePaginator|array
     {
@@ -99,6 +180,9 @@ class Agents extends Component
 
     public function getAgentStatus(Agent $agent): string
     {
+        if ($agent->status == 'shutdown') {
+            return 'shutdown';
+        }
         if (! $agent->last_seen_at) {
             return 'offline';
         }
@@ -140,7 +224,7 @@ class Agents extends Component
             'name' => $disk->name,
             'usage_percent' => round($disk->usage_percent, 1),
             'free' => $this->formatBytes($disk->free),
-            'size' => $this->formatBytes($disk->size),
+            'total' => $this->formatBytes($disk->total),
         ];
     }
 
@@ -155,6 +239,14 @@ class Agents extends Component
         ];
     }
 
+    /**
+     * Format bytes to human readable format
+     *
+     * @param  int|string  $bytes
+     * @param  int  $precision
+     *
+     * @return string
+     */
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
         if (! is_numeric($bytes)) {
@@ -171,6 +263,29 @@ class Agents extends Component
         return round($bytes, $precision).' '.$units[$i];
     }
 
+    /**
+     * Check if agent is online
+     *
+     * @param  Agent  $agent
+     *
+     * @return bool
+     */
+    public function isOnline(Agent $agent): bool
+    {
+        if($agent->status === 'shutdown')
+            return false;
+
+        if($agent->status === 'online' or $agent->last_seen_at->greaterThan(now()->subMinutes(5)))
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Render view
+     *
+     * @return View|Factory|\Illuminate\View\View
+     */
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agents');

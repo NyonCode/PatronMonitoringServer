@@ -7,7 +7,6 @@ use App\Models\AgentUserSession;
 use App\Services\MetricsChartService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use LaravelIdea\Helper\App\Models\_IH_AgentUserSession_C;
 use Livewire\Component;
 
 class AgentDetail extends Component
@@ -175,7 +174,7 @@ class AgentDetail extends Component
     }
 
     /**
-     * Zruší editaci názvu
+     * Cancel edit name
      */
     public function cancelEditName(): void
     {
@@ -260,26 +259,35 @@ class AgentDetail extends Component
         ];
     }
 
-    private function getAgentSessionInfo(): ?array
+    /**
+     * Get agent session info
+     *
+     * @return AgentUserSession[]|mixed|null
+     */
+    private function getAgentSessionInfo(): mixed
     {
         $session = $this->agent->sessions;
 
-        if (!$session) {
+        if (! $session) {
             return null;
         }
 
-        dd($session);
-
+        return $session;
     }
 
     /**
-     * Uzavře detail
+     * Closed detail
      */
     public function closeDetail(): void
     {
         $this->dispatch('closeDetail')->to('customer.agents');
     }
 
+    /**
+     * Render view
+     *
+     * @return View|Factory|\Illuminate\View\View
+     */
     public function render(): View|Factory|\Illuminate\View\View
     {
         return view('livewire.customer.agent-detail', [
@@ -289,6 +297,9 @@ class AgentDetail extends Component
         ]);
     }
 
+    /**
+     * Returns agent name for editing
+     */
     private function getEditName(): string
     {
         if (empty($this->agent->pretty_name)) {

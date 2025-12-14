@@ -1,14 +1,14 @@
-<div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center p-4" wire:poll.5s="refreshMetrics">
+<div class="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-center justify-center sm:p-4" wire:poll.5s="refreshMetrics">
 
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white dark:bg-zinc-900 sm:rounded-lg shadow-xl w-full max-w-screen sm:max-w-6xl max-h-screen sm:max-h-[90vh] overflow-y-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
+        <div class="flex items-center justify-between px-6 py-8 md:py-3 border-b border-zinc-200 dark:border-zinc-700 max-w-screen overflow-x-hidden">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-3">
                     @if($editingName)
                         <input
                             wire:model="editName"
-                            class="text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="text-base md:text-2xl font-bold px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             autofocus
                         />
                         <div class="flex gap-2">
@@ -41,11 +41,15 @@
                         </div>
                     @endif
                 </div>
-                <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+
+                @if(!$editingName)
+                    <button wire:click="$parent.closeDetail" class="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                @endif
+
             </div>
         </div>
 
@@ -128,16 +132,16 @@
 
             <!-- Informace o sezení -->
             @if($sessionInfo)
-
                 @php
-                    $diff = now()->diff($sessionInfo['session_start']);
+                    $diff = now()->diff($sessionInfo->session_start);
                 @endphp
+
                 <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
                     <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Session info</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">User</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $sessionInfo['session_user'] ?? 'N/A' }}</p>
+                            <p class="font-mono text-zinc-900 dark:text-white">{{ $sessionInfo->session_user ?? 'N/A' }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Session time</p>
@@ -145,16 +149,23 @@
                         </div>
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Mapper drivers</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ dump($sessionInfo['mapped_drivers']) ?? 'N/A' }}</p>
+                            @foreach($sessionInfo->mapped_drivers as $mappedDrivers)
+                                <div class="flex">
+                                    <div class="font-mono font-bold text-zinc-900 dark:text-white pr-4">{{ $mappedDrivers['Letter'] }}</div>
+                                    <div class="font-mono text-zinc-900 dark:text-white">{{ $mappedDrivers['Path'] }}</div>
+                                </div>
+                            @endforeach
                         </div>
-                        <div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">DNS servery</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $networkInfo['dns'] ?? 'N/A' }}</p>
-                        </div>
+
                         <div>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400">Accessible paths</p>
-                            <p class="font-mono text-zinc-900 dark:text-white">{{ $networkInfo['mac_address'] ?? 'N/A' }}</p>
+                            @foreach($sessionInfo->accessible_paths as $accessiblePaths)
+                                <p class="font-mono text-zinc-900 dark:text-white">
+                                    {{ $accessiblePaths }}
+                                </p>
+                            @endforeach
                         </div>
+
                     </div>
                 </div>
             @endif
@@ -217,7 +228,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                     </svg>
-                                    Přepnout na období s daty ({{ $suggestedPeriodLabel }})
+                                    {{ __('Switch to period with data') }} ({{ $suggestedPeriodLabel }})
                                 </button>
                             @endif
                         </div>
@@ -228,16 +239,28 @@
             <!-- Period selector -->
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Historická data</h3>
+                    <h3 class="text-lg font-bold text-zinc-900 dark:text-white">
+                        {{ __('Historical data') }}
+                    </h3>
                     <select
                         wire:model.live="period"
                         class="px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="hour">Poslední hodina</option>
-                        <option value="day">Poslední den</option>
-                        <option value="week">Poslední týden</option>
-                        <option value="month">Poslední měsíc</option>
-                        <option value="year">Poslední rok</option>
+                        <option value="hour">
+                            {{ __('Last hour') }}
+                        </option>
+                        <option value="day">
+                            {{ __('Last day') }}
+                        </option>
+                        <option value="week">
+                            {{ __('Last week') }}
+                        </option>
+                        <option value="month">
+                            {{ __('Last month') }}
+                        </option>
+                        <option value="year">
+                            {{ __('Last year') }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -254,8 +277,12 @@
                             <svg class="w-16 h-16 text-zinc-300 dark:text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
-                            <h3 class="text-lg font-semibold text-zinc-900 dark:text-white mb-2">Žádná historická data</h3>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Pro vybrané období nejsou k dispozici žádná data.</p>
+                            <h3 class="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+                                {{ __('No historical data') }}
+                            </h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                                {{ __('No historical data available for the selected period.') }}
+                            </p>
                             @if($suggestedPeriod && $suggestedPeriod !== $period)
                                 <button
                                     wire:click="switchToPeriodWithData"
@@ -270,7 +297,9 @@
 
             <!-- Disk status -->
             <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
-                <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Stav disků</h3>
+                <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">
+                    {{ __('Disk status') }}
+                </h3>
                 <div class="space-y-4">
                     @forelse($diskStatus as $disk)
                         <div x-data="{ usage: {{ $disk['usage_percent'] ?? 0 }} }"
@@ -278,8 +307,9 @@
                             <div class="flex items-center justify-between mb-2">
                                 <div>
                                     <p class="font-medium text-zinc-900 dark:text-white">{{ $disk['name'] }}</p>
-                                    <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ $disk['free'] }} volných
-                                        z {{ $disk['size'] }}</p>
+                                    <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                                        {{ $disk['free'] }} {{ __('free space out of') }} {{ $disk['total'] }}
+                                    </p>
                                 </div>
                                 <span class="inline-flex px-2 py-1 rounded text-sm font-semibold transition-colors duration-300"
                                       :class="{
@@ -301,19 +331,21 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-zinc-600 dark:text-zinc-400 text-center py-4">Žádné disky nenalezeny</p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-center py-4">
+                            {{ __('No disks found') }}
+                        </p>
                     @endforelse
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-3 p-6 border-t border-zinc-200 dark:border-zinc-700">
+        <div class="flex justify-end gap-3 px-6 py-6 md:py-3 border-t border-zinc-200 dark:border-zinc-700">
             <button
                 wire:click="$parent.closeDetail"
-                class="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                class="px-4 py-2 text-sm font-medium text-zinc-700 border border-zinc-200 dark:border-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
             >
-                Zavřít
+                {{ __('Close') }}
             </button>
         </div>
     </div>

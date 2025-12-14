@@ -20,6 +20,7 @@
 
             <flux:spacer />
 
+            {{--
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
@@ -29,6 +30,7 @@
                 {{ __('Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
+            --}}
 
             <!-- Desktop User Menu -->
             <flux:dropdown position="bottom" align="start">
@@ -129,5 +131,9 @@
         {{ $slot }}
 
         @fluxScripts
+
+        <x-toast.group>
+            <x-toast />
+        </x-toast.group>
     </body>
 </html>
