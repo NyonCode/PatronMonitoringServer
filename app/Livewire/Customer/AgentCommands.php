@@ -117,12 +117,6 @@ class AgentCommands extends Component
         $this->reset(['filterStatus', 'filterType']);
     }
 
-    #[On('closeCommands')]
-    public function close(): void
-    {
-        $this->dispatch('closeCommands')->to('customer.agents');
-    }
-
     public function render(): View
     {
         return view('livewire.customer.agent-commands', [
