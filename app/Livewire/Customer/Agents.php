@@ -178,7 +178,8 @@ class Agents extends Component
     #[On('closeTerminal')]
     public function closeTerminal(): void
     {
-        $this->dispatch('closeTerminal')->to('customer.agents');
+        $this->showTerminalModal = false;
+        $this->selectedAgentId = null;
     }
 
     /**
