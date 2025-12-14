@@ -154,8 +154,10 @@ class AgentController extends Controller
         return response()->json([
             'status' => 'ok',
             'interval' => $agent->update_interval,
+            'debugMode' => $agent->debug_mode,
             'remote_commands' => $pendingCommands->map(fn(RemoteCommand $cmd) => $cmd->toApiFormat()),
-        ]);    }
+        ]);
+    }
 
     /**
      * Create or update logs for agent
