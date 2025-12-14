@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('agents', function (Blueprint $table) {
-            $table->boolean('debug-model')->default(false)->after('update_interval');
+            $table->boolean('debug_mode')->default(false)->after('update_interval');
         });
     }
 
