@@ -290,7 +290,7 @@
                                              style="width: {{ $disk['usage_percent'] }}%"></div>
                                     </div>
                                     <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                                        {{ $disk['free'] }} / {{ $disk['size'] }}
+                                        {{ $disk['free'] }} / {{ $disk['total'] }}
                                     </div>
                                 </div>
                             @else
