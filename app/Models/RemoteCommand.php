@@ -93,4 +93,9 @@ class RemoteCommand extends Model
             'url' => $this->url,
         ];
     }
+
+    public function canBeCalled(): bool
+    {
+        return $this->status === RemoteCommandStatus::PENDING or $this->status === RemoteCommandStatus::SENT;
+    }
 }
