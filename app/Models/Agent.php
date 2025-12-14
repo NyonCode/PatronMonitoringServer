@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,5 +75,25 @@ class Agent extends Model
     public function sessions(): HasOne
     {
         return $this->HasOne(AgentUserSession::class);
+    }
+
+    public function remoteCommands(): HasMany
+    {
+        return $this->hasMany(RemoteCommand::class);
+    }
+
+    public function terminalSessions(): HasMany
+    {
+        return $this->hasMany(TerminalSession::class);
+    }
+
+    public function getPendingCommands(int $limit = 10): Collection
+    {
+        return $this->remoteCommands()->pending()->orderBy('created_at')->limit($limit)->get();
+    }
+
+    public function getActiveTerminalSessions(): Collection
+    {
+        return $this->terminalSessions()->active()->get();
     }
 }
