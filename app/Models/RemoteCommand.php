@@ -94,7 +94,7 @@ class RemoteCommand extends Model
         ];
     }
 
-    public function canBeCalled(): bool
+    public function canBeCancelled(): bool
     {
         return $this->status === RemoteCommandStatus::PENDING or $this->status === RemoteCommandStatus::SENT;
     }
