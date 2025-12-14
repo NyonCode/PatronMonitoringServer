@@ -154,7 +154,8 @@ class Agents extends Component
     #[On('closeCommands')]
     public function closeCommands(): void
     {
-        $this->dispatch('closeCommands')->to('customer.agents');
+        $this->showCommandsModal = false;
+        $this->selectedAgentId = null;
     }
 
     /**
