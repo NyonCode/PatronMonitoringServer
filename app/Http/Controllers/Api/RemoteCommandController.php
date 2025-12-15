@@ -13,6 +13,7 @@ use App\Models\TerminalSession;
 use App\Services\TerminalPollingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 
@@ -40,6 +41,9 @@ class RemoteCommandController extends Controller
      */
     public function storeResults(Request $request, string $uuid): JsonResponse
     {
+        Log::info('Store results', $request->all(), $uuid);
+
+
         $agent = $this->getAgent($uuid);
 
         $validated = $request->validate([
