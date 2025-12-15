@@ -13,13 +13,26 @@ use App\Models\TerminalSession;
 use App\Services\TerminalPollingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 
 class RemoteCommandController extends Controller
 {
     /**
-     * Store results from a remote command
+     * Get agent by UUID helper
+     *
+     * @param string $uuid
+     *
+     * @return Agent
+     */
+    private function getAgent(string $uuid): Agent
+    {
+        return Agent::where('uuid', $uuid)->firstOrFail();
+    }
+
+    /**
+     * Store results from agent
      *
      * @param Request $request
      * @param string $uuid
@@ -28,7 +41,10 @@ class RemoteCommandController extends Controller
      */
     public function storeResults(Request $request, string $uuid): JsonResponse
     {
-        $agent = Agent::where('uuid', $uuid)->firstOrFail();
+        Log::info('Store results', $request->all(), $uuid);
+
+
+        $agent = $this->getAgent($uuid);
 
         $validated = $request->validate([
             'results' => ['required', 'array'],
@@ -64,34 +80,17 @@ class RemoteCommandController extends Controller
     }
 
     /**
-     * Store a new remote command
+     * Create terminal session
      *
-     * @param Request $request
-     * @param Agent $agent
+     * @param  Request  $request
+     * @param  string  $uuid
      *
      * @return JsonResponse
      */
-    public function store(Request $request, Agent $agent): JsonResponse
+    public function createTerminal(Request $request, string $uuid): JsonResponse
     {
-        $validated = $request->validate([
-            'type' => ['required', new Enum(RemoteCommandType::class)],
-            'command' => ['nullable', 'string', 'max:10000'],
-            'url' => ['nullable', 'string', 'max:2048'],
-        ]);
+        $agent = $this->getAgent($uuid);
 
-        $command = $agent->remoteCommands()->create([
-            'type' => $validated['type'],
-            'command' => $validated['command'] ?? null,
-            'url' => $validated['url'] ?? null,
-            'status' => RemoteCommandStatus::PENDING,
-            'created_by' => $request->user()?->id,
-        ]);
-
-        return response()->json(['status' => 'ok', 'command' => $command->toApiFormat()], 201);
-    }
-
-    public function createTerminal(Request $request, Agent $agent): JsonResponse
-    {
         $validated = $request->validate([
             'type' => ['nullable', new Enum(TerminalType::class)],
             'user_session_id' => ['nullable', 'integer'],
@@ -117,8 +116,18 @@ class RemoteCommandController extends Controller
         return response()->json(['status' => 'ok', 'session' => $session->toApiFormat()], 201);
     }
 
-    public function sendTerminalInput(Request $request, Agent $agent, string $sessionId): JsonResponse
+    /**
+     * Send terminal input
+     *
+     * @param  Request  $request
+     * @param  string  $uuid
+     * @param  string  $sessionId
+     *
+     * @return JsonResponse
+     */
+    public function sendTerminalInput(Request $request, string $uuid, string $sessionId): JsonResponse
     {
+        $agent = $this->getAgent($uuid);
         $session = $agent->terminalSessions()->where('id', $sessionId)->active()->firstOrFail();
 
         $validated = $request->validate([
@@ -139,8 +148,9 @@ class RemoteCommandController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function getTerminalOutput(Request $request, Agent $agent, string $sessionId): JsonResponse
+    public function getTerminalOutput(Request $request, string $uuid, string $sessionId): JsonResponse
     {
+        $agent = $this->getAgent($uuid);
         $agent->terminalSessions()->where('id', $sessionId)->firstOrFail();
 
         $agent->remoteCommands()->create([
@@ -153,8 +163,9 @@ class RemoteCommandController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function closeTerminal(Agent $agent, string $sessionId): JsonResponse
+    public function closeTerminal(string $uuid, string $sessionId): JsonResponse
     {
+        $agent = $this->getAgent($uuid);
         $session = $agent->terminalSessions()->where('id', $sessionId)->active()->firstOrFail();
 
         $agent->remoteCommands()->create([
@@ -168,18 +179,22 @@ class RemoteCommandController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function listTerminals(Agent $agent): JsonResponse
+    public function listTerminals(string $uuid): JsonResponse
     {
+        $agent = $this->getAgent($uuid);
         $sessions = $agent->getActiveTerminalSessions();
+
         return response()->json([
             'sessions' => $sessions->map(fn(TerminalSession $s) => $s->toApiFormat()),
         ]);
     }
 
-    public function getTerminalHistory(Request $request, Agent $agent, string $sessionId): JsonResponse
+    public function getTerminalHistory(Request $request, string $uuid, string $sessionId): JsonResponse
     {
+        $agent = $this->getAgent($uuid);
         $service = app(TerminalPollingService::class);
         $result = $service->getHistory($agent, $sessionId, $request->integer('limit', 100));
+
         return response()->json($result);
     }
 

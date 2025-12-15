@@ -21,11 +21,15 @@ Route::prefix('client/{uuid}')->middleware(AgentTokenMiddleware::class)->group(f
     Route::post('/heartbeat', [AgentController::class, 'heartbeat']);
     Route::post('/logs', [AgentController::class, 'logs']);
     Route::post('/shutdown', [AgentController::class,'shutdown',]);
-    Route::post('/command-results', [RemoteCommandController::class, 'storeResults']);
+
+
 
     Route::post('/terminal', [RemoteCommandController::class, 'createTerminal']);
     Route::get('/terminal', [RemoteCommandController::class, 'listTerminals']);
     Route::post('/terminal/{sessionId}/input', [RemoteCommandController::class, 'sendTerminalInput']);
     Route::get('/terminal/{sessionId}/output', [RemoteCommandController::class, 'getTerminalOutput']);
     Route::delete('/terminal/{sessionId}', [RemoteCommandController::class, 'closeTerminal']);
+
+    Route::post('/command-results', [RemoteCommandController::class, 'storeResults']);
+
 });
