@@ -27,10 +27,6 @@ class AgentTerminal extends Component
 
     /**
      * Mount the component.
-     *
-     * @param Agent $agent
-     *
-     * @return void
      */
     public function mount(Agent $agent): void
     {
@@ -45,8 +41,6 @@ class AgentTerminal extends Component
 
     /**
      * Get the sessions property.
-     *
-     * @return Collection
      */
     public function getSessionsProperty(): Collection
     {
@@ -58,8 +52,6 @@ class AgentTerminal extends Component
 
     /**
      * Get the active session property.
-     *
-     * @return ?TerminalSession
      */
     public function getActiveSessionProperty(): ?TerminalSession
     {
@@ -71,9 +63,7 @@ class AgentTerminal extends Component
     }
 
     /**
-     * Get the terminal log's property.
-     *
-     * @return Collection
+     * Get the terminal logs property.
      */
     public function getTerminalLogsProperty(): Collection
     {
@@ -89,8 +79,6 @@ class AgentTerminal extends Component
 
     /**
      * Get the terminal types property.
-     *
-     * @return array
      */
     public function getTerminalTypesProperty(): array
     {
@@ -101,10 +89,6 @@ class AgentTerminal extends Component
 
     /**
      * Select a session.
-     *
-     * @param string $sessionId
-     *
-     * @return void
      */
     public function selectSession(string $sessionId): void
     {
@@ -114,8 +98,6 @@ class AgentTerminal extends Component
 
     /**
      * Open the create modal.
-     *
-     * @return void
      */
     public function openCreateModal(): void
     {
@@ -126,8 +108,6 @@ class AgentTerminal extends Component
 
     /**
      * Close the create modal.
-     *
-     * @return void
      */
     public function closeCreateModal(): void
     {
@@ -136,13 +116,13 @@ class AgentTerminal extends Component
 
     /**
      * Create a session.
-     *
-     * @return void
      */
     public function createSession(): void
     {
+        $sessionId = (string) Str::uuid();
+
         $session = $this->agent->terminalSessions()->create([
-            'id' => Str::uuid(),
+            'id' => $sessionId,
             'type' => $this->terminalType,
             'user_session_id' => $this->userSessionId,
             'status' => TerminalSessionStatus::RUNNING,
@@ -150,11 +130,14 @@ class AgentTerminal extends Component
             'created_by' => auth()->id(),
         ]);
 
-        // Create command for agent
+        // Pošli session UUID v command, config jako JSON v url
         $this->agent->remoteCommands()->create([
             'type' => RemoteCommandType::TERMINAL_CREATE,
-            'command' => $this->terminalType,
-            'url' => (string)($this->userSessionId ?? ''),
+            'command' => $sessionId,
+            'url' => json_encode([
+                'type' => $this->terminalType,
+                'user_session_id' => $this->userSessionId,
+            ]),
             'status' => RemoteCommandStatus::PENDING,
             'created_by' => auth()->id(),
         ]);
@@ -166,8 +149,6 @@ class AgentTerminal extends Component
 
     /**
      * Send input to the active session.
-     *
-     * @return void
      */
     public function sendInput(): void
     {
@@ -198,8 +179,6 @@ class AgentTerminal extends Component
 
     /**
      * Send Ctrl+C to the active session.
-     *
-     * @return void
      */
     public function sendCtrlC(): void
     {
@@ -212,7 +191,7 @@ class AgentTerminal extends Component
         $this->agent->remoteCommands()->create([
             'type' => RemoteCommandType::TERMINAL_INPUT,
             'command' => $this->activeSessionId,
-            'url' => "\x03", // Ctrl+C
+            'url' => "\x03",
             'status' => RemoteCommandStatus::PENDING,
             'created_by' => auth()->id(),
         ]);
@@ -222,8 +201,6 @@ class AgentTerminal extends Component
 
     /**
      * Request output from the active session.
-     *
-     * @return void
      */
     public function requestOutput(): void
     {
@@ -240,11 +217,7 @@ class AgentTerminal extends Component
     }
 
     /**
-     * Close the active session.
-     *
-     * @param ?string $sessionId
-     *
-     * @return void
+     * Close a session.
      */
     public function closeSession(?string $sessionId = null): void
     {
@@ -258,7 +231,6 @@ class AgentTerminal extends Component
             return;
         }
 
-        // Create close command
         $this->agent->remoteCommands()->create([
             'type' => RemoteCommandType::TERMINAL_CLOSE,
             'command' => $sessionId,
@@ -277,9 +249,7 @@ class AgentTerminal extends Component
     }
 
     /**
-     * Close the terminal.
-     *
-     * @return void
+     * Close the terminal modal.
      */
     #[On('closeTerminal')]
     public function close(): void
@@ -289,8 +259,6 @@ class AgentTerminal extends Component
 
     /**
      * Render the component.
-     *
-     * @return View
      */
     public function render(): View
     {
