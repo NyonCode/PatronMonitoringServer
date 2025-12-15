@@ -112,10 +112,10 @@ class RemoteCommandController extends Controller
             'created_by' => $request->user()?->id,
         ]);
 
-        // OPRAVENO: Pošli session UUID v command, config jako JSON v url
+        // OPRAVA: Pošli session UUID v command, config jako JSON v url
         $agent->remoteCommands()->create([
             'type' => RemoteCommandType::TERMINAL_CREATE,
-            'command' => $sessionId,  // ✅ Session UUID
+            'command' => $sessionId,  // <-- Session UUID, NE typ terminálu!
             'url' => json_encode([
                 'type' => $type instanceof TerminalType ? $type->value : $type,
                 'user_session_id' => $userSessionId,
@@ -126,6 +126,7 @@ class RemoteCommandController extends Controller
 
         return response()->json(['status' => 'ok', 'session' => $session->toApiFormat()], 201);
     }
+
     /**
      * Send terminal input
      *
