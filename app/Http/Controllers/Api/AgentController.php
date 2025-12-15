@@ -76,7 +76,9 @@ class AgentController extends Controller
     {
         $exists = Agent::where('agent_id', $agent_id)->exists();
 
-        return response()->json(['exists' => $exists]);
+        return response()->json([
+            'exists' => $exists
+        ]);
     }
 
     /**
@@ -96,7 +98,11 @@ class AgentController extends Controller
         );
         $agent->save();
 
-        return response()->json(['status' => 'ok', 'token' => $agent->token, 'interval' => $agent->update_interval]);
+        return response()->json([
+            'status' => 'ok',
+            'token' => $agent->token,
+            'interval' => $agent->update_interval
+        ]);
     }
 
     /**
@@ -155,7 +161,7 @@ class AgentController extends Controller
             'status' => 'ok',
             'interval' => $agent->update_interval,
             'debugMode' => $agent->debug_mode,
-            'remote_commands' => $pendingCommands->map(fn(RemoteCommand $cmd) => $cmd->toApiFormat()),
+            'remoteCommands' => $pendingCommands->map(fn(RemoteCommand $cmd) => $cmd->toApiFormat()),
         ]);
     }
 
@@ -176,7 +182,9 @@ class AgentController extends Controller
             ]
         );
 
-        return response()->json(['status' => 'ok']);
+        return response()->json([
+            'status' => 'ok'
+        ]);
     }
 
     /**
@@ -184,7 +192,10 @@ class AgentController extends Controller
      */
     public function health(): JsonResponse
     {
-        return response()->json(['status' => 'ok', 'timestamp' => now()]);
+        return response()->json([
+            'status' => 'ok',
+            'timestamp' => now()
+        ]);
     }
 
     /**
@@ -199,7 +210,9 @@ class AgentController extends Controller
             'last_seen_at' => now(),
         ]);
 
-        return response()->json(['status' => 'ok']);
+        return response()->json([
+            'status' => 'ok'
+        ]);
     }
 
     private function removeFullHtmlDocument(mixed $input): mixed
