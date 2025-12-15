@@ -5,20 +5,29 @@ namespace App\Models;
 use App\Enums\TerminalSessionStatus;
 use App\Enums\TerminalType;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class TerminalSession extends Model
 {
-    use HasUuids;
+    // ODSTRANĚNO: use HasUuids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'id', // ← Přidáno do fillable!
         'agent_id', 'type', 'user_session_id', 'status',
         'started_at', 'closed_at', 'created_by',
     ];
 
+    /**
+     * Get the casts property.
+     *
+     * @return array
+     */
     protected function casts(): array
     {
         return [
@@ -27,6 +36,22 @@ class TerminalSession extends Model
             'started_at' => 'datetime',
             'closed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Boot the model.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
     }
 
     public function agent(): BelongsTo
