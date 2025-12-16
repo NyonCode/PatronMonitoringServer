@@ -31,6 +31,15 @@
             <div class="flex flex-wrap gap-2">
                 <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400 self-center mr-2">Rychlé akce:</span>
 
+                <button wire:click="quickCommand('shutdown')"
+                        wire:confirm="Opravdu chcete restartovat systém?"
+                        class="px-3 py-2 text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Restart
+                </button>
+
                 <button wire:click="quickCommand('restart')"
                         wire:confirm="Opravdu chcete restartovat systém?"
                         class="px-3 py-2 text-sm font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-200 dark:hover:bg-yellow-900/50 transition-colors">
@@ -147,7 +156,50 @@
 
                                 @if($command->command)
                                     <div class="text-sm text-zinc-600 dark:text-zinc-400 font-mono truncate mb-1">
-                                        {{ Str::limit($command->command, 100) }}
+                                        @php
+                                            $parsed = $this->parseCommandOutput($command);
+                                        @endphp
+
+                                        @if($parsed instanceof \Illuminate\Support\Collection && $parsed->isNotEmpty())
+                                            {{-- SERVICES TABLE --}}
+                                            <div class="overflow-x-auto">
+                                                <table class="min-w-full text-xs border border-zinc-700 rounded-lg">
+                                                    <thead class="bg-zinc-800 text-zinc-300">
+                                                    <tr>
+                                                        <th class="px-3 py-2 text-left">Název</th>
+                                                        <th class="px-3 py-2 text-left">Popis</th>
+                                                        <th class="px-3 py-2 text-left">Stav</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($parsed as $service)
+                                                        <tr class="border-t border-zinc-700">
+                                                            <td class="px-3 py-2 font-mono">
+                                                                {{ $service['name'] }}
+                                                            </td>
+                                                            <td class="px-3 py-2">
+                                                                {{ $service['display_name'] }}
+                                                            </td>
+                                                            <td class="px-3 py-2">
+                                                                <span class="inline-flex px-2 py-1 rounded text-xs font-semibold
+                                                                    {{ $service['is_running']
+                                                                        ? 'bg-green-900/40 text-green-300'
+                                                                        : 'bg-red-900/40 text-red-300' }}">
+                                                                    {{ strtoupper($service['status']) }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        @elseif($command->output)
+                                            {{-- FALLBACK RAW OUTPUT --}}
+                                            <pre class="text-xs bg-zinc-900 text-green-400 p-3 rounded-lg overflow-x-auto max-h-64 overflow-y-auto font-mono">
+                                                {{ $command->output }}
+                                                    </pre>
+                                        @endif
                                     </div>
                                 @endif
 

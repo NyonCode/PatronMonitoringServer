@@ -6,6 +6,7 @@ use App\Enums\RemoteCommandStatus;
 use App\Enums\RemoteCommandType;
 use App\Models\Agent;
 use App\Models\RemoteCommand;
+use App\Parsers\WindowsServicesParser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
@@ -115,6 +116,23 @@ class AgentCommands extends Component
     public function clearFilters(): void
     {
         $this->reset(['filterStatus', 'filterType']);
+    }
+
+    /**
+     * Parse command output.
+     *
+     * @param  string  $command
+     *
+     * @throws \JsonException
+     *
+     * @return Collection|null
+     */
+    public function parseCommandOutput(string $command): ?Collection
+    {
+        return match ($command->type->value) {
+            'get_services' => WindowsServicesParser::parse($command->output),
+            default => null,
+        };
     }
 
     public function render(): View
