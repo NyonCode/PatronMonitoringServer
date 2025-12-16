@@ -121,13 +121,13 @@ class AgentCommands extends Component
     /**
      * Parse command output.
      *
-     * @param  string  $command
+     * @param  RemoteCommand  $command
      *
      * @throws \JsonException
      *
      * @return Collection|null
      */
-    public function parseCommandOutput(string $command): ?Collection
+    public function parseCommandOutput(RemoteCommand $command): ?Collection
     {
         return match ($command->type->value) {
             'get_services' => WindowsServicesParser::parse($command->output),
