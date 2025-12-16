@@ -208,6 +208,17 @@ class AgentTerminal extends Component
             return;
         }
 
+        // Zkontroluj jestli už neexistuje pending output command
+        $pendingExists = $this->agent->remoteCommands()
+            ->where('type', RemoteCommandType::TERMINAL_OUTPUT)
+            ->where('command', $this->activeSessionId)
+            ->whereIn('status', [RemoteCommandStatus::PENDING, RemoteCommandStatus::SENT])
+            ->exists();
+
+        if ($pendingExists) {
+            return;
+        }
+
         $this->agent->remoteCommands()->create([
             'type' => RemoteCommandType::TERMINAL_OUTPUT,
             'command' => $this->activeSessionId,
@@ -215,7 +226,6 @@ class AgentTerminal extends Component
             'created_by' => auth()->id(),
         ]);
     }
-
     /**
      * Close a session.
      */
