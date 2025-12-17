@@ -6,7 +6,7 @@ use App\Enums\RemoteCommandStatus;
 use App\Enums\RemoteCommandType;
 use App\Models\Agent;
 use App\Models\RemoteCommand;
-use App\Parsers\WindowsServicesParser;
+use App\Services\ParsedOutput;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
@@ -120,19 +120,14 @@ class AgentCommands extends Component
 
     /**
      * Parse command output.
-     *
+     *S
      * @param  RemoteCommand  $command
      *
-     * @throws \JsonException
-     *
-     * @return Collection|null
+     * @return ParsedOutput|null
      */
-    public function parseCommandOutput(RemoteCommand $command): ?Collection
+    public function parseCommandOutput(RemoteCommand $command): ?ParsedOutput
     {
-        return match ($command->type->value) {
-            'get_services' => WindowsServicesParser::parse($command->output),
-            default => null,
-        };
+        return $command->parsed_output;
     }
 
     public function render(): View

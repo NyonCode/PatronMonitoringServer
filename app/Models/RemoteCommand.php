@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\RemoteCommandStatus;
 use App\Enums\RemoteCommandType;
+use App\Services\CommandOutputParser;
+use App\Services\ParsedOutput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -94,8 +96,23 @@ class RemoteCommand extends Model
         ];
     }
 
+    /**
+     * Check if command can be cancelled.
+     *
+     * @return bool
+     */
     public function canBeCancelled(): bool
     {
         return $this->status === RemoteCommandStatus::PENDING or $this->status === RemoteCommandStatus::SENT;
+    }
+
+    /**
+     * Get parsed output.
+     *
+     * @return ParsedOutput|null
+     */
+    public function getParsedOutputAttribute(): ?ParsedOutput
+    {
+        return app(CommandOutputParser::class)->parse($this->type, $this->output);
     }
 }
