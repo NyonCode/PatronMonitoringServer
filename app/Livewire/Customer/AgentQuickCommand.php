@@ -13,18 +13,17 @@ class AgentQuickCommand extends Component
     public Agent $agent;
 
     public string $command = '';
+
     public string $commandType = 'powershell';
 
     public ?string $lastOutput = null;
+
     public ?string $lastError = null;
+
     public bool $isRunning = false;
 
     /**
      * Mount the component.
-     *
-     * @param  Agent  $agent
-     *
-     * @return void
      */
     public function mount(Agent $agent): void
     {
@@ -33,8 +32,6 @@ class AgentQuickCommand extends Component
 
     /**
      * Execute the command.
-     *
-     * @return void
      */
     public function executeCommand(): void
     {
@@ -61,8 +58,6 @@ class AgentQuickCommand extends Component
 
     /**
      * Check the result of the command.
-     *
-     * @return void
      */
     public function checkResult(): void
     {
@@ -80,8 +75,6 @@ class AgentQuickCommand extends Component
 
     /**
      * Render the component.
-     *
-     * @return View
      */
     public function render(): View
     {

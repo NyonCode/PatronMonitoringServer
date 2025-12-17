@@ -156,72 +156,7 @@
 
                                 @if($command->command)
                                     <div class="text-sm text-zinc-600 dark:text-zinc-400 font-mono truncate mb-1">
-                                        @php $parsed = $command->parsed_output; @endphp
-
-                                        @if($parsed?->isServices())
-                                            <div class="text-xs text-zinc-500 mb-2">
-                                                {{ $parsed->summary['running'] }} @lang('running') / {{ $parsed->summary['stopped'] }} @lang('stopped')
-                                            </div>
-                                            <div class="max-h-64 overflow-y-auto">
-                                                <table class="min-w-full text-xs">
-                                                    <thead class="bg-zinc-800 text-zinc-300 sticky top-0">
-                                                    <tr>
-                                                        <th class="px-2 py-1 text-left">Název</th>
-                                                        <th class="px-2 py-1 text-left">Stav</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    @foreach($parsed->data as $service)
-                                                        <tr class="border-t border-zinc-700">
-                                                            <td class="px-2 py-1 font-mono" title="{{ $service->name }}">
-                                                                {{ $service->displayName }}
-                                                            </td>
-                                                            <td class="px-2 py-1">
-                                                                <span class="px-1.5 py-0.5 rounded text-xs {{ $service->isRunning ? 'bg-green-900/40 text-green-300' : 'bg-zinc-700 text-zinc-400' }}">
-                                                                    {{ $service->status }}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                        @elseif($parsed?->isProcesses())
-                                            <div class="text-xs text-zinc-500 mb-2">
-                                                {{ $parsed->summary['total'] }} procesů, {{ $parsed->summary['totalMemoryMB'] }} MB celkem
-                                            </div>
-                                            <div class="max-h-64 overflow-y-auto">
-                                                <table class="min-w-full text-xs">
-                                                    <thead class="bg-zinc-800 text-zinc-300 sticky top-0">
-                                                    <tr>
-                                                        <th class="px-2 py-1 text-left">Proces</th>
-                                                        <th class="px-2 py-1 text-right">PID</th>
-                                                        <th class="px-2 py-1 text-right">RAM</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    @foreach($parsed->data->sortByDesc('memoryMB') as $process)
-                                                        <tr class="border-t border-zinc-700">
-                                                            <td class="px-2 py-1 font-mono">{{ $process->name }}</td>
-                                                            <td class="px-2 py-1 text-right text-zinc-400">{{ $process->pid }}</td>
-                                                            <td class="px-2 py-1 text-right">
-                                                                <span class="{{ $process->memoryMB > 200 ? 'text-yellow-400' : 'text-zinc-300' }}">
-                                                                    {{ $process->memoryMB }} MB
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                        @elseif($parsed?->isRaw())
-                                            <pre class="text-xs bg-zinc-900 text-green-400 p-2 rounded overflow-x-auto max-h-48">{{ $parsed->raw }}</pre>
-
-                                        @elseif($command->output)
-                                            <pre class="text-xs bg-zinc-900 text-green-400 p-2 rounded overflow-x-auto max-h-48">{{ $command->output }}</pre>
-                                        @endif
+                                        {{ Str::limit($command->command, 100) }}
                                     </div>
                                 @endif
 

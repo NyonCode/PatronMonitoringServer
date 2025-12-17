@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\RemoteCommandStatus;
-use App\Enums\RemoteCommandType;
 use App\Models\Agent;
 use App\Models\TerminalLog;
 
@@ -13,7 +11,7 @@ class TerminalPollingService
     {
         $session = $agent->terminalSessions()->where('id', $sessionId)->first();
 
-        if (!$session) {
+        if (! $session) {
             return ['status' => 'error', 'error' => 'Session not found'];
         }
 
@@ -27,7 +25,7 @@ class TerminalPollingService
         return [
             'status' => 'ok',
             'session' => $session->toApiFormat(),
-            'logs' => $logs->map(fn(TerminalLog $log) => [
+            'logs' => $logs->map(fn (TerminalLog $log) => [
                 'direction' => $log->direction->value,
                 'content' => $log->content,
                 'timestamp' => $log->created_at->toIso8601String(),

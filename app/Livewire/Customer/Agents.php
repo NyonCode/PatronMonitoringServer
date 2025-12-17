@@ -30,8 +30,11 @@ class Agents extends Component
     public bool $showDetailModal = false;
 
     public bool $showLogModal = false;
+
     public bool $showConfigModal = false;
+
     public bool $showDeleteModal = false;
+
     public bool $showCommandsModal = false;
 
     public bool $showTerminalModal = false;
@@ -60,10 +63,6 @@ class Agents extends Component
 
     /**
      * Show detail modal.
-     *
-     * @param  int  $agentId
-     *
-     * @return void
      */
     public function showDetail(int $agentId): void
     {
@@ -73,8 +72,6 @@ class Agents extends Component
 
     /**
      * Close detail modal.
-     *
-     * @return void
      */
     #[On('closeDetail')]
     public function closeDetail(): void
@@ -85,10 +82,6 @@ class Agents extends Component
 
     /**
      * Show log modal.
-     *
-     * @param  int  $agentId
-     *
-     * @return void
      */
     public function showLog(int $agentId): void
     {
@@ -98,8 +91,6 @@ class Agents extends Component
 
     /**
      * Close log modal.
-     *
-     * @return void
      */
     #[On('closeLog')]
     public function closeLog(): void
@@ -110,10 +101,6 @@ class Agents extends Component
 
     /**
      * Show config modal.
-     *
-     * @param  Agent  $agent
-     *
-     * @return void
      */
     public function showConfig(Agent $agent): void
     {
@@ -123,8 +110,6 @@ class Agents extends Component
 
     /**
      * Close config modal.
-     *
-     * @return void
      */
     #[On('closeConfig')]
     public function closeConfig(): void
@@ -135,10 +120,6 @@ class Agents extends Component
 
     /**
      * Show commands modal.
-     *
-     * @param  Agent  $agent
-     *
-     * @return void
      */
     public function showCommands(Agent $agent): void
     {
@@ -148,8 +129,6 @@ class Agents extends Component
 
     /**
      * Close commands modal.
-     *
-     * @return void
      */
     #[On('closeCommands')]
     public function closeCommands(): void
@@ -160,10 +139,6 @@ class Agents extends Component
 
     /**
      * Show the terminal.
-     *
-     * @param  Agent  $agent
-     *
-     * @return void
      */
     public function showTerminal(Agent $agent): void
     {
@@ -173,8 +148,6 @@ class Agents extends Component
 
     /**
      * Close the terminal.
-     *
-     * @return void
      */
     #[On('closeTerminal')]
     public function closeTerminal(): void
@@ -185,10 +158,6 @@ class Agents extends Component
 
     /**
      * Show delete modal.
-     *
-     * @param  Agent  $agent
-     *
-     * @return void
      */
     public function showDelete(Agent $agent): void
     {
@@ -198,8 +167,6 @@ class Agents extends Component
 
     /**
      * Close delete modal.
-     *
-     * @return void
      */
     #[On('closeDelete')]
     public function closeDelete(): void
@@ -210,8 +177,6 @@ class Agents extends Component
 
     /**
      * Get agents.
-     *
-     * @return LengthAwarePaginator|array
      */
     #[Computed]
     public function agents(): LengthAwarePaginator|array
@@ -294,11 +259,6 @@ class Agents extends Component
 
     /**
      * Format bytes to human readable format
-     *
-     * @param  int|string  $bytes
-     * @param  int  $precision
-     *
-     * @return string
      */
     public function formatBytes(int|string $bytes, int $precision = 1): string
     {
@@ -318,26 +278,22 @@ class Agents extends Component
 
     /**
      * Check if agent is online
-     *
-     * @param  Agent  $agent
-     *
-     * @return bool
      */
     public function isOnline(Agent $agent): bool
     {
-        if($agent->status === 'shutdown')
+        if ($agent->status === 'shutdown') {
             return false;
+        }
 
-        if($agent->status === 'online' or $agent->last_seen_at->greaterThan(now()->subMinutes(5)))
+        if ($agent->status === 'online' or $agent->last_seen_at->greaterThan(now()->subMinutes(5))) {
             return true;
+        }
 
         return false;
     }
 
     /**
      * Render view
-     *
-     * @return View|Factory|\Illuminate\View\View
      */
     public function render(): View|Factory|\Illuminate\View\View
     {

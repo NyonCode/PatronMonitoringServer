@@ -21,10 +21,6 @@ class RemoteCommandController extends Controller
 {
     /**
      * Get agent by UUID helper
-     *
-     * @param string $uuid
-     *
-     * @return Agent
      */
     private function getAgent(string $uuid): Agent
     {
@@ -33,15 +29,10 @@ class RemoteCommandController extends Controller
 
     /**
      * Store results from agent
-     *
-     * @param Request $request
-     * @param string $uuid
-     *
-     * @return JsonResponse
      */
     public function storeResults(Request $request, string $uuid): JsonResponse
     {
-        Log::info('Agent id: ' . $uuid);
+        Log::info('Agent id: '.$uuid);
         Log::info('Store results', $request->all());
 
         $agent = $this->getAgent($uuid);
@@ -61,7 +52,9 @@ class RemoteCommandController extends Controller
                 ->where('agent_id', $agent->id)
                 ->first();
 
-            if (!$command) continue;
+            if (! $command) {
+                continue;
+            }
 
             $status = RemoteCommandStatus::tryFrom($result['status']);
             if ($status === RemoteCommandStatus::COMPLETED) {
@@ -70,7 +63,7 @@ class RemoteCommandController extends Controller
                 $command->markAsFailed($result['error'] ?? null, $result['exit_code'] ?? null);
             }
 
-            if ($command->type->isTerminalCommand() && !empty($result['output'])) {
+            if ($command->type->isTerminalCommand() && ! empty($result['output'])) {
                 $this->processTerminalOutput($command, $result);
             }
             $processed++;
@@ -78,17 +71,12 @@ class RemoteCommandController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'processed' => $processed
+            'processed' => $processed,
         ]);
     }
 
     /**
      * Create terminal session
-     *
-     * @param  Request  $request
-     * @param  string  $uuid
-     *
-     * @return JsonResponse
      */
     public function createTerminal(Request $request, string $uuid): JsonResponse
     {
@@ -129,12 +117,6 @@ class RemoteCommandController extends Controller
 
     /**
      * Send terminal input
-     *
-     * @param  Request  $request
-     * @param  string  $uuid
-     * @param  string  $sessionId
-     *
-     * @return JsonResponse
      */
     public function sendTerminalInput(Request $request, string $uuid, string $sessionId): JsonResponse
     {
@@ -196,7 +178,7 @@ class RemoteCommandController extends Controller
         $sessions = $agent->getActiveTerminalSessions();
 
         return response()->json([
-            'sessions' => $sessions->map(fn(TerminalSession $s) => $s->toApiFormat()),
+            'sessions' => $sessions->map(fn (TerminalSession $s) => $s->toApiFormat()),
         ]);
     }
 
@@ -212,12 +194,16 @@ class RemoteCommandController extends Controller
     private function processTerminalOutput(RemoteCommand $command, array $result): void
     {
         $sessionId = $command->command;
-        if (!$sessionId) return;
+        if (! $sessionId) {
+            return;
+        }
 
         $session = TerminalSession::find($sessionId);
-        if (!$session) return;
+        if (! $session) {
+            return;
+        }
 
-        if (!empty($result['output'])) {
+        if (! empty($result['output'])) {
             $session->logOutput($result['output']);
         }
     }

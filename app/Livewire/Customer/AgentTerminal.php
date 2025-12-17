@@ -19,8 +19,11 @@ class AgentTerminal extends Component
     public Agent $agent;
 
     public ?string $activeSessionId = null;
+
     public string $terminalInput = '';
+
     public string $terminalType = 'powershell';
+
     public ?int $userSessionId = null;
 
     public bool $showCreateModal = false;
@@ -55,7 +58,7 @@ class AgentTerminal extends Component
      */
     public function getActiveSessionProperty(): ?TerminalSession
     {
-        if (!$this->activeSessionId) {
+        if (! $this->activeSessionId) {
             return null;
         }
 
@@ -67,7 +70,7 @@ class AgentTerminal extends Component
      */
     public function getTerminalLogsProperty(): Collection
     {
-        if (!$this->activeSession) {
+        if (! $this->activeSession) {
             return collect();
         }
 
@@ -83,7 +86,7 @@ class AgentTerminal extends Component
     public function getTerminalTypesProperty(): array
     {
         return collect(TerminalType::cases())
-            ->mapWithKeys(fn($type) => [$type->value => $type->label()])
+            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
             ->toArray();
     }
 
@@ -152,7 +155,7 @@ class AgentTerminal extends Component
      */
     public function sendInput(): void
     {
-        if (!$this->activeSession || !$this->activeSession->isActive()) {
+        if (! $this->activeSession || ! $this->activeSession->isActive()) {
             return;
         }
 
@@ -182,7 +185,7 @@ class AgentTerminal extends Component
      */
     public function sendCtrlC(): void
     {
-        if (!$this->activeSession || !$this->activeSession->isActive()) {
+        if (! $this->activeSession || ! $this->activeSession->isActive()) {
             return;
         }
 
@@ -204,12 +207,12 @@ class AgentTerminal extends Component
      */
     public function requestOutput(): void
     {
-        if (!$this->activeSession) {
+        if (! $this->activeSession) {
             return;
         }
 
         // Nevolej output pro zavřenou session
-        if (!$this->activeSession->isActive()) {
+        if (! $this->activeSession->isActive()) {
             return;
         }
 
@@ -243,12 +246,12 @@ class AgentTerminal extends Component
     public function closeSession(?string $sessionId = null): void
     {
         $sessionId = $sessionId ?? $this->activeSessionId;
-        if (!$sessionId) {
+        if (! $sessionId) {
             return;
         }
 
         $session = $this->agent->terminalSessions()->find($sessionId);
-        if (!$session || !$session->isActive()) {
+        if (! $session || ! $session->isActive()) {
             return;
         }
 

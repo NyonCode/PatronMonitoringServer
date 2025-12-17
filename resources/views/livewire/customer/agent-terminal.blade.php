@@ -25,10 +25,11 @@
                     <span class="text-white font-medium">Terminal: {{ $prettyName }}</span>
                     @if($activeSession)
                         <span class="text-zinc-400 text-sm ml-2">
-                            {{ $activeSession->type->label() }}
+                            ({{ $activeSession->type->label() }}
 
                             @if($activeSession->user_session_id)
-                                - User Session {{ $activeSession->user_session_id }}
+                                - User Session
+                                {{ $activeSession->user_session_id }}
                             @else
                                 - SYSTEM
                             @endif

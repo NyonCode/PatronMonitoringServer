@@ -170,7 +170,7 @@ class AgentDetail extends Component
             'pretty_name' => $this->editName,
         ]);
 
-        Toast::success('Agent name has been changed to' . $this->editName);
+        Toast::success('Agent name has been changed to'.$this->editName);
 
         $this->editingName = false;
         $this->dispatch('name-updated');
@@ -288,8 +288,6 @@ class AgentDetail extends Component
 
     /**
      * Render view
-     *
-     * @return View|Factory|\Illuminate\View\View
      */
     public function render(): View|Factory|\Illuminate\View\View
     {

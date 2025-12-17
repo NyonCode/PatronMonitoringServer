@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-    enum RemoteCommandType: string
+enum RemoteCommandType: string
 {
     case RESTART = 'restart';
     case SHUTDOWN = 'shutdown';

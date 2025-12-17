@@ -10,14 +10,8 @@ use Illuminate\Support\Facades\Log;
 
 class CronController extends Controller
 {
-
     /**
      * Spustí všechny naplánované úkoly podle Laravel Scheduleru.
-     *
-     * @param Request  $request
-     * @param string $token
-     *
-     * @return JsonResponse
      */
     public function runSchedule(Request $request, string $token): JsonResponse
     {
@@ -31,11 +25,6 @@ class CronController extends Controller
 
     /**
      * Zpracuje všechny joby ve frontě pomocí `queue:work`
-     *
-     * @param Request $request
-     * @param string $token
-     *
-     * @return JsonResponse
      */
     public function runQueue(Request $request, string $token): JsonResponse
     {
@@ -52,11 +41,6 @@ class CronController extends Controller
 
     /**
      * Zpracuje specifické fronty jobů (e-maily a notifikace)
-     *
-     * @param  Request  $request
-     * @param  string  $token
-     *
-     * @return JsonResponse
      */
     public function runNotifications(Request $request, string $token): JsonResponse
     {
@@ -71,13 +55,8 @@ class CronController extends Controller
         return response()->json(['status' => 'OK', 'task' => 'notifications']);
     }
 
-
     /**
      * Validate token
-     *
-     * @param  string  $token
-     *
-     * @return void
      */
     protected function validateToken(string $token): void
     {

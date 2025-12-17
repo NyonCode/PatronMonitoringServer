@@ -14,9 +14,7 @@ class AgentDelete extends Component
     /**
      * Mount the component.
      *
-     * @param  Agent  $agent    The agent to delete.
-     *
-     * @return void
+     * @param  Agent  $agent  The agent to delete.
      */
     public function mount(Agent $agent): void
     {
@@ -25,8 +23,6 @@ class AgentDelete extends Component
 
     /**
      * Delete the agent and dispatch a toast notification.
-     *
-     * @return void
      */
     public function delete(): void
     {
@@ -34,10 +30,9 @@ class AgentDelete extends Component
         Toast::success('Agent deleted successfully');
         $this->dispatch('closeDelete');
     }
+
     /**
      * Render the component.
-     *
-     * @return View
      */
     public function render(): View
     {
