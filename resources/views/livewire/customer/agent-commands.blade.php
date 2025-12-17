@@ -37,7 +37,7 @@
                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
-                    Restart
+                    Shutdown
                 </button>
 
                 <button wire:click="quickCommand('restart')"
@@ -156,36 +156,29 @@
 
                                 @if($command->command)
                                     <div class="text-sm text-zinc-600 dark:text-zinc-400 font-mono truncate mb-1">
-                                        @php
-                                            $parsed = $this->parseCommandOutput($command);
-                                        @endphp
+                                        @php $parsed = $command->parsed_output; @endphp
 
-                                        @if($parsed instanceof \Illuminate\Support\Collection && $parsed->isNotEmpty())
-                                            {{-- SERVICES TABLE --}}
-                                            <div class="overflow-x-auto">
-                                                <table class="min-w-full text-xs border border-zinc-700 rounded-lg">
-                                                    <thead class="bg-zinc-800 text-zinc-300">
+                                        @if($parsed?->isServices())
+                                            <div class="text-xs text-zinc-500 mb-2">
+                                                {{ $parsed->summary['running'] }} @lang('running') / {{ $parsed->summary['stopped'] }} @lang('stopped')
+                                            </div>
+                                            <div class="max-h-64 overflow-y-auto">
+                                                <table class="min-w-full text-xs">
+                                                    <thead class="bg-zinc-800 text-zinc-300 sticky top-0">
                                                     <tr>
-                                                        <th class="px-3 py-2 text-left">Název</th>
-                                                        <th class="px-3 py-2 text-left">Popis</th>
-                                                        <th class="px-3 py-2 text-left">Stav</th>
+                                                        <th class="px-2 py-1 text-left">Název</th>
+                                                        <th class="px-2 py-1 text-left">Stav</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    @foreach($parsed as $service)
+                                                    @foreach($parsed->data as $service)
                                                         <tr class="border-t border-zinc-700">
-                                                            <td class="px-3 py-2 font-mono">
-                                                                {{ $service['name'] }}
+                                                            <td class="px-2 py-1 font-mono" title="{{ $service->name }}">
+                                                                {{ $service->displayName }}
                                                             </td>
-                                                            <td class="px-3 py-2">
-                                                                {{ $service['display_name'] }}
-                                                            </td>
-                                                            <td class="px-3 py-2">
-                                                                <span class="inline-flex px-2 py-1 rounded text-xs font-semibold
-                                                                    {{ $service['is_running']
-                                                                        ? 'bg-green-900/40 text-green-300'
-                                                                        : 'bg-red-900/40 text-red-300' }}">
-                                                                    {{ strtoupper($service['status']) }}
+                                                            <td class="px-2 py-1">
+                                                                <span class="px-1.5 py-0.5 rounded text-xs {{ $service->isRunning ? 'bg-green-900/40 text-green-300' : 'bg-zinc-700 text-zinc-400' }}">
+                                                                    {{ $service->status }}
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -194,11 +187,40 @@
                                                 </table>
                                             </div>
 
+                                        @elseif($parsed?->isProcesses())
+                                            <div class="text-xs text-zinc-500 mb-2">
+                                                {{ $parsed->summary['total'] }} procesů, {{ $parsed->summary['totalMemoryMB'] }} MB celkem
+                                            </div>
+                                            <div class="max-h-64 overflow-y-auto">
+                                                <table class="min-w-full text-xs">
+                                                    <thead class="bg-zinc-800 text-zinc-300 sticky top-0">
+                                                    <tr>
+                                                        <th class="px-2 py-1 text-left">Proces</th>
+                                                        <th class="px-2 py-1 text-right">PID</th>
+                                                        <th class="px-2 py-1 text-right">RAM</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($parsed->data->sortByDesc('memoryMB') as $process)
+                                                        <tr class="border-t border-zinc-700">
+                                                            <td class="px-2 py-1 font-mono">{{ $process->name }}</td>
+                                                            <td class="px-2 py-1 text-right text-zinc-400">{{ $process->pid }}</td>
+                                                            <td class="px-2 py-1 text-right">
+                                                                <span class="{{ $process->memoryMB > 200 ? 'text-yellow-400' : 'text-zinc-300' }}">
+                                                                    {{ $process->memoryMB }} MB
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        @elseif($parsed?->isRaw())
+                                            <pre class="text-xs bg-zinc-900 text-green-400 p-2 rounded overflow-x-auto max-h-48">{{ $parsed->raw }}</pre>
+
                                         @elseif($command->output)
-                                            {{-- FALLBACK RAW OUTPUT --}}
-                                            <pre class="text-xs bg-zinc-900 text-green-400 p-3 rounded-lg overflow-x-auto max-h-64 overflow-y-auto font-mono">
-                                                {{ $command->output }}
-                                                    </pre>
+                                            <pre class="text-xs bg-zinc-900 text-green-400 p-2 rounded overflow-x-auto max-h-48">{{ $command->output }}</pre>
                                         @endif
                                     </div>
                                 @endif

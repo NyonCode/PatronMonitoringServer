@@ -1,14 +1,10 @@
-<div class="fixed inset-0 z-50 overflow-hidden bg-black/50 flex items-center justify-center p-4"
-     wire:poll.2s="requestOutput"
-     x-data="{
-         scrollToBottom() {
-             this.$nextTick(() => {
-                 const terminal = document.getElementById('terminal-output');
-                 if (terminal) terminal.scrollTop = terminal.scrollHeight;
-             });
-         }
-     }"
-     x-init="scrollToBottom(); Livewire.on('input-sent', () => scrollToBottom()); Livewire.on('terminal-changed', () => scrollToBottom());">
+<!-- Terminal Output -->
+<div id="terminal-output"
+     class="flex-1 overflow-y-auto p-4 font-mono text-sm bg-zinc-950 text-green-400"
+     @if($activeSession && $activeSession->isActive())
+         wire:poll.3s="requestOutput"
+     @endif
+     x-effect="scrollToBottom()">
 
     <div class="bg-zinc-900 rounded-lg shadow-xl w-full max-w-6xl h-[85vh] flex flex-col">
         @php
@@ -29,7 +25,13 @@
                     <span class="text-white font-medium">Terminal: {{ $prettyName }}</span>
                     @if($activeSession)
                         <span class="text-zinc-400 text-sm ml-2">
-                            ({{ $activeSession->type->label() }}@if($activeSession->user_session_id) - User Session {{ $activeSession->user_session_id }}@else - SYSTEM @endif)
+                            {{ $activeSession->type->label() }}
+
+                            @if($activeSession->user_session_id)
+                                - User Session {{ $activeSession->user_session_id }}
+                            @else
+                                - SYSTEM
+                            @endif
                         </span>
                     @endif
                 </div>

@@ -208,7 +208,17 @@ class AgentTerminal extends Component
             return;
         }
 
-        // Zkontroluj jestli už neexistuje pending output command
+        // Nevolej output pro zavřenou session
+        if (!$this->activeSession->isActive()) {
+            return;
+        }
+
+        // Nevolej output pro session mladší než 10 sekund (počkej až agent vytvoří session)
+        if ($this->activeSession->created_at->diffInSeconds(now()) < 10) {
+            return;
+        }
+
+        // Nevolej output pokud už existuje pending output command pro tuto session
         $pendingExists = $this->agent->remoteCommands()
             ->where('type', RemoteCommandType::TERMINAL_OUTPUT)
             ->where('command', $this->activeSessionId)
@@ -226,6 +236,7 @@ class AgentTerminal extends Component
             'created_by' => auth()->id(),
         ]);
     }
+
     /**
      * Close a session.
      */
