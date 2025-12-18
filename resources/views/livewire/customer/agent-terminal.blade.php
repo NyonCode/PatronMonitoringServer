@@ -1,7 +1,6 @@
-<!-- Terminal Output -->
 <div id="terminal-output"
-     class="flex-1 overflow-y-auto p-4 font-mono text-sm bg-zinc-950 text-green-400"
-     @if($activeSession && $activeSession->isActive())
+     class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950 text-green-400"
+    @if($activeSession && $activeSession->isActive())
          wire:poll.3s="requestOutput"
      @endif
      x-effect="scrollToBottom()">
