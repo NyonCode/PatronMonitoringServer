@@ -1,3 +1,4 @@
+
 name: Deploy
 
 on:
@@ -39,7 +40,7 @@ jobs:
       - name: 🧰 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.2'
           extensions: mbstring, bcmath, intl
           tools: composer
 
@@ -54,9 +55,7 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
-          echo "📦 Installing Node.js dependencies..."
-          npm install
-          echo "🏗️ Building frontend..."
+          npm ci
           npm run build
 
       # 5️⃣ Upload přes FTP
@@ -82,8 +81,8 @@ jobs:
           port: 22
           script: |
             cd storage/d943a45e/92498fdb-2d7a-4965-a7a3-8a5db1f57c3f/patronmonitoring.cz/www
-            php8.2 /bin/composer install --no-dev --optimize-autoloader
-            php8.2 artisan migrate --force
+            php8.3 /bin/composer install --no-dev --optimize-autoloader
+            php8.3 artisan migrate --force
 
       # 7️⃣ Přepni na produkční režim
       - name: 🧩 Switch to Production
