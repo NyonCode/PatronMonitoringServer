@@ -5,7 +5,6 @@ namespace App\Services;
 use App\DTO\ProcessDto;
 use App\DTO\ServiceDto;
 use App\Enums\RemoteCommandType;
-use App\Services\ParsedOutput;
 use Illuminate\Support\Collection;
 
 class CommandOutputParser
@@ -31,12 +30,56 @@ class CommandOutputParser
             );
         }
 
-        // Parse based on command type
-        return match ($type) {
+        // First try by command type
+        $result = match ($type) {
             RemoteCommandType::GET_SERVICES => $this->parseServices($data),
             RemoteCommandType::GET_PROCESSES => $this->parseProcesses($data),
-            default => $this->parseGenericJson($data, $output),
+            default => null,
         };
+
+        if ($result !== null) {
+            return $result;
+        }
+
+        // Auto-detect by data structure (fallback)
+        if ($this->looksLikeServices($data)) {
+            return $this->parseServices($data);
+        }
+
+        if ($this->looksLikeProcesses($data)) {
+            return $this->parseProcesses($data);
+        }
+
+        return $this->parseGenericJson($data, $output);
+    }
+
+    /**
+     * Check if data looks like Windows services.
+     */
+    protected function looksLikeServices(array $data): bool
+    {
+        if (empty($data) || !array_is_list($data)) {
+            return false;
+        }
+
+        $first = $data[0];
+        return is_array($first)
+            && isset($first['Name'], $first['DisplayName'], $first['Status'])
+            && in_array($first['Status'], ['Running', 'Stopped', 'StartPending', 'StopPending'], true);
+    }
+
+    /**
+     * Check if data looks like Windows processes.
+     */
+    protected function looksLikeProcesses(array $data): bool
+    {
+        if (empty($data) || !array_is_list($data)) {
+            return false;
+        }
+
+        $first = $data[0];
+        return is_array($first)
+            && isset($first['Name'], $first['PID'], $first['MemoryMB']);
     }
 
     /**

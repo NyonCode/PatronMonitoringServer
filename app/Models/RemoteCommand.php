@@ -61,6 +61,7 @@ class RemoteCommand extends Model
     public function markAsSent(): self
     {
         $this->update(['status' => RemoteCommandStatus::SENT, 'sent_at' => now()]);
+
         return $this;
     }
 
@@ -72,6 +73,7 @@ class RemoteCommand extends Model
             'exit_code' => $exitCode,
             'completed_at' => now(),
         ]);
+
         return $this;
     }
 
@@ -83,6 +85,7 @@ class RemoteCommand extends Model
             'exit_code' => $exitCode,
             'completed_at' => now(),
         ]);
+
         return $this;
     }
 
@@ -127,6 +130,7 @@ class RemoteCommand extends Model
     public function hasStructuredOutput(): bool
     {
         $parsed = $this->parsed_output;
+
         return $parsed !== null && ($parsed->isServices() || $parsed->isProcesses());
     }
 }
