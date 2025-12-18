@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('metrics:clean')->daily();
 Schedule::command('metrics:aggregate')->hourly();
+
+Schedule::command('telescope:prune')->daily();
