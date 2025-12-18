@@ -96,23 +96,37 @@ class RemoteCommand extends Model
         ];
     }
 
-    /**
-     * Check if command can be cancelled.
-     *
-     * @return bool
-     */
     public function canBeCancelled(): bool
     {
-        return $this->status === RemoteCommandStatus::PENDING or $this->status === RemoteCommandStatus::SENT;
+        return $this->status === RemoteCommandStatus::PENDING || $this->status === RemoteCommandStatus::SENT;
     }
 
     /**
-     * Get parsed output.
-     *
-     * @return ParsedOutput|null
+     * Get parsed output using CommandOutputParser.
      */
     public function getParsedOutputAttribute(): ?ParsedOutput
     {
+        if (empty($this->output)) {
+            return null;
+        }
+
         return app(CommandOutputParser::class)->parse($this->type, $this->output);
+    }
+
+    /**
+     * Check if command has parseable output.
+     */
+    public function hasParsedOutput(): bool
+    {
+        return $this->parsed_output !== null && $this->parsed_output->isNotEmpty();
+    }
+
+    /**
+     * Check if output is structured (services/processes).
+     */
+    public function hasStructuredOutput(): bool
+    {
+        $parsed = $this->parsed_output;
+        return $parsed !== null && ($parsed->isServices() || $parsed->isProcesses());
     }
 }

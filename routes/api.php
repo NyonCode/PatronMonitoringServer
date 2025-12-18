@@ -20,9 +20,7 @@ Route::prefix('client/{uuid}')->middleware(AgentTokenMiddleware::class)->group(f
 
     Route::post('/heartbeat', [AgentController::class, 'heartbeat']);
     Route::post('/logs', [AgentController::class, 'logs']);
-    Route::post('/shutdown', [AgentController::class,'shutdown',]);
-
-
+    Route::post('/shutdown', [AgentController::class, 'shutdown']);
 
     Route::post('/terminal', [RemoteCommandController::class, 'createTerminal']);
     Route::get('/terminal', [RemoteCommandController::class, 'listTerminals']);
@@ -31,5 +29,4 @@ Route::prefix('client/{uuid}')->middleware(AgentTokenMiddleware::class)->group(f
     Route::delete('/terminal/{sessionId}', [RemoteCommandController::class, 'closeTerminal']);
 
     Route::post('/command-results', [RemoteCommandController::class, 'storeResults']);
-
 });

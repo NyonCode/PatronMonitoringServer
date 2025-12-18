@@ -9,7 +9,6 @@ use App\Models\RemoteCommand;
 use App\Services\ParsedOutput;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class AgentCommands extends Component
@@ -17,10 +16,13 @@ class AgentCommands extends Component
     public Agent $agent;
 
     public string $commandType = '';
+
     public string $commandText = '';
+
     public string $commandUrl = '';
 
     public string $filterStatus = '';
+
     public string $filterType = '';
 
     public bool $showCreateModal = false;
@@ -40,8 +42,8 @@ class AgentCommands extends Component
     {
         return $this->agent->remoteCommands()
             ->with('creator')
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->when($this->filterType, fn($q) => $q->where('type', $this->filterType))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))
             ->orderByDesc('created_at')
             ->limit(50)
             ->get();
@@ -50,15 +52,15 @@ class AgentCommands extends Component
     public function getCommandTypesProperty(): array
     {
         return collect(RemoteCommandType::cases())
-            ->filter(fn($type) => !$type->isTerminalCommand())
-            ->mapWithKeys(fn($type) => [$type->value => $type->label()])
+            ->filter(fn ($type) => ! $type->isTerminalCommand())
+            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
             ->toArray();
     }
 
     public function getStatusOptionsProperty(): array
     {
         return collect(RemoteCommandStatus::cases())
-            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+            ->mapWithKeys(fn ($status) => [$status->value => $status->label()])
             ->toArray();
     }
 
@@ -121,9 +123,6 @@ class AgentCommands extends Component
     /**
      * Parse command output.
      *S
-     * @param  RemoteCommand  $command
-     *
-     * @return ParsedOutput|null
      */
     public function parseCommandOutput(RemoteCommand $command): ?ParsedOutput
     {

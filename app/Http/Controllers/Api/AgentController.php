@@ -77,7 +77,7 @@ class AgentController extends Controller
         $exists = Agent::where('agent_id', $agent_id)->exists();
 
         return response()->json([
-            'exists' => $exists
+            'exists' => $exists,
         ]);
     }
 
@@ -101,7 +101,7 @@ class AgentController extends Controller
         return response()->json([
             'status' => 'ok',
             'token' => $agent->token,
-            'interval' => $agent->update_interval
+            'interval' => $agent->update_interval,
         ]);
     }
 
@@ -155,13 +155,13 @@ class AgentController extends Controller
             ]);
 
         $pendingCommands = $agent->getPendingCommands(10);
-        $pendingCommands->each(fn(RemoteCommand $cmd) => $cmd->markAsSent());
+        $pendingCommands->each(fn (RemoteCommand $cmd) => $cmd->markAsSent());
 
         return response()->json([
             'status' => 'ok',
             'interval' => $agent->update_interval,
             'debugMode' => $agent->debug_mode,
-            'remoteCommands' => $pendingCommands->map(fn(RemoteCommand $cmd) => $cmd->toApiFormat()),
+            'remoteCommands' => $pendingCommands->map(fn (RemoteCommand $cmd) => $cmd->toApiFormat()),
         ]);
     }
 
@@ -183,7 +183,7 @@ class AgentController extends Controller
         );
 
         return response()->json([
-            'status' => 'ok'
+            'status' => 'ok',
         ]);
     }
 
@@ -194,7 +194,7 @@ class AgentController extends Controller
     {
         return response()->json([
             'status' => 'ok',
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -211,7 +211,7 @@ class AgentController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'ok'
+            'status' => 'ok',
         ]);
     }
 
@@ -227,5 +227,4 @@ class AgentController extends Controller
             $input
         );
     }
-
 }

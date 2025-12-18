@@ -15,6 +15,7 @@ class TerminalSession extends Model
     // ODSTRANĚNO: use HasUuids;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -25,8 +26,6 @@ class TerminalSession extends Model
 
     /**
      * Get the casts property.
-     *
-     * @return array
      */
     protected function casts(): array
     {
@@ -40,8 +39,6 @@ class TerminalSession extends Model
 
     /**
      * Boot the model.
-     *
-     * @return void
      */
     public static function boot(): void
     {
@@ -82,6 +79,7 @@ class TerminalSession extends Model
     public function close(): self
     {
         $this->update(['status' => TerminalSessionStatus::CLOSED, 'closed_at' => now()]);
+
         return $this;
     }
 
