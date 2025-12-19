@@ -99,6 +99,13 @@ class RemoteCommand extends Model
         ];
     }
 
+    /**
+     * Determine if the command can be cancelled.
+     *
+     * A command can be cancelled only if it's in PENDING or SENT status.
+     *
+     * @return bool True if the command can be cancelled, false otherwise.
+     */
     public function canBeCancelled(): bool
     {
         return $this->status === RemoteCommandStatus::PENDING || $this->status === RemoteCommandStatus::SENT;
