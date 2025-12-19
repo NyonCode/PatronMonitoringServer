@@ -291,7 +291,7 @@ class AgentTerminal extends Component
      *
      * @return string
      */
-    public function parseTerminalOutputContent(?string $output): string
+    public function parseTerminalOutputContent(string $output): string
     {
         dump($output);
 

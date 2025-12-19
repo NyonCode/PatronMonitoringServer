@@ -118,7 +118,7 @@
                                     @endif
 
                                     @php
-                                        $parsedContent = $this->parseTerminalOutputContent($log->context)
+                                        $parsedContent = $this->parseTerminalOutputContent($log->content)
                                     @endphp
 
                                     @if(!empty($parsedContent))
