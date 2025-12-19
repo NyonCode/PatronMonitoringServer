@@ -297,12 +297,11 @@ class AgentTerminal extends Component
         if ($this->is_json_array($output)) {
             $parsed = $this->parseTerminalJsonOutput($output);
 
-            if (is_null($parsed['output'])) {
+            if (is_null($parsed['output']))
                 return '';
-            }
+
 
             if(! empty($parsed['output']))
-
                 return $parsed['output'];
         }
 
