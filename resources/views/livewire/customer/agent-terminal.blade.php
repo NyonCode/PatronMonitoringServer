@@ -118,16 +118,11 @@
                                     @endif
 
                                     @php
-                                        $parsed = $this->parseTerminalOutput($log->content);
+                                        $parsedContent = $this->parseTerminalOutputContent($log->context)
                                     @endphp
-
-                                    @if(!empty($parsed['output']))
+                                    @if(!empty($parsedContent))
                                         <span class="whitespace-pre-wrap break-all">
-                                            {{ $parsed['output'] }}
-                                        </span>
-                                    @else
-                                        <span class="whitespace-pre-wrap break-all">
-                                            {{ $log->context }}
+                                            {{ $parsedContent }}
                                         </span>
                                     @endif
                                 </div>

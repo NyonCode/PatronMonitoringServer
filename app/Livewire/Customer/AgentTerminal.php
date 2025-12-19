@@ -288,24 +288,72 @@ class AgentTerminal extends Component
      *
      * @param  string  $output
      *
-     * @throws InvalidArgumentException
-     * @throws JsonException
      *
      * @return array<string, mixed>
      */
-    public function parseTerminalOutput(string $output): array
+    public function parseTerminalOutputContent(string $output): string
     {
+        if ($this->is_json_array($output)) {
+            $parsed = $this->parseTerminalOutputContent($output);
+            return $parsed['output'];
+        }
 
-        if (empty($output)) {
+        return $output;
+    }
+
+    /**
+     *
+     * @param  string  $content
+     *
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @return array
+     */
+    public function parseTerminalJsonOutput(string $content): array
+    {
+        if (empty($content)) {
             throw new InvalidArgumentException('Output cannot be empty');
         }
 
-        $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
         if (!is_array($decoded)) {
             throw new InvalidArgumentException('Decoded output is not an array');
         }
         return $decoded;
+    }
+
+    /**
+     * Check if a string is valid JSON.
+     *
+     * @param  string  $value
+     *
+     * @return bool
+     */
+    public function is_json(string $value): bool
+    {
+        if (function_exists('json_validate')) {
+            return json_validate($value);
+        }
+
+        json_decode($value);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+
+    /**
+     *
+     *
+     * @param  string  $value
+     *
+     * @return bool
+     */
+    public function is_json_array(string $value): bool
+    {
+        if (!$this->is_json($value)) {
+            return false;
+        }
+
+        return is_array(json_decode($value, true));
     }
 
     /**
