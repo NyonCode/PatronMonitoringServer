@@ -286,8 +286,9 @@ class AgentTerminal extends Component
     /**
      * Parse terminal output.
      *
-     * @param  string|null  $output
+     * @param  string  $output
      *
+     * @throws JsonException
      *
      * @return string
      */
@@ -296,7 +297,7 @@ class AgentTerminal extends Component
         dump($output);
 
         if ($this->is_json_array($output)) {
-            $parsed = $this->parseTerminalOutputContent($output);
+            $parsed = $this->parseTerminalJsonOutput($output);
             return $parsed['output'];
         }
 
@@ -304,12 +305,14 @@ class AgentTerminal extends Component
     }
 
     /**
+     * Parse terminal output JSON string into an array.
      *
-     * @param  string  $content
+     * @param string $content JSON string to parse
      *
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     * @return array
+     * @throws InvalidArgumentException When content is empty or not a valid array/object
+     * @throws JsonException When JSON parsing fails
+     *
+     * @return array<string, mixed> Parsed terminal output
      */
     public function parseTerminalJsonOutput(string $content): array
     {
