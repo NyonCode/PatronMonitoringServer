@@ -1,5 +1,5 @@
 <div id="terminal-output"
-     class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-zinc-950 text-green-400"
+     class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4"
     @if($activeSession && $activeSession->isActive())
          wire:poll.3s="requestOutput"
      @endif
@@ -90,7 +90,7 @@
                         </button>
                     @empty
                         <div class="p-4 text-center text-zinc-500 text-sm">
-                            Žádné terminály
+                            {{ __('No terminals') }}
                         </div>
                     @endforelse
                 </div>
@@ -116,7 +116,7 @@
                                     @if($log->direction->value === 'input')
                                         <span class="text-yellow-400">PS&gt;</span>
                                     @endif
-                                    <span class="whitespace-pre-wrap break-all">{{ $log->content }}</span>
+                                    <span class="whitespace-pre-wrap break-all">{{ dump($this->parseTerminalOutput($log->content))}}</span>
                                 </div>
                             @endforeach
                         @endif
@@ -145,7 +145,7 @@
                                 </div>
                                 <button type="submit"
                                         class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-medium">
-                                    Send
+                                    {{ __('Send') }}
                                 </button>
                                 <button type="button"
                                         wire:click="sendCtrlC"
@@ -155,8 +155,8 @@
                                 </button>
                             </form>
                             <div class="flex gap-4 mt-2 text-xs text-zinc-500">
-                                <span>Enter: Send command</span>
-                                <span>^C: Interrupt</span>
+                                <span>Enter: {{ __('Send command') }}</span>
+                                <span>^C: {{ __('Interrupt') }}</span>
                             </div>
                         </div>
                     @endif
@@ -167,14 +167,23 @@
                             <svg class="w-16 h-16 text-zinc-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-zinc-300 mb-2">Žádný terminál</h3>
-                            <p class="text-zinc-500 mb-4">Vyberte existující session nebo vytvořte nový terminál</p>
+
+                            <h3 class="text-lg font-medium text-zinc-300 mb-2">
+                                {{ __('No terminal') }}
+                            </h3>
+
+                            <p class="text-zinc-500 mb-4">
+                                {{ __('Select existing session or create new terminal') }}
+                            </p>
+
                             <button wire:click="openCreateModal"
                                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
-                                Nový terminál
+
+                                {{ __('New terminal') }}
+
                             </button>
                         </div>
                     </div>
@@ -189,13 +198,15 @@
             <div class="absolute inset-0 bg-black/50" wire:click="closeCreateModal"></div>
             <div class="relative bg-zinc-900 rounded-lg shadow-xl w-full max-w-md border border-zinc-700">
                 <div class="p-6 border-b border-zinc-700">
-                    <h3 class="text-lg font-bold text-white">Nový terminál</h3>
+                    <h3 class="text-lg font-bold text-white">
+                        {{ __('New terminal') }}
+                    </h3>
                 </div>
 
                 <form wire:submit="createSession" class="p-6 space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-zinc-300 mb-2">
-                            Typ terminálu
+                            {{ __('Terminal type') }}
                         </label>
                         <select wire:model="terminalType"
                                 class="w-full px-3 py-2 border border-zinc-600 rounded-lg bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -207,13 +218,13 @@
 
                     <div>
                         <label class="block text-sm font-medium text-zinc-300 mb-2">
-                            Kontext
+                            {{ __('Context') }}
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" wire:model="userSessionId" value=""
                                        class="text-green-500 focus:ring-green-500 bg-zinc-800 border-zinc-600">
-                                <span class="text-zinc-300">SYSTEM (služba)</span>
+                                <span class="text-zinc-300">SYSTEM ({{ __('Service') }})</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" wire:model="userSessionId" value="1"
@@ -222,7 +233,7 @@
                             </label>
                         </div>
                         <p class="mt-2 text-xs text-zinc-500">
-                            SYSTEM kontext běží jako služba, User Session běží v kontextu přihlášeného uživatele.
+                            {{ __('SYSTEM context runs as a service, User Session runs in the context of the logged-in user.') }}
                         </p>
                     </div>
 
@@ -230,11 +241,14 @@
                         <button type="button"
                                 wire:click="closeCreateModal"
                                 class="px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 rounded-lg transition-colors">
-                            Zrušit
+
+                            {{ __('Cancel') }}
+
                         </button>
                         <button type="submit"
                                 class="px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                            Vytvořit
+
+                            {{ __('Create') }}
                         </button>
                     </div>
                 </form>
