@@ -294,6 +294,8 @@ class AgentTerminal extends Component
      */
     public function parseTerminalOutputContent(string $output): string
     {
+        $output = $this->fixTerminalEncoding($output);
+
         if ($this->is_json_array($output)) {
             $parsed = $this->parseTerminalJsonOutput($output);
 
@@ -368,6 +370,22 @@ class AgentTerminal extends Component
         }
 
         return is_array(json_decode($value, true));
+    }
+
+    /**
+     * Parse terminal output and fix encoding.
+     *
+     * @param string $output Raw terminal output
+     *
+     * @return string UTF-8 encoded output
+     */
+    public function fixTerminalEncoding(string $output): string
+    {
+        if (mb_check_encoding($output, 'UTF-8')) {
+            return $output;
+        }
+
+        return mb_convert_encoding($output, 'UTF-8', 'Windows-1250, CP852, ISO-8859-2');
     }
 
     /**
