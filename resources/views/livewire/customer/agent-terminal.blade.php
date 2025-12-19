@@ -120,6 +120,7 @@
                                     @php
                                         $parsedContent = $this->parseTerminalOutputContent($log->context)
                                     @endphp
+
                                     @if(!empty($parsedContent))
                                         <span class="whitespace-pre-wrap break-all">
                                             {{ $parsedContent }}
