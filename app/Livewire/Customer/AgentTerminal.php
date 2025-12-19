@@ -294,15 +294,16 @@ class AgentTerminal extends Component
      */
     public function parseTerminalOutputContent(string $output): string
     {
-        dump($output);
-
         if ($this->is_json_array($output)) {
             $parsed = $this->parseTerminalJsonOutput($output);
 
-            dump($parsed);
+            if (is_null($parsed['output'])) {
+                return '';
+            }
 
             if(! empty($parsed['output']))
-            return $parsed['output'];
+
+                return $parsed['output'];
         }
 
         return $output;
