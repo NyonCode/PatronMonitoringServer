@@ -118,12 +118,12 @@
                                     @endif
 
                                     @php
-                                        $parsedContent = $this->parseTerminalOutputContent($log->content)
+                                        $parsedContent = $this->parseTerminalOutputContent($log->content);
                                     @endphp
 
                                     @if(!empty($parsedContent))
                                         <span class="whitespace-pre-wrap break-all">
-                                            {{ $parsedContent }}
+                                            {{ Str::trim($parsedContent) }}
                                         </span>
                                     @endif
                                 </div>
