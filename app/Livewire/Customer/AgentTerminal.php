@@ -11,6 +11,8 @@ use App\Models\TerminalSession;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use JsonException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -284,13 +286,24 @@ class AgentTerminal extends Component
     /**
      * Parse terminal output.
      *
-     * @param  string|array<string>  $output
+     * @param  string  $output
+     *
+     * @throws InvalidArgumentException
+     * @throws JsonException
+     * @return array<string, mixed>
      */
-    public function parseTerminalOutput(string|array $output)
+    public function parseTerminalOutput(string $output): array
     {
-        var_dump($output);
+        if (empty($output)) {
+            throw new InvalidArgumentException('Output cannot be empty');
+        }
 
-        var_dump(json_decode($output, true));
+        $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+
+        if (!is_array($decoded)) {
+            throw new InvalidArgumentException('Decoded output is not an array');
+        }
+        return $decoded;
     }
 
     /**
