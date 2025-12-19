@@ -122,7 +122,7 @@
                                     @endphp
 
                                     @if(!empty($parsedContent))
-                                        <span class="whitespace-pre-wrap break-all">
+                                        <span class="break-all">
                                             {{ Str::trim($parsedContent) }}
                                         </span>
                                     @endif
