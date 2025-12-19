@@ -284,12 +284,14 @@ class AgentTerminal extends Component
     /**
      * Parse terminal output.
      *
-     * @param  string  $output
+     * @param  string|array<string>  $output
      *
      * @return mixed
      */
-    public function parseTerminalOutput(string $output): mixed
+    public function parseTerminalOutput(string|array $output): mixed
     {
+        var_dump($output);
+
         return json_decode($output, true);
     }
 

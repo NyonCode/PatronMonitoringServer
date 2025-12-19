@@ -116,7 +116,9 @@
                                     @if($log->direction->value === 'input')
                                         <span class="text-yellow-400">PS&gt;</span>
                                     @endif
-                                    <span class="whitespace-pre-wrap break-all">{{ dump($this->parseTerminalOutput($log->content)) }}</span>
+                                    <span class="whitespace-pre-wrap break-all">
+                                        {!! dump($this->parseTerminalOutput($log->content)) !!}
+                                    </span>
                                 </div>
                             @endforeach
                         @endif
