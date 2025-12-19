@@ -290,10 +290,12 @@ class AgentTerminal extends Component
      *
      * @throws InvalidArgumentException
      * @throws JsonException
+     *
      * @return array<string, mixed>
      */
     public function parseTerminalOutput(string $output): array
     {
+
         if (empty($output)) {
             throw new InvalidArgumentException('Output cannot be empty');
         }

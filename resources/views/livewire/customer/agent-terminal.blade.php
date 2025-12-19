@@ -116,9 +116,20 @@
                                     @if($log->direction->value === 'input')
                                         <span class="text-yellow-400">PS&gt;</span>
                                     @endif
-                                    <span class="whitespace-pre-wrap break-all">
-                                        {!! dump($this->parseTerminalOutput($log->content)) !!}
-                                    </span>
+
+                                    @php
+                                        $parsed = $this->parseTerminalOutput($log->content);
+                                    @endphp
+
+                                    @if(!empty($parsed['output']))
+                                        <span class="whitespace-pre-wrap break-all">
+                                            {{ $parsed['output'] }}
+                                        </span>
+                                    @else
+                                        <span class="whitespace-pre-wrap break-all">
+                                            {{ $log->context }}
+                                        </span>
+                                    @endif
                                 </div>
                             @endforeach
                         @endif
